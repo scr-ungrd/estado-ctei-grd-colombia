@@ -1,0 +1,72 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  title: Estrategía de ciencia, tecnología e innovación en gestión del riesgo de desastres
+  subtitle: Figuras y tablas interactivas
+  authors:
+    - id: author1
+      name: Mauricio Romero Torres
+      orcid: 0000-0000-0000-0000
+      corresponding: true
+      email: mauricio.romero@gestiondelriesgo.gov.co
+      roles:
+        - Investigation
+        - Project administration
+        - Software
+        - Visualization
+      affiliations:
+        - example-org
+  affiliations:
+    - id: example-org
+      name: Example Organization
+      department: Example Department
+      country: Example Country
+      url: https://example.com
+      email: contact@example.com
+      phone: 123-456-7890
+      fax: 123-456-7891
+  open_access: true
+  license:
+    content: CC-BY-SA-4.0
+    code: MIT
+  funding:
+    - statement: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      id: 10070
+      source:
+        - name: Example Funding Foundation
+          doi: http://dx.doi.org/10.13039/100000000
+  subject: Original Submission
+  keywords:
+    - Lorem
+    - Ipsum
+  date: 2026-07-01
+  requirements:
+    - environment.yml
+  resources:
+    - README.md
+  banner: ./images/banner.png
+  options:
+    draft: false
+  exports:
+    - format: meca
+      article: article.md
+      output: meca.zip
+    - format: jats
+      article: article.md
+      sub_articles:
+        - notebooks/demandas_grd_mapa.ipynb
+    - format: pdf
+      article: article.md
+      output: article.pdf
+    - format: tex
+      article: article.md
+      output: tex.zip
+  jupyter: true
+site:
+  title: Lorem Ipsum Dolor Sit Amet
+  options:
+    logo_text: Lorem Ipsum Dolor Sit Amet
+  nav:
+    - title: MyST Docs
+      url: https://mystmd.org/guide
+  template: article-theme
