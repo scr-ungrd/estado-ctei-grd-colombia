@@ -7,3 +7,5 @@ __pycache__/
 **/*.quarto_ipynb
 _manuscript/
 _freeze/
+
+/.quarto/
