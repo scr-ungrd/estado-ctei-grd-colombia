@@ -1,6 +1,9 @@
-_build/
 .DS_Store
 .jupyter_cache/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+.quarto/
+**/*.quarto_ipynb
+_manuscript/
+_freeze/

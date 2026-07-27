@@ -1,0 +1,609 @@
+---
+title: "Estrategia de ciencia, tecnología e innovación en gestión del riesgo de desastres"
+subtitle: "Figuras y tablas interactivas"
+authors:
+  - name: Mauricio Romero Torres
+    email: mauricio.romero@gestiondelriesgo.gov.co
+    affiliation: Unidad Nacional para la Gestión del Riesgo de Desastres (UNGRD)
+    corresponding: true
+date: 2026-07-01
+keywords:
+  - gestión del riesgo de desastres
+  - ciencia, tecnología e innovación
+  - conocimiento del riesgo
+abstract: |
+  Este artículo presenta un panorama interactivo de la ciencia, tecnología e innovación
+  (CTeI) en gestión del riesgo de desastres (GRD) en Colombia durante el cuatrienio
+  2022-2026. Se analizan tres frentes: la oferta de financiación de Minciencias y el
+  Sistema General de Regalías; las demandas territoriales declaradas por los Consejos
+  Departamentales de Ciencia, Tecnología e Innovación (CODECTI) para los bienios
+  2023-2024 y 2025-2026; y la vigilancia de la producción científica en GRD desde 2020,
+  clasificada según los procesos de la Ley 1523 de 2012 (conocimiento, reducción y manejo
+  del riesgo). Todas las figuras son visualizaciones interactivas construidas con
+  Observable JavaScript y D3, que consultan directamente la hoja de cálculo fuente.
+data_availability: |
+  Todas las figuras consultan directamente, en el navegador o al renderizar el documento,
+  las hojas `Demandas-Territoriales-2022-24`, `Demandas-Territoriales-2025-26` y
+  `Vigilancia_CTeI` del libro "Estrategia CyT GRD" en Google Sheets, así como los límites
+  departamentales del repositorio [colombia_mapa](https://github.com/caticoa3/colombia_mapa).
+  No se requiere copia local de ningún conjunto de datos.
+engine: jupyter
+jupyter: python3
+---
+
+```{ojs}
+//| echo: false
+SHEET_ID = "1x83kWcmNX5OJ1-aP36_liBzp7iJOz228xAkrAb5-RkE"
+sheetCsvUrl = (sheet) => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheet}`
+
+colors = ({
+  blue: "#2a78d6", blueDark: "#184f95",
+  green: "#008300", magenta: "#e87ba4", yellow: "#eda100",
+  aqua: "#1baf7a", orange: "#eb6834", violet: "#4a3aa7", red: "#e34948",
+  textPrimary: "#0b0b0b", textSecondary: "#52514e", muted: "#898781",
+  grid: "#e1e0d9", surface: "#fcfcfb"
+})
+
+SEQ = ["#cde2fb", "#9ec5f4", "#5598e7", "#2a78d6", "#1c5cab", "#184f95", "#0d366b"]
+
+PROCESO_COLORS = ({ Conocimiento: colors.blue, Reduccion: colors.aqua, Manejo: colors.yellow })
+
+FONT = "12px system-ui, -apple-system, 'Segoe UI', sans-serif"
+
+tooltipEl = {
+  const el = document.createElement("div");
+  el.style.cssText = `position:fixed;pointer-events:none;z-index:1000;background:${colors.surface};
+    border:1px solid rgba(11,11,11,0.10);border-radius:6px;padding:8px 10px;font:${FONT};
+    color:${colors.textPrimary};box-shadow:0 2px 10px rgba(0,0,0,0.14);opacity:0;
+    transition:opacity .08s;max-width:320px;line-height:1.45`;
+  document.body.appendChild(el);
+  invalidation.then(() => el.remove());
+  return el;
+}
+
+function showTooltip(event, rows) {
+  tooltipEl.replaceChildren();
+  for (const r of rows) {
+    const div = document.createElement("div");
+    if (r.label) {
+      const strong = document.createElement("span");
+      strong.style.fontWeight = "600";
+      strong.textContent = r.value !== undefined ? `${r.label}: ` : r.label;
+      div.appendChild(strong);
+    }
+    if (r.value !== undefined) {
+      const span = document.createElement("span");
+      if (r.muted) span.style.color = colors.textSecondary;
+      span.textContent = String(r.value);
+      div.appendChild(span);
+    }
+    tooltipEl.appendChild(div);
+  }
+  const left = Math.min(event.clientX + 16, window.innerWidth - 336);
+  tooltipEl.style.left = `${left}px`;
+  tooltipEl.style.top = `${event.clientY + 16}px`;
+  tooltipEl.style.opacity = 1;
+}
+
+function hideTooltip() {
+  tooltipEl.style.opacity = 0;
+}
+
+function countTop(rows, column, n = Infinity, { fillna, truncate, dropna = true } = {}) {
+  const counts = new Map();
+  for (const row of rows) {
+    let v = row[column];
+    if (v === undefined || v === null || v === "") {
+      if (fillna !== undefined) v = fillna;
+      else if (dropna) continue;
+    }
+    v = String(v).trim();
+    if (truncate && v.length > truncate) v = v.slice(0, truncate - 1) + "…";
+    counts.set(v, (counts.get(v) || 0) + 1);
+  }
+  let arr = Array.from(counts, ([label, value]) => ({ label, value }));
+  arr.sort((a, b) => d3.descending(a.value, b.value));
+  if (n !== Infinity) arr = arr.slice(0, n);
+  return arr;
+}
+
+function pivotByYearProceso(rows) {
+  const procesos = Object.keys(PROCESO_COLORS);
+  const filtered = rows.filter(d => d["AÑO"] != null && procesos.includes(d.PROCESO));
+  const years = filtered.map(d => +d["AÑO"]);
+  const minY = d3.min(years), maxY = d3.max(years);
+  const grouped = d3.rollup(filtered, v => v.length, d => +d["AÑO"], d => d.PROCESO);
+  const out = [];
+  for (let y = minY; y <= maxY; y++) {
+    const row = { year: y };
+    for (const p of procesos) row[p] = grouped.get(y)?.get(p) ?? 0;
+    out.push(row);
+  }
+  return out;
+}
+
+function barChartH(data, { title, color = colors.blue, marginLeft = 240, width = 700 } = {}) {
+  const barH = 22, gap = 8, marginTop = title ? 40 : 16, marginRight = 60, marginBottom = 10;
+  const height = data.length * (barH + gap) + marginTop + marginBottom;
+  const x = d3.scaleLinear().domain([0, d3.max(data, d => d.value) * 1.15]).range([0, width - marginLeft - marginRight]);
+  const y = d3.scaleBand().domain(data.map(d => d.label)).range([marginTop, height - marginBottom]).padding(0.28);
+  const rectH = Math.min(barH, y.bandwidth());
+
+  const svg = d3.create("svg")
+    .attr("viewBox", [0, 0, width, height]).attr("width", width).attr("height", height)
+    .attr("style", `max-width:100%;height:auto;font:${FONT}`);
+
+  if (title) svg.append("text").attr("x", marginLeft).attr("y", 20)
+    .attr("font-size", 14).attr("font-weight", 600).attr("fill", colors.textPrimary).text(title);
+
+  const xAxis = svg.append("g").attr("transform", `translate(${marginLeft},0)`);
+  xAxis.selectAll("line").data(x.ticks(5)).join("line")
+    .attr("x1", d => x(d)).attr("x2", d => x(d))
+    .attr("y1", marginTop - 6).attr("y2", height - marginBottom)
+    .attr("stroke", colors.grid);
+  xAxis.selectAll("text").data(x.ticks(5)).join("text")
+    .attr("x", d => x(d)).attr("y", marginTop - 12)
+    .attr("text-anchor", "middle").attr("fill", colors.muted).attr("font-size", 10)
+    .text(d3.format(","));
+
+  const bars = svg.append("g").selectAll("rect").data(data).join("rect")
+    .attr("x", marginLeft)
+    .attr("y", d => y(d.label) + (y.bandwidth() - rectH) / 2)
+    .attr("width", d => Math.max(1, x(d.value)))
+    .attr("height", rectH)
+    .attr("rx", 4)
+    .attr("fill", color);
+
+  svg.append("g").selectAll("text").data(data).join("text")
+    .attr("x", marginLeft - 8).attr("y", d => y(d.label) + y.bandwidth() / 2)
+    .attr("dy", "0.35em").attr("text-anchor", "end").attr("fill", colors.textSecondary)
+    .text(d => d.label);
+
+  svg.append("g").selectAll("text").data(data).join("text")
+    .attr("x", d => marginLeft + x(d.value) + 6).attr("y", d => y(d.label) + y.bandwidth() / 2)
+    .attr("dy", "0.35em").attr("fill", colors.textPrimary).attr("font-weight", 600)
+    .text(d => d.value);
+
+  bars
+    .on("pointerenter pointermove", function (event, d) {
+      d3.select(this).attr("fill", colors.blueDark);
+      showTooltip(event, [{ label: d.label, value: `${d.value} producto(s)` }]);
+    })
+    .on("pointerleave", function () {
+      d3.select(this).attr("fill", color);
+      hideTooltip();
+    });
+
+  return svg.node();
+}
+
+function barChartV(data, { title, color = colors.blue, width = 700, height = 480, rotateLabels = -30 } = {}) {
+  const marginTop = 40, marginRight = 20, marginBottom = 130, marginLeft = 60;
+  const x = d3.scaleBand().domain(data.map(d => d.label)).range([marginLeft, width - marginRight]).padding(0.3);
+  const y = d3.scaleLinear().domain([0, d3.max(data, d => d.value) * 1.15]).range([height - marginBottom, marginTop]);
+  const barW = Math.min(24, x.bandwidth());
+
+  const svg = d3.create("svg")
+    .attr("viewBox", [0, 0, width, height]).attr("width", width).attr("height", height)
+    .attr("style", `max-width:100%;height:auto;font:${FONT}`);
+
+  if (title) svg.append("text").attr("x", marginLeft).attr("y", 20)
+    .attr("font-size", 14).attr("font-weight", 600).attr("fill", colors.textPrimary).text(title);
+
+  const yAxis = svg.append("g");
+  yAxis.selectAll("line").data(y.ticks(5)).join("line")
+    .attr("x1", marginLeft).attr("x2", width - marginRight)
+    .attr("y1", d => y(d)).attr("y2", d => y(d)).attr("stroke", colors.grid);
+  yAxis.selectAll("text").data(y.ticks(5)).join("text")
+    .attr("x", marginLeft - 8).attr("y", d => y(d)).attr("dy", "0.32em")
+    .attr("text-anchor", "end").attr("fill", colors.muted).attr("font-size", 10)
+    .text(d3.format(","));
+
+  const bars = svg.append("g").selectAll("rect").data(data).join("rect")
+    .attr("x", d => x(d.label) + (x.bandwidth() - barW) / 2)
+    .attr("y", d => y(d.value))
+    .attr("width", barW)
+    .attr("height", d => y(0) - y(d.value))
+    .attr("rx", 4)
+    .attr("fill", color);
+
+  svg.append("g").selectAll("text").data(data).join("text")
+    .attr("x", d => x(d.label) + x.bandwidth() / 2).attr("y", d => y(d.value) - 6)
+    .attr("text-anchor", "middle").attr("fill", colors.textPrimary).attr("font-weight", 600).attr("font-size", 11)
+    .text(d => d.value);
+
+  svg.append("g").selectAll("text").data(data).join("text")
+    .attr("x", 0).attr("y", 0)
+    .attr("text-anchor", "end").attr("fill", colors.muted).attr("font-size", 11)
+    .attr("transform", d => `translate(${x(d.label) + x.bandwidth() / 2},${height - marginBottom + 14}) rotate(${rotateLabels})`)
+    .text(d => d.label);
+
+  bars
+    .on("pointerenter pointermove", function (event, d) {
+      d3.select(this).attr("fill", colors.blueDark);
+      showTooltip(event, [{ label: d.label, value: `${d.value} producto(s)` }]);
+    })
+    .on("pointerleave", function () {
+      d3.select(this).attr("fill", color);
+      hideTooltip();
+    });
+
+  return svg.node();
+}
+
+function stackedBarV(data, keys, colorMap, { title, width = 640, height = 420 } = {}) {
+  const marginTop = 56, marginRight = 20, marginBottom = 34, marginLeft = 50;
+  const x = d3.scaleBand().domain(data.map(d => d.year)).range([marginLeft, width - marginRight]).padding(0.22);
+  const stacked = d3.stack().keys(keys)(data);
+  const yMax = d3.max(stacked[stacked.length - 1], d => d[1]) || 1;
+  const y = d3.scaleLinear().domain([0, yMax * 1.12]).range([height - marginBottom, marginTop]);
+
+  const svg = d3.create("svg")
+    .attr("viewBox", [0, 0, width, height]).attr("width", width).attr("height", height)
+    .attr("style", `max-width:100%;height:auto;font:${FONT}`);
+
+  if (title) svg.append("text").attr("x", marginLeft).attr("y", 20)
+    .attr("font-size", 14).attr("font-weight", 600).attr("fill", colors.textPrimary).text(title);
+
+  const yAxis = svg.append("g");
+  yAxis.selectAll("line").data(y.ticks(5)).join("line")
+    .attr("x1", marginLeft).attr("x2", width - marginRight)
+    .attr("y1", d => y(d)).attr("y2", d => y(d)).attr("stroke", colors.grid);
+  yAxis.selectAll("text").data(y.ticks(5)).join("text")
+    .attr("x", marginLeft - 8).attr("y", d => y(d)).attr("dy", "0.32em")
+    .attr("text-anchor", "end").attr("fill", colors.muted).attr("font-size", 10)
+    .text(d3.format(","));
+
+  const layer = svg.append("g").selectAll("g").data(stacked).join("g")
+    .attr("fill", d => colorMap[d.key]);
+
+  layer.selectAll("rect")
+    .data(d => d.map(v => ({ y0: v[0], y1: v[1], year: v.data.year, values: v.data, key: d.key })))
+    .join("rect")
+      .attr("x", d => x(d.year))
+      .attr("y", d => y(d.y1) + 1)
+      .attr("height", d => Math.max(0, y(d.y0) - y(d.y1) - 2))
+      .attr("width", x.bandwidth())
+    .on("pointerenter pointermove", function (event, d) {
+      showTooltip(event, [
+        { label: "Año", value: d.year },
+        ...keys.map(k => ({ label: k, value: d.values[k], muted: k !== d.key }))
+      ]);
+    })
+    .on("pointerleave", () => hideTooltip());
+
+  svg.append("g").selectAll("text").data(data).join("text")
+    .attr("x", d => x(d.year) + x.bandwidth() / 2).attr("y", height - marginBottom + 16)
+    .attr("text-anchor", "middle").attr("fill", colors.muted).attr("font-size", 10)
+    .text(d => d.year);
+
+  const legend = svg.append("g").attr("transform", `translate(${marginLeft}, ${marginTop - 30})`);
+  keys.forEach((k, i) => {
+    const gx = legend.append("g").attr("transform", `translate(${i * 120},0)`);
+    gx.append("rect").attr("width", 10).attr("height", 10).attr("rx", 2).attr("fill", colorMap[k]);
+    gx.append("text").attr("x", 14).attr("y", 9).attr("fill", colors.textSecondary).attr("font-size", 11).text(k);
+  });
+
+  return svg.node();
+}
+
+function choropleth(records, geo, { title, valueLabel = "producto(s)", width = 700, height = 640 } = {}) {
+  const byName = new Map(records.map(r => [r.name, r]));
+  const maxCount = d3.max(records, r => r.count) || 1;
+  const mapTop = 40, mapBottom = 46;
+  const projection = d3.geoMercator().fitSize([width, height - mapTop - mapBottom], geo);
+  const path = d3.geoPath(projection);
+  const color = d3.scaleSequential(t => d3.interpolateRgbBasis(SEQ)(t)).domain([0, maxCount]);
+
+  const svg = d3.create("svg")
+    .attr("viewBox", [0, 0, width, height]).attr("width", width).attr("height", height)
+    .attr("style", `max-width:100%;height:auto;font:${FONT}`);
+
+  if (title) svg.append("text").attr("x", 0).attr("y", 20)
+    .attr("font-size", 14).attr("font-weight", 600).attr("fill", colors.textPrimary).text(title);
+
+  const g = svg.append("g").attr("transform", `translate(0,${mapTop})`);
+
+  g.selectAll("path").data(geo.features).join("path")
+    .attr("d", path)
+    .attr("fill", d => {
+      const rec = byName.get(d.properties.name);
+      return rec ? color(rec.count) : "#eee";
+    })
+    .attr("stroke", "white")
+    .attr("stroke-width", 0.8)
+    .on("pointerenter pointermove", function (event, d) {
+      d3.select(this).attr("stroke-width", 1.8);
+      const rec = byName.get(d.properties.name);
+      const lines = rec && rec.lines && rec.lines.length ? rec.lines : ["Sin datos registrados"];
+      showTooltip(event, [
+        { label: d.properties.name, value: `${rec ? rec.count : 0} ${valueLabel}` },
+        ...lines.map(l => ({ label: "", value: `• ${l}`, muted: true }))
+      ]);
+    })
+    .on("pointerleave", function () {
+      d3.select(this).attr("stroke-width", 0.8);
+      hideTooltip();
+    });
+
+  const legendWidth = 160, legendHeight = 10;
+  const legendX = width - legendWidth - 12, legendY = height - 28;
+  const gradId = `grad-${Math.random().toString(36).slice(2)}`;
+  const grad = svg.append("defs").append("linearGradient").attr("id", gradId);
+  SEQ.forEach((c, i) => grad.append("stop").attr("offset", `${(i / (SEQ.length - 1)) * 100}%`).attr("stop-color", c));
+  svg.append("rect").attr("x", legendX).attr("y", legendY).attr("width", legendWidth).attr("height", legendHeight)
+    .attr("rx", 2).attr("fill", `url(#${gradId})`);
+  svg.append("text").attr("x", legendX).attr("y", legendY - 4).attr("font-size", 10).attr("fill", colors.muted).text("0");
+  svg.append("text").attr("x", legendX + legendWidth).attr("y", legendY - 4)
+    .attr("text-anchor", "end").attr("font-size", 10).attr("fill", colors.muted).text(maxCount);
+  svg.append("text").attr("x", legendX + legendWidth / 2).attr("y", legendY + legendHeight + 12)
+    .attr("text-anchor", "middle").attr("font-size", 10).attr("fill", colors.muted).text(valueLabel);
+
+  return svg.node();
+}
+```
+
+```{ojs}
+//| echo: false
+vigilancia = d3.csv(sheetCsvUrl("Vigilancia_CTeI"), d3.autoType)
+```
+
+```{python}
+#| echo: false
+import json
+import urllib.request
+
+import pandas as pd
+
+SHEET_ID = "1x83kWcmNX5OJ1-aP36_liBzp7iJOz228xAkrAb5-RkE"
+GEOJSON_URL = "https://raw.githubusercontent.com/caticoa3/colombia_mapa/master/co_2018_MGN_DPTO_POLITICO.geojson"
+
+
+def sheet_csv_url(sheet: str) -> str:
+    return f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={sheet}"
+
+
+# Map the geojson's official DIVIPOLA names onto the sheets' department spelling.
+NAME_MAP = {
+    "AMAZONAS": "Amazonas", "ANTIOQUIA": "Antioquia", "ARAUCA": "Arauca",
+    "ARCHIPIÉLAGO DE SAN ANDRÉS, PROVIDENCIA Y SANTA CATALINA": "San Andrés, Providencia y Santa Catalina",
+    "ATLÁNTICO": "Atlántico", "BOGOTÁ, D.C.": "Bogotá D.C.", "BOLÍVAR": "Bolívar", "BOYACÁ": "Boyacá",
+    "CALDAS": "Caldas", "CAQUETÁ": "Caquetá", "CASANARE": "Casanare", "CAUCA": "Cauca", "CESAR": "Cesar",
+    "CHOCÓ": "Chocó", "CUNDINAMARCA": "Cundinamarca", "CÓRDOBA": "Córdoba", "GUAINÍA": "Guainía",
+    "GUAVIARE": "Guaviare", "HUILA": "Huila", "LA GUAJIRA": "La Guajira", "MAGDALENA": "Magdalena",
+    "META": "Meta", "NARIÑO": "Nariño", "NORTE DE SANTANDER": "Norte de Santander", "PUTUMAYO": "Putumayo",
+    "QUINDIO": "Quindío", "RISARALDA": "Risaralda", "SANTANDER": "Santander", "SUCRE": "Sucre",
+    "TOLIMA": "Tolima", "VALLE DEL CAUCA": "Valle del Cauca", "VAUPÉS": "Vaupés", "VICHADA": "Vichada",
+}
+
+with urllib.request.urlopen(GEOJSON_URL) as resp:
+    _geo = json.load(resp)
+for _f in _geo["features"]:
+    _f["properties"]["name"] = NAME_MAP[_f["properties"]["DPTO_CNMBR"]]
+
+ALL_DEPT_NAMES = sorted(set(NAME_MAP.values()))
+
+ojs_define(colombia_geo=_geo)
+```
+
+```{python}
+#| echo: false
+def demandas_records(sheet: str, name_fix: dict) -> list[dict]:
+    df = pd.read_csv(sheet_csv_url(sheet))
+    df["departamento"] = df["DEPARTAMENTO"].str.strip().replace(name_fix)
+    df["relacion"] = df["RELACION CON GRD (ALTA, MEDIA, BAJA)"].astype(str).str.strip().str.upper()
+    alta = df[df["relacion"].isin(["ALTA", "ALTO"])]
+
+    counts = alta.groupby("departamento").size()
+    retos = alta.groupby("departamento")["RETO"].apply(lambda s: list(dict.fromkeys(s))[:3])
+
+    return [
+        {
+            "name": n,
+            "count": int(counts.get(n, 0)),
+            "lines": [r[:70] for r in retos.get(n, [])],
+        }
+        for n in ALL_DEPT_NAMES
+    ]
+
+
+# The DEPARTAMENTO cell for San Andrés is truncated at the source; reconstruct it.
+demandas_2022 = demandas_records(
+    "Demandas-Territoriales-2022-24",
+    {"rés, Providencia y Santa": "San Andrés, Providencia y Santa Catalina"},
+)
+# This sheet spells the capital district "Bogotá"; align it with "Bogotá D.C.".
+demandas_2025 = demandas_records("Demandas-Territoriales-2025-26", {"Bogotá": "Bogotá D.C."})
+
+ojs_define(demandas_2022=demandas_2022, demandas_2025=demandas_2025)
+```
+
+```{python}
+#| echo: false
+from collections import Counter, defaultdict
+
+# Reconcile the free-text DEPARTAMENTO column (57 raw variants: accent inconsistencies,
+# city names, faculty/institute names, foreign countries, explicit "no encontrado") with
+# the official DIVIPOLA department names used by the geojson.
+FIX = {
+    "Antioquía": "Antioquia", "Bogotá": "Bogotá D.C.", "Bogotá, D.C.": "Bogotá D.C.",
+    "Bolivar": "Bolívar", "Guajira": "La Guajira", "Medellin": "Antioquia",
+    "Quindio": "Quindío", "San Andrés y Providencia": "San Andrés, Providencia y Santa Catalina",
+}
+# Multi-department credits (e.g. co-authored across two departments) count toward both.
+COMBO = {"Bolívar / Atlántico": ["Bolívar", "Atlántico"]}
+# Foreign countries, generic faculty/institute names, and explicit "unknown" placeholders
+# carry no usable department-level geography and are excluded from the map.
+EXCLUDE = {
+    "#NAME?", "Alemania", "Arabia Saudita", "Argentina", "Cambridge, UK", "Chile",
+    "Colombia / Mexico", "Ecuador", "España", "Francia", "Japon", "Mexico", "México",
+    "N/D", "No aplica", "No encontrado",
+    "CENIGAA (Centro de Investigaciones GeoAgroAmbiental)",
+    "Departamento de Física y Geociencias",
+    "Departamento de Geociencias y Medio Ambiente",
+    "Departamento de Ingeniería Civil / Facultad de Ingeniería",
+    "Escuela de Ciencias e Ingeniería – Programa de Ciencias del Sistema Tierra",
+    "Facultad de Ingeniería", "Observatorio Astronómico Nacional", "Portugal",
+}
+
+_df_vig = pd.read_csv(sheet_csv_url("Vigilancia_CTeI"))
+
+_counts: Counter = Counter()
+_top_temas: defaultdict = defaultdict(Counter)
+for _, row in _df_vig.dropna(subset=["DEPARTAMENTO"]).iterrows():
+    raw = row["DEPARTAMENTO"].strip()
+    depts = COMBO.get(raw)
+    if depts is None:
+        if raw in EXCLUDE:
+            continue
+        depts = [FIX.get(raw, raw)]
+    for d in depts:
+        if d in ALL_DEPT_NAMES:
+            _counts[d] += 1
+            if pd.notna(row["TEMA"]):
+                _top_temas[d][row["TEMA"]] += 1
+
+vigilancia_map_data = [
+    {
+        "name": n,
+        "count": int(_counts.get(n, 0)),
+        "lines": [t for t, _ in _top_temas[n].most_common(3)],
+    }
+    for n in ALL_DEPT_NAMES
+]
+
+ojs_define(vigilancia_map_data=vigilancia_map_data)
+```
+
+# Financiación de la ciencia: Convocatorias nacionales
+
+La financiación de la ciencia de los desastres es creciente. Minciencias y el Sistema General de Regalías constituyen la principal fuente de financiación pública para proyectos de CTeI en gestión del riesgo de desastres en Colombia. Durante el último cuatrienio (2022–2026), Minciencias lanzó 92 convocatorias, de las cuales 41 tuvieron la posibilidad de postular proyectos o capital humano, lo que evidencia una oferta institucional sostenida y diversificada.
+
+En este contexto, la ciencia de los desastres se ha posicionado como una temática relevante en gran parte de las convocatorias disponibles, reflejando una creciente alineación entre la agenda de financiamiento de Minciencias y las prioridades nacionales. Existieron algunas convocatorias que incorporaron líneas temáticas explícitas en gestión del riesgo de desastres (Caja 1), en particular las convocatorias 1045 de 2023, 51 de 2025 y la 52 de 2026 que se dirigen a atender situaciones de emergencia y desastre.
+
+# Demandas territoriales de los bienios 2023-2024 y 2025-2026
+
+Las demandas territoriales son los problemas, las necesidades o las oportunidades que puedan solucionarse mediante la CTeI en los territorios acorde a la Ley 2056 de 2020 (Congreso de Colombia, 2020). Los consejos departamentales de ciencia, tecnología e innovación (CODECTI) generan por bienios las declaraciones de las demandas territoriales, las cuales junto con las líneas temáticas priorizadas por Minciencias determinarán la elegibilidad de proyectos en ciencia de los desastres.
+
+## Bienio 2023-2024
+
+En 27 departamentos presentaron 71 (de 397) declaraciones con alta relación a la GRD en todos los retos 1 al reto 6.
+
+```{ojs}
+//| label: fig-demandas-2022-24
+//| fig-cap: "Número de demandas territoriales del bienio 2023-2024 con relación ALTA a la gestión del riesgo de desastres, por departamento. Pase el cursor sobre cada departamento para ver el detalle de los retos asociados."
+//| echo: false
+choropleth(demandas_2022, colombia_geo, {
+  title: "Demandas territoriales con relación ALTA a GRD, por departamento (bienio 2023-2024)",
+  valueLabel: "demanda(s) ALTA"
+})
+```
+
+## Bienio 2025-2026
+
+Se presentaron 19 declaraciones con alta relación a la GRD en 14 departamentos para los retos 1 "Aprovechar el conocimiento, conservación y uso sostenible de la biodiversidad, bienes y servicios ecosistémicos" y el reto 6 "Asegurar la convergencia regional y el ordenamiento del territorio."
+
+```{ojs}
+//| label: fig-demandas-2025-26
+//| fig-cap: "Número de demandas territoriales del bienio 2025-2026 con relación ALTA a la gestión del riesgo de desastres, por departamento. Pase el cursor sobre cada departamento para ver el detalle de los retos asociados."
+//| echo: false
+choropleth(demandas_2025, colombia_geo, {
+  title: "Demandas territoriales con relación ALTA a GRD, por departamento (bienio 2025-2026)",
+  valueLabel: "demanda(s) ALTA"
+})
+```
+
+# Grupos de investigación
+
+## Instituciones colombianas
+
+```{ojs}
+//| label: fig-top-instituciones
+//| fig-cap: "Instituciones colombianas con mayor producción científica en gestión del riesgo de desastres (top 15), hoja `Vigilancia_CTeI`."
+//| echo: false
+barChartH(countTop(vigilancia, "INSTITUCION COLOMBIANA", 15), {
+  title: "Instituciones colombianas con mayor producción científica en GRD (top 15)",
+  marginLeft: 300, width: 720
+})
+```
+
+## Distribución geográfica por departamento
+
+Producción científica en GRD por departamento de la institución colombiana de afiliación. Pase el cursor sobre cada departamento para ver los temas más frecuentes. Cobertura parcial: el 45% de los registros no tiene institución/departamento identificado, y se excluyeron afiliaciones extranjeras.
+
+```{ojs}
+//| label: fig-mapa-vigilancia
+//| fig-cap: "Producción científica en GRD por departamento de la institución colombiana de afiliación. Pase el cursor sobre cada departamento para ver los temas más frecuentes. Cobertura parcial: el 45% de los registros no tiene institución/departamento identificado, y se excluyeron afiliaciones extranjeras."
+//| echo: false
+choropleth(vigilancia_map_data, colombia_geo, {
+  title: "Producción científica en GRD por departamento de la institución colombiana",
+  valueLabel: "producto(s)"
+})
+```
+
+# Producción científica
+
+## Panorama general
+
+```{ojs}
+//| label: fig-vigilancia-resumen
+//| fig-cap: "Evolución anual de la producción científica por proceso de gestión del riesgo (Conocimiento, Reducción, Manejo) y principales temas de investigación, hoja `Vigilancia_CTeI`."
+//| echo: false
+{
+  const left = stackedBarV(pivotByYearProceso(vigilancia), Object.keys(PROCESO_COLORS), PROCESO_COLORS, {
+    title: "Evolución anual por proceso GRD", width: 400, height: 460
+  });
+  const right = barChartH(countTop(vigilancia, "TEMA", 10), {
+    title: "Top 10 temas de investigación", width: 400, marginLeft: 170
+  });
+  const wrap = document.createElement("div");
+  wrap.style.cssText = "display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;justify-content:center";
+  wrap.append(left, right);
+  return wrap;
+}
+```
+
+## Evolución temporal por proceso
+
+```{ojs}
+//| label: fig-evolucion-temporal
+//| fig-cap: "Producción científica anual clasificada por proceso de gestión del riesgo según la Ley 1523 de 2012 (Conocimiento, Reducción, Manejo)."
+//| echo: false
+stackedBarV(pivotByYearProceso(vigilancia), Object.keys(PROCESO_COLORS), PROCESO_COLORS, {
+  title: "Evolución anual de la producción científica por proceso de gestión del riesgo",
+  width: 720, height: 480
+})
+```
+
+## Principales temas de investigación
+
+```{ojs}
+//| label: fig-top-temas
+//| fig-cap: "Principales temas de investigación en GRD (top 20), hoja `Vigilancia_CTeI`."
+//| echo: false
+barChartH(countTop(vigilancia, "TEMA", 20), {
+  title: "Principales temas de investigación en GRD (top 20)", width: 720
+})
+```
+
+## Principales tipos de productos de nuevo conocimiento
+
+```{ojs}
+//| label: fig-tipo-frecuencia
+//| fig-cap: "Frecuencia de productos de nuevo conocimiento por tipo (artículo científico, artículo de congreso, capítulo de libro, etc.), hoja `Vigilancia_CTeI`."
+//| echo: false
+barChartV(countTop(vigilancia, "TIPO", Infinity, { fillna: "Sin especificar" }), {
+  title: "Frecuencia de productos de vigilancia CTeI por tipo", width: 720, height: 520
+})
+```
+
+## Principales revistas científicas
+
+```{ojs}
+//| label: fig-top-revistas
+//| fig-cap: "Principales revistas y fuentes de publicación (top 15), hoja `Vigilancia_CTeI`."
+//| echo: false
+barChartH(countTop(vigilancia, "FUENTE", 15, { truncate: 45 }), {
+  title: "Principales revistas y fuentes de publicación (top 15)", marginLeft: 280, width: 720
+})
+```
