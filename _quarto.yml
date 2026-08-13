@@ -4,10 +4,32 @@ project:
 manuscript:
   article: index.qmd
 
+lang: es
+
 format:
   html:
+    theme: cosmo
+    toc: true
+    favicon: images/favicon.png
+    css:
+      - custom.css
+    include-in-header:
+      - caption-bold.html
+      - text: |
+          <link rel="icon" type="image/png" href="images/favicon.png">
+    include-before-body:
+      - hub-icon.html
     comments:
-      hypothesis: true
+      giscus:
+        repo: scr-ungrd/estrategia-ciencia-grd
+        repo-id: R_kgDOTYqUWQ
+        category: Announcements
+        category-id: DIC_kwDOTYqUWc4DDGhX
+        mapping: pathname
+        reactions-enabled: true
+        input-position: top
+        theme: light
+        language: es
 
   # docx/jats/pdf disabled: the figures are interactive Observable/D3
   # visualizations (ojs cells), which only execute in the html format.
