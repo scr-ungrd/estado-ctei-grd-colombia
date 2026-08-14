@@ -12,7 +12,7 @@ keywords:
   - ciencia, tecnología e innovación
   - conocimiento del riesgo
 abstract: |
-  Este cuaderno presenta un panorama de la ciencia, tecnología e innovación (CTeI) en gestión del riesgo de desastres (GRD) en Colombia con énfasis para el cuatrienio 2022-2026. Se analizan varias dimensiones: la oferta de financiación de Minciencias y el Sistema General de Regalías; las demandas territoriales declaradas por los Consejos Departamentales de Ciencia, Tecnología e Innovación (CODECTI) para los bienios 2023-2024 y 2025-2026; producción científica en GRD desde 2020, clasificada según los procesos de la Ley 1523 de 2012 (conocimiento, reducción y manejo del riesgo), los postgrados disponibles, y los grupos de investigación. Todas las figuras y tablas pueden replicarse. Consulte el código en el repositorio.
+  Aquí se presenta un panorama de la ciencia, tecnología e innovación (CTeI) en gestión del riesgo de desastres (GRD) en Colombia con énfasis para el cuatrienio 2022-2026. Se analizan varias dimensiones: la oferta de financiación de Minciencias y el Sistema General de Regalías; las demandas territoriales declaradas por los Consejos Departamentales de Ciencia, Tecnología e Innovación (CODECTI) para los bienios 2023-2024 y 2025-2026; producción científica en GRD desde 2020 clasificada según los procesos de la Ley 1523 de 2012 (conocimiento, reducción y manejo del riesgo), los postgrados disponibles en GRD, y los grupos de investigación con alta relación a GRD. Todas las figuras y tablas pueden replicarse. Consulte el código en el repositorio.
 data_availability: |
   Todas las figuras consultan directamente, en el navegador o al renderizar el documento,
   las hojas `Demandas-Territoriales-2022-24`, `Demandas-Territoriales-2025-26` y
@@ -21,6 +21,8 @@ data_availability: |
   así como los límites departamentales del repositorio
   [colombia_mapa](https://github.com/caticoa3/colombia_mapa).
   No se requiere copia local de ningún conjunto de datos.
+title-block-banner: images/banner.png
+title-block-banner-color: white
 engine: jupyter
 jupyter: python3
 ---
@@ -91,7 +93,7 @@ function countTop(rows, column, n = Infinity, { fillna, truncate, dropna = true 
       if (fillna !== undefined) v = fillna;
       else if (dropna) continue;
     }
-    v = String(v).trim();
+    v = String(v).normalize("NFC").trim().replace(/\s+/g, " ");
     if (truncate && v.length > truncate) v = v.slice(0, truncate - 1) + "…";
     counts.set(v, (counts.get(v) || 0) + 1);
   }
@@ -389,7 +391,35 @@ function demandFigure(records, geo, { mapTitle, barTitle, valueLabel = "demanda(
 
 ```{ojs}
 //| echo: false
-vigilancia = d3.csv(sheetCsvUrl("Vigilancia_CTeI"), d3.autoType)
+// Reconcile accent/capitalization variants of the same institution in the free-text
+// "INSTITUCION COLOMBIANA" column (e.g. "sede Bogota" vs "sede Bogotá") so they don't
+// split into separate bars in fig-top-instituciones.
+INSTITUCION_FIX = ({
+  "Universidad de Los Andes": "Universidad de los Andes",
+  "Politecnico Colombiano Jaime Isaza Cadavid": "Politécnico Colombiano Jaime Isaza Cadavid",
+  "Universidad del Atlantico": "Universidad del Atlántico",
+  "Universidad Nacional de Colombia, Sede Manizales": "Universidad Nacional de Colombia, sede Manizales",
+  "Universidad de la Sabana": "Universidad de La Sabana",
+  "Universidad Distrital Francisco Jose de Caldas": "Universidad Distrital Francisco José de Caldas",
+  "Servicio Geologico Colombiano": "Servicio Geológico Colombiano",
+  "Universidad Nacional de Colombia, sede Medellin": "Universidad Nacional de Colombia, sede Medellín",
+  "Universidad Nacional de Colombia, Sede Medellín": "Universidad Nacional de Colombia, sede Medellín",
+  "Universidad Nacional de Colombia, sede Bogota": "Universidad Nacional de Colombia, sede Bogotá",
+  "Universidad de Medellin": "Universidad de Medellín",
+  "Universidad de Ibague": "Universidad de Ibagué",
+  "Universidad Santo Tomas": "Universidad Santo Tomás",
+  "Universidad de la Salle": "Universidad de La Salle",
+  "Universidad de la Guajira": "Universidad de La Guajira",
+  "Fundacion Universitaria Autónoma de las Américas": "Fundación Universitaria Autónoma de las Américas",
+  "Universidad Catolica de Colombia": "Universidad Católica de Colombia",
+})
+
+vigilancia = d3.csv(sheetCsvUrl("Vigilancia_CTeI"), (d) => {
+  const row = d3.autoType(d);
+  const inst = (row["INSTITUCION COLOMBIANA"] ?? "").trim().replace(/\s+/g, " ");
+  row["INSTITUCION COLOMBIANA"] = INSTITUCION_FIX[inst] ?? inst;
+  return row;
+})
 ```
 
 ```{python}
@@ -519,13 +549,13 @@ vigilancia_map_data = [
 ojs_define(vigilancia_map_data=vigilancia_map_data)
 ```
 
-## Financiación de la ciencia de los desastres en convocatorias nacionales
+# Financiación de la ciencia de los desastres en convocatorias nacionales
 
 La financiación de la ciencia de los desastres es creciente. Minciencias y el Sistema General de Regalías constituyen la principal fuente de financiación pública para proyectos de CTeI en gestión del riesgo de desastres en Colombia. Durante el último cuatrienio (2022–2026), Minciencias lanzó 92 convocatorias, de las cuales 41 tuvieron la posibilidad de postular proyectos o capital humano, lo que evidencia una oferta institucional sostenida y diversificada.
 
 En este contexto, la ciencia de los desastres se ha posicionado como una temática relevante en gran parte de las convocatorias disponibles, reflejando una creciente alineación entre la agenda de financiamiento de Minciencias y las prioridades nacionales. Existieron algunas convocatorias que incorporaron líneas temáticas explícitas en gestión del riesgo de desastres (Caja 1), en particular las convocatorias 1045 de 2023, 51 de 2025 y la 52 de 2026 que se dirigen a atender situaciones de emergencia y desastre.
 
-Las principales convocatorias de ciencia y tecnología lanzadas por Minciencias entre 2022 y 2026 (<https://minciencias.gov.co/convocatorias>).
+Las principales convocatorias de ciencia y tecnología lanzadas por Minciencias entre 2022 y 2026 (<https://minciencias.gov.co/convocatorias>) fueron:
 
 - [1045 de 2023](https://minciencias.gov.co/convocatorias/invitacion-para-presentacion-propuestas/invitacion-presentar-propuestas-para-el-2). Conocimiento para la transformación y agregación de valor de la cadena láctea en los departamentos de Cauca, Nariño y Putumayo. Recursos por \$5.472.000.000
 - [37 de 2024.](https://minciencias.gov.co/convocatorias/plan-convocatorias-asctei-2023-2024/convocatoria-no-37-macroproyectos-nacionales) Convocatoria de la Asignación para la Ciencia, Tecnología e Innovación del Sistema General de Regalías para la Conformación de un Listado de Macroproyectos Nacionales Elegibles. Recursos por \$500.000.000.000
@@ -536,11 +566,11 @@ Las principales convocatorias de ciencia y tecnología lanzadas por Minciencias 
 
 En el cuaderno anexo encontrará una tabla con las convocatorias nacionales ([haga clic aquí](#fig-financiacion-nal-tabla)).
 
-## Demandas territoriales de los bienios 2023-2024 y 2025-2026
+# Demandas territoriales de los bienios 2023-2024 y 2025-2026
 
 Las demandas territoriales son los problemas, las necesidades o las oportunidades que puedan solucionarse mediante la CTeI en los territorios acorde a la Ley 2056 de 2020 (Congreso de Colombia, 2020). Los consejos departamentales de ciencia, tecnología e innovación (CODECTI) generan por bienios las declaraciones de las demandas territoriales, las cuales junto con las líneas temáticas priorizadas por Minciencias determinarán la elegibilidad de proyectos en ciencia de los desastres.
 
-### Bienio 2023-2024
+## Bienio 2023-2024
 
 En 27 departamentos presentaron 71 (de 397) declaraciones con alta relación a la GRD en todos los retos 1 al reto 6.
 
@@ -554,7 +584,7 @@ demandFigure(demandas_2022, colombia_geo, {
 })
 ```
 
-### Bienio 2025-2026
+## Bienio 2025-2026
 
 Se presentaron 20 declaraciones con alta relación a la GRD en 14 departamentos, concentradas principalmente en el reto 1 "Aprovechar el conocimiento, conservación y uso sostenible de la biodiversidad, bienes y servicios ecosistémicos" (11) y el reto 6 "Asegurar la convergencia regional y el ordenamiento del territorio" (5), además de la categoría "Ambiental" (3) y el reto 2 "Garantizar la soberanía alimentaria y el derecho a la alimentación" (1).
 
@@ -796,11 +826,76 @@ stackedBarV(pivotByYearProceso(vigilancia), Object.keys(PROCESO_COLORS), PROCESO
 })
 ```
 
-### Producción por las principales amenazas
+### Producción científica para las principales amenazas
 
+```{ojs}
+//| label: fig-amenazas-frecuencia
+//| fig-cap: "Frecuencia de la producción de nuevo conocimiento para las principales amenazas."
+//| echo: false
+{
+  const RENAME = {
+    "Tsunami caribe": "Tsunami", "Tsunami pacifico": "Tsunami",
+    "Disturbio geomagnético": "Amenazas extraterrestres",
+    "Riesgos biosanitarios": "Biosanitarios",
+  };
+  const AMENAZAS = new Set([
+    "Amenazas extraterrestres", "Avenidas torrenciales", "Biosanitarios", "Ciclones tropicales",
+    "Covid", "El Niño", "Erosion costera", "Erosion fluvial",
+    "Geoamenzas", "Incendios forestales", "Inundación", "Inundación costera", "Inundación urbana",
+    "Movimientos en masa", "Natech", "Nivel del mar, aumento", "Olas de calor", "Olas de calor marinas",
+    "Riesgo sismico", "Sequia", "Tormentas convectivas", "Tsunami",
+    "Variabilidad climatica", "Volcanes",
+  ]);
+  const rows = vigilancia
+    .map(d => {
+      const tema = (d.TEMA ?? "").trim();
+      return { TEMA: RENAME[tema] ?? tema };
+    })
+    .filter(d => AMENAZAS.has(d.TEMA));
+  return barChartH(countTop(rows, "TEMA"), {
+    title: "Producción por las principales amenazas", marginLeft: 220, width: 720
+  });
+}
+```
 
-### Producción por otros temas 
+### Producción científica por subprocesos y otras temáticas
 
+```{ojs}
+//| label: fig-otros-temas-frecuencia
+//| fig-cap: "Frecuencia de productos de vigilancia CTeI por subproceso u otra temáticas"
+//| echo: false
+{
+  const RENAME = {
+    "Vulnerabilidad física": "Vulnerabilidad",
+    "Vulnerabilidad de ecosistemas costeros": "Vulnerabilidad",
+  };
+  const OTROS_TEMAS = new Set([
+    "Adaptación", "Agricultura", "Animales", "Asentamientos", "Asistencia humanitaria",
+    "Busqueda y rescate", "Calidad del aire", "Cambio climatico", "Cambio climatico, paleoclima",
+    "Educacion", "Evaluación del riesgo", "Comunicacion", "Erosion del suelo", "Geologia",
+    "Gestion del Riesgo, Teoria", "Hidroclimatologia", "Hidrologia", "Historia", "Infraestructura",
+    "Infraestructura resiliente", "Linea base - Oceanos", "Linea base - Rios",
+    "Obras de estabilizacion", "Ordenamiento Territorial", "Percepcion del riesgo",
+    "Protección financiera", "Preparacion y respuesta", "Post-desastre", "Procesos sociales",
+    "Reduccion", "Recuperacion postpandemia", "Residuos solidos", "Resiliencia",
+    "Ciudades resilientes", "Respuesta", "Respuesta humanitaria", "Riesgo financiero",
+    "Salud publica", "Salud Mental", "Sistemas de Alerta Temprana",
+    "Soluciones basadas en la naturaleza", "Tecnologías de teledetección", "Viviendas/albergues",
+    "Vulnerabilidad",
+  ]);
+  const rows = vigilancia
+    .map(d => {
+      const tema = (d.TEMA ?? "").trim();
+      return { TEMA: RENAME[tema] ?? tema };
+    })
+    .filter(d => OTROS_TEMAS.has(d.TEMA));
+  return barChartH(countTop(rows, "TEMA"), {
+    title: "Producción por subprocesos y otras temáticas", marginLeft: 280, width: 720
+  });
+}
+```
+
+Frecuencia de la producción de nuevo conocimiento para subprocesos y otras tematicas de la GRD.
 
 ## Principales tipos de productos de nuevo conocimiento
 
@@ -813,20 +908,20 @@ barChartV(countTop(vigilancia, "TIPO", Infinity, { fillna: "Sin especificar" }),
 })
 ```
 
-## Principales revistas científicas y libros
+## Principales revistas científicas y libros dónde autores colombianos publican
 
 ```{ojs}
 //| label: fig-top-revistas
-//| fig-cap: "Principales revistas y fuentes de publicación (top 15), hoja `Vigilancia_CTeI`."
+//| fig-cap: "Principales revistas y libros de publicación (top 15), hoja `Vigilancia_CTeI`."
 //| echo: false
 barChartH(countTop(vigilancia, "FUENTE", 15, { truncate: 45 }), {
   title: "Principales revistas y fuentes de publicación (top 15)", marginLeft: 280, width: 720
 })
 ```
 
-# Anexo
+# Anexos
 
-## Convocatorias nacionales de financiación
+## Convocatorias nacionales Minciencias
 
 ```{ojs}
 //| echo: false

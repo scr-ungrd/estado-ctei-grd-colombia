@@ -10,6 +10,7 @@ format:
   html:
     theme: cosmo
     toc: true
+    number-sections: true
     favicon: images/favicon.png
     css:
       - custom.css
