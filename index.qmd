@@ -551,11 +551,11 @@ ojs_define(vigilancia_map_data=vigilancia_map_data)
 
 # Financiación de la ciencia de los desastres en convocatorias nacionales
 
-La financiación de la ciencia de los desastres es creciente. Minciencias y el Sistema General de Regalías constituyen la principal fuente de financiación pública para proyectos de CTeI en gestión del riesgo de desastres en Colombia. Durante el último cuatrienio (2022–2026), Minciencias lanzó 92 convocatorias, de las cuales 41 tuvieron la posibilidad de postular proyectos o capital humano, lo que evidencia una oferta institucional sostenida y diversificada.
+La financiación de la ciencia de los desastres es creciente. Minciencias y el Sistema General de Regalías constituyen la principal fuente de financiación pública para proyectos de CTeI en gestión del riesgo de desastres en Colombia. Durante el último cuatrienio (2022–2026), Minciencias (<https://minciencias.gov.co/convocatorias>) lanzó 92 convocatorias, de las cuales 41 tuvieron la posibilidad de postulación de proyectos o capital humano, lo que evidencia una oferta institucional sostenida y diversificada a lo largo del tiempo.
 
-En este contexto, la ciencia de los desastres se ha posicionado como una temática relevante en gran parte de las convocatorias disponibles, reflejando una creciente alineación entre la agenda de financiamiento de Minciencias y las prioridades nacionales. Existieron algunas convocatorias que incorporaron líneas temáticas explícitas en gestión del riesgo de desastres (Caja 1), en particular las convocatorias 1045 de 2023, 51 de 2025 y la 52 de 2026 que se dirigen a atender situaciones de emergencia y desastre.
+En el contexto colombiano, la ciencia de los desastres se ha posicionado como relevante en gran parte de las convocatorias disponibles, reflejando una creciente alineación entre la agenda de financiamiento de Minciencias y las prioridades nacionales. Existieron algunas convocatorias que incorporaron líneas temáticas explícitas en gestión del riesgo de desastres , en particular las convocatorias 1045 de 2023, 51 de 2025 y la 52 de 2026 que se dirigen a atender situaciones de emergencia y desastre.
 
-Las principales convocatorias de ciencia y tecnología lanzadas por Minciencias entre 2022 y 2026 (<https://minciencias.gov.co/convocatorias>) fueron:
+Las principales convocatorias de ciencia y tecnología lanzadas por Minciencias entre 2022 y 2026 fueron:
 
 - [1045 de 2023](https://minciencias.gov.co/convocatorias/invitacion-para-presentacion-propuestas/invitacion-presentar-propuestas-para-el-2). Conocimiento para la transformación y agregación de valor de la cadena láctea en los departamentos de Cauca, Nariño y Putumayo. Recursos por \$5.472.000.000
 - [37 de 2024.](https://minciencias.gov.co/convocatorias/plan-convocatorias-asctei-2023-2024/convocatoria-no-37-macroproyectos-nacionales) Convocatoria de la Asignación para la Ciencia, Tecnología e Innovación del Sistema General de Regalías para la Conformación de un Listado de Macroproyectos Nacionales Elegibles. Recursos por \$500.000.000.000
@@ -895,8 +895,6 @@ stackedBarV(pivotByYearProceso(vigilancia), Object.keys(PROCESO_COLORS), PROCESO
 }
 ```
 
-Frecuencia de la producción de nuevo conocimiento para subprocesos y otras tematicas de la GRD.
-
 ## Principales tipos de productos de nuevo conocimiento
 
 ```{ojs}
@@ -921,7 +919,7 @@ barChartH(countTop(vigilancia, "FUENTE", 15, { truncate: 45 }), {
 
 # Anexos
 
-## Convocatorias nacionales Minciencias
+## Convocatorias nacionales Minciencias 2022-2026
 
 ```{ojs}
 //| echo: false
