@@ -27,8 +27,27 @@ engine: jupyter
 jupyter: python3
 ---
 
+
+
 ```{ojs}
 //| echo: false
+// Este bloque (y el de celdas Python que sigue) va de primeras porque es
+// infraestructura compartida por todo el documento, no contenido narrativo:
+// - Definiciones OJS reutilizables (paleta de colores, tooltip, funciones
+//   genéricas de gráficas como barChartH/countTop/pivotByYearProceso, y la
+//   carga de la hoja Vigilancia_CTeI). En OJS el orden de ejecución se
+//   resuelve por dependencias, no por posición en el documento, así que
+//   técnicamente podrían ir en cualquier parte; se ponen aquí por
+//   legibilidad, para que quien lea el .qmd vea primero "la librería"
+//   antes de verla usada en cada sección.
+// - Celdas Python más abajo: a diferencia de OJS, el motor Jupyter/Python
+//   de Quarto ejecuta las celdas en orden estrictamente secuencial, como
+//   un notebook normal. Esas celdas procesan el geojson de departamentos,
+//   reconcilian nombres DIVIPOLA y arman los datos de demandas
+//   territoriales, entregándolos a OJS vía ojs_define() (colombia_geo,
+//   demandas_2022/demandas_2025, vigilancia_map_data). Como esas variables
+//   se usan en gráficas más adelante, sí necesitan ejecutarse antes en el
+//   documento: aquí el orden real importa.
 SHEET_ID = "1x83kWcmNX5OJ1-aP36_liBzp7iJOz228xAkrAb5-RkE"
 sheetCsvUrl = (sheet) => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheet}`
 
@@ -549,11 +568,11 @@ vigilancia_map_data = [
 ojs_define(vigilancia_map_data=vigilancia_map_data)
 ```
 
-# Financiación de la ciencia de los desastres en convocatorias nacionales
+# Financiación de la ciencia de los desastres en convocatorias nacionales y producción de nuevo conocimiento
 
-La financiación de la ciencia de los desastres es creciente. Minciencias y el Sistema General de Regalías constituyen la principal fuente de financiación pública para proyectos de CTeI en gestión del riesgo de desastres en Colombia. Durante el último cuatrienio (2022–2026), Minciencias (<https://minciencias.gov.co/convocatorias>) lanzó 92 convocatorias, de las cuales 41 tuvieron la posibilidad de postulación de proyectos o capital humano, lo que evidencia una oferta institucional sostenida y diversificada a lo largo del tiempo.
+## Convocatorias nacionales
 
-En el contexto colombiano, la ciencia de los desastres se ha posicionado como relevante en gran parte de las convocatorias disponibles, reflejando una creciente alineación entre la agenda de financiamiento de Minciencias y las prioridades nacionales. Existieron algunas convocatorias que incorporaron líneas temáticas explícitas en gestión del riesgo de desastres , en particular las convocatorias 1045 de 2023, 51 de 2025 y la 52 de 2026 que se dirigen a atender situaciones de emergencia y desastre.
+Convocatorias nacionales. Junto con los vacíos de conocimiento, las necesidades de la sociedad, y el talento humano, la financiación de la ciencia es uno de los motores dinamizadores de la CTeI. Minciencias y el Sistema General de Regalías constituyen la principal fuente de financiación pública para proyectos de CTeI en todas las áreas de conocimiento, incluyendo la GRD en Colombia. Durante el último cuatrienio (2022–2026), Minciencias lanzó 92 convocatorias, de las cuales 41 declaran en sus términos de referencia la posibilidad de postular proyectos o formar capital humano, lo que evidencia una oferta institucional sostenida y diversificada. Así, la ciencia de los desastres se ha posicionado como relevante en gran parte de las convocatorias disponibles, reflejando una creciente alineación entre la agenda de financiamiento de Minciencias y las prioridades nacionales y de los territorios. Existieron seis convocatorias que incorporaron líneas temáticas explícitas en gestión del riesgo de desastres (Caja 3), en particular las convocatorias 1045 de 2023, 51 de 2025 y la 52 de 2026 que se dirigen a atender situaciones de emergencia y desastre. No obstante, para conocer los proyectos en GRD financiados por estas y otras convocatorias, Colombia requiere de un sistema de información que recopile y sistematice los proyectos y sus productos, ya que actualmente se limita la visibilidad del conocimiento producido y su aprovechamiento en todo el país por medio de acciones de transferencia de conocimiento y tecnología.
 
 Las principales convocatorias de ciencia y tecnología lanzadas por Minciencias entre 2022 y 2026 fueron:
 
@@ -565,6 +584,31 @@ Las principales convocatorias de ciencia y tecnología lanzadas por Minciencias 
 - [976 de 2026.](https://minciencias.gov.co/convocatorias/convocatoria-colombia-inteligente-2026) Convocatoria Colombia Inteligente 2026. Recursos por \$24.000.000.000
 
 En el cuaderno anexo encontrará una tabla con las convocatorias nacionales ([haga clic aquí](#fig-financiacion-nal-tabla)).
+
+## Información de financiación en productos de nuevo conocimiento
+
+La mayoría de productos de nuevo conocimiento tuvo financiación (ver definición de nuevo conocimiento en Caja siguiente). Entre 2020 y 2025 se analizó una muestra de 507 productos de nuevo conocimiento, a partir de la cual se extrajo información de financiador de las secciones Agradecimientos o Financiación como si/no declara financiación, nombre de la institución financiadora, y país.  
+Se encontró que el  62,7% (318 de 507) reporta tener financiación de algún tipo, mientras que el 37,3% (189) no declaró financiación. En cuanto a la institución y país de origen de la financiación nacional e internacional, Minciencias constituye la principal fuente de financiación pública para proyectos de CTeI en todas las áreas de conocimiento, incluyendo la GRD en Colombia.
+
+
+```{ojs}
+//| label: fig-financiador-sino
+//| fig-cap: "Productos de nuevo conocimiento que declaran financiador (Sí/No), hoja `Financiacion-CTeI`."
+//| echo: false
+barChartH(countSiNo(financiacionCTeI, "DECLARA_FINANCIADOR"), {
+  title: "Declaración de financiador", marginLeft: 60, width: 400
+})
+```
+
+::: {#box1 .callout-important style="background-color: #e3f0fbff; padding:20px; border: none !important;" appearance="minimal" icon="false"}
+**Caja 1. Definiciones de tipologías de productos de de CTeI acorde con Minciencias empleadas en la medición del estado de la ciencia.** En el Anexo 1 encuentre el detalle de fuente, registro o mecanismo de verificación, indicador, criterio de calidad o clasificación para las tipologías de productos.
+- **Actividades de Ciencia y Tecnología (ACTI):** Son actividades sistemáticas estrechamente relacionadas con la producción, promoción, difusión y aplicación de los conocimientos científicos y técnicos en todos los campos de la ciencia y la tecnología. Incluye I+D, formación científica y tecnológica, servicios científicos y tecnológicos, administración y otras actividades de apoyo para CTeI y actividades conducentes a la innovación.
+- **Generación de nuevo conocimiento:** Productos que aportan nuevo conocimiento al estado del arte de un área científica, tecnológica o de investigación-creación. Constituyen resultados originales derivados de procesos de investigación. **Principales tipos de productos:** Artículos de investigación, libros resultado de investigación, capítulos de libro resultado de investigación, productos de investigación-creación, patentes, variedades vegetales o animales, entre otros.
+- **Desarrollo tecnológico e innovación:** Productos derivados de procesos de investigación, desarrollo tecnológico o innovación orientados a la generación de soluciones, métodos, herramientas, productos, procesos o servicios que atienden necesidades o problemas específicos y pueden generar transformaciones o impactos. **Principales tipos de productos:** Productos tecnológicos, software, prototipos, diseños industriales, plantas piloto, procesos o procedimientos, innovaciones de producto/proceso/servicio, empresas de base tecnológica, entre otros.
+- **Apropiación social del conocimiento:** Procesos y productos mediante los cuales el conocimiento científico, tecnológico y de innovación es intercambiado, comprendido, utilizado y apropiado por diferentes actores sociales, promoviendo su participación y transformación de realidades. **Principales tipos de productos:** Procesos de apropiación social, estrategias pedagógicas, eventos científicos de apropiación, contenidos de divulgación, circulación de conocimiento especializado, participación ciudadana en CTeI, entre otros.
+- **Formación de recurso humano para CTeI:** Productos asociados con la formación de capacidades y talento humano para la investigación, el desarrollo tecnológico y la innovación, mediante procesos de formación académica y científica. **Principales tipos de productos:** Tesis de doctorado y maestría, trabajos de grado, proyectos de investigación de estudiantes, formación de investigadores, dirección de trabajos de grado, entre otros.
+
+:::
 
 # Demandas territoriales de los bienios 2023-2024 y 2025-2026
 
@@ -598,7 +642,7 @@ demandFigure(demandas_2025, colombia_geo, {
 })
 ```
 
-## Grupos de investigación
+# Grupos de investigación
 
 Grupos de investigación colombianos con relación a la gestión del riesgo de desastres, reconocidos y clasificados por Minciencias, según la hoja `Grupos_investigación` del libro de datos "20260611_BD_Capacidades_GRD_CTeI_colombia". Use el buscador y el filtro de categoría para explorar los grupos, y haga clic en un encabezado de columna para ordenar la tabla.
 
@@ -787,9 +831,9 @@ grupos = {
 }
 ```
 
-## Producción científica de Colombia en GRD
+# Producción científica de Colombia en GRD
 
-### Producción científica por instituciones
+## Producción científica por instituciones
 
 ```{ojs}
 //| label: fig-top-instituciones
@@ -801,7 +845,7 @@ barChartH(countTop(vigilancia.filter(d => d["AÑO"] >= 2022 && d["AÑO"] <= 2025
 })
 ```
 
-### Producción científica por departamento
+## Producción científica por departamento
 
 Producción científica en GRD por departamento de la institución colombiana de afiliación, ranking descendente. Cobertura parcial: el 14% de los registros no tiene departamento de la institución colombiana identificado, y se excluyeron afiliaciones extranjeras.
 
@@ -815,7 +859,9 @@ rankBarChart(vigilancia_map_data, {
 })
 ```
 
-### Producción científica por procesos de la gestión del riesgo de desastres
+## Producción científica por procesos de la gestión del riesgo de desastres
+
+En el periodo 2020-2026, la distribución anual de la producción científica en GRD según el proceso de la gestión del riesgo (conocimiento del riesgo, reducción del riesgo y manejo de desastres), el proceso de conocimiento del riesgo concentra el 77,4% de la producción (671 de 867 productos clasificados), seguido por reducción del riesgo con 16,5% (143) y manejo del riesgo con 6,1% (53).
 
 ```{ojs}
 //| label: fig-vigilancia-resumen
@@ -826,7 +872,9 @@ stackedBarV(pivotByYearProceso(vigilancia), Object.keys(PROCESO_COLORS), PROCESO
 })
 ```
 
-### Producción científica para las principales amenazas
+## Producción científica para las principales amenazas
+
+Frecuencia de la producción científica en GRD por tipo de amenaza (n = 554 productos con amenaza identificada). El riesgo sísmico concentra el 30,5% de la producción (169 productos), seguido por movimientos en masa con 17,3% (96) e inundación con 8,1% (45); el resto de amenazas registran individualmente menos del 7% cada una.
 
 ```{ojs}
 //| label: fig-amenazas-frecuencia
@@ -858,7 +906,7 @@ stackedBarV(pivotByYearProceso(vigilancia), Object.keys(PROCESO_COLORS), PROCESO
 }
 ```
 
-### Producción científica por subprocesos y otras temáticas
+## Producción científica por subprocesos y otras temáticas
 
 ```{ojs}
 //| label: fig-otros-temas-frecuencia
@@ -915,6 +963,41 @@ barChartV(countTop(vigilancia, "TIPO", Infinity, { fillna: "Sin especificar" }),
 barChartH(countTop(vigilancia, "FUENTE", 15, { truncate: 45 }), {
   title: "Principales revistas y fuentes de publicación (top 15)", marginLeft: 280, width: 720
 })
+```
+
+## Ciencia y datos abiertos
+
+Las prácticas de ciencia abierta siguen siendo bajas en la producción de nuevo conocimiento en GRD. Sobre una muestra de 482 productos con dato declarado, solo el 10,4% (50) reporta haber puesto sus datos a disposición en acceso abierto, frente a un 89,6% (432) que no lo hace. De estos últimos, el 8,3% (36) declara algún acceso alternativo a los datos, por ejemplo bajo solicitud. La publicación de código abierto es igual de infrecuente; solo el 7,3% de los productos (35 de 480) la reporta.
+
+```{ojs}
+//| echo: false
+financiacionCTeI = d3.csv(sheetCsvUrl("Financiacion-CTeI"), d3.autoType)
+
+function countSiNo(rows, column) {
+  const counts = new Map([["Sí", 0], ["No", 0]]);
+  for (const row of rows) {
+    const v = (row[column] ?? "").toString().trim().toLowerCase();
+    if (v === "si") counts.set("Sí", counts.get("Sí") + 1);
+    else if (v === "no") counts.set("No", counts.get("No") + 1);
+  }
+  return Array.from(counts, ([label, value]) => ({ label, value }));
+}
+```
+
+```{ojs}
+//| label: fig-ciencia-abierta
+//| fig-cap: "Proporción de productos que declaran datos abiertos y código abierto, hoja `Financiacion-CTeI`."
+//| echo: false
+{
+  const opts = { marginLeft: 40, width: 230 };
+  const wrap = document.createElement("div");
+  wrap.style.cssText = "display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;overflow-x:auto";
+  wrap.append(
+    barChartH(countSiNo(financiacionCTeI, "DATOS_ABIERTOS"), { title: "Datos abiertos", ...opts }),
+    barChartH(countSiNo(financiacionCTeI, "CODIGO_ABIERTO"), { title: "Código abierto", ...opts })
+  );
+  return wrap;
+}
 ```
 
 # Anexos
