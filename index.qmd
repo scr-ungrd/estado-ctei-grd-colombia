@@ -27,8 +27,6 @@ engine: jupyter
 jupyter: python3
 ---
 
-
-
 ```{ojs}
 //| echo: false
 // Este bloque (y el de celdas Python que sigue) va de primeras porque es
@@ -587,9 +585,8 @@ En el cuaderno anexo encontrará una tabla con las convocatorias nacionales ([ha
 
 ## Información de financiación en productos de nuevo conocimiento
 
-La mayoría de productos de nuevo conocimiento tuvo financiación (ver definición de nuevo conocimiento en Caja siguiente). Entre 2020 y 2025 se analizó una muestra de 507 productos de nuevo conocimiento, a partir de la cual se extrajo información de financiador de las secciones Agradecimientos o Financiación como si/no declara financiación, nombre de la institución financiadora, y país.  
-Se encontró que el  62,7% (318 de 507) reporta tener financiación de algún tipo, mientras que el 37,3% (189) no declaró financiación. En cuanto a la institución y país de origen de la financiación nacional e internacional, Minciencias constituye la principal fuente de financiación pública para proyectos de CTeI en todas las áreas de conocimiento, incluyendo la GRD en Colombia.
-
+La mayoría de productos de nuevo conocimiento tuvo financiación (ver definición de nuevo conocimiento en Caja siguiente). Entre 2020 y 2025 se analizó una muestra de 507 productos de nuevo conocimiento, a partir de la cual se extrajo información de financiador de las secciones Agradecimientos o Financiación como si/no declara financiación, nombre de la institución financiadora, y país.\
+La mayoría de productos de nuevo conocimiento tuvo financiación. Se encontró que el 62,7% (318 de 507) reporta tener financiación de algún tipo, mientras que el 37,3% (189) no declaró financiación. En cuanto a la institución y país de origen de la financiación nacional e internacional, Minciencias constituye la principal fuente de financiación pública para proyectos de CTeI en todas las áreas de conocimiento, incluyendo la GRD en Colombia financiando el 12.73% (41 de 222) de los productos.
 
 ```{ojs}
 //| label: fig-financiador-sino
@@ -602,12 +599,14 @@ barChartH(countSiNo(financiacionCTeI, "DECLARA_FINANCIADOR"), {
 
 ::: {#box1 .callout-important style="background-color: #e3f0fbff; padding:20px; border: none !important;" appearance="minimal" icon="false"}
 **Caja 1. Definiciones de tipologías de productos de de CTeI acorde con Minciencias empleadas en la medición del estado de la ciencia.** En el Anexo 1 encuentre el detalle de fuente, registro o mecanismo de verificación, indicador, criterio de calidad o clasificación para las tipologías de productos.
-- **Actividades de Ciencia y Tecnología (ACTI):** Son actividades sistemáticas estrechamente relacionadas con la producción, promoción, difusión y aplicación de los conocimientos científicos y técnicos en todos los campos de la ciencia y la tecnología. Incluye I+D, formación científica y tecnológica, servicios científicos y tecnológicos, administración y otras actividades de apoyo para CTeI y actividades conducentes a la innovación.
-- **Generación de nuevo conocimiento:** Productos que aportan nuevo conocimiento al estado del arte de un área científica, tecnológica o de investigación-creación. Constituyen resultados originales derivados de procesos de investigación. **Principales tipos de productos:** Artículos de investigación, libros resultado de investigación, capítulos de libro resultado de investigación, productos de investigación-creación, patentes, variedades vegetales o animales, entre otros.
-- **Desarrollo tecnológico e innovación:** Productos derivados de procesos de investigación, desarrollo tecnológico o innovación orientados a la generación de soluciones, métodos, herramientas, productos, procesos o servicios que atienden necesidades o problemas específicos y pueden generar transformaciones o impactos. **Principales tipos de productos:** Productos tecnológicos, software, prototipos, diseños industriales, plantas piloto, procesos o procedimientos, innovaciones de producto/proceso/servicio, empresas de base tecnológica, entre otros.
-- **Apropiación social del conocimiento:** Procesos y productos mediante los cuales el conocimiento científico, tecnológico y de innovación es intercambiado, comprendido, utilizado y apropiado por diferentes actores sociales, promoviendo su participación y transformación de realidades. **Principales tipos de productos:** Procesos de apropiación social, estrategias pedagógicas, eventos científicos de apropiación, contenidos de divulgación, circulación de conocimiento especializado, participación ciudadana en CTeI, entre otros.
-- **Formación de recurso humano para CTeI:** Productos asociados con la formación de capacidades y talento humano para la investigación, el desarrollo tecnológico y la innovación, mediante procesos de formación académica y científica. **Principales tipos de productos:** Tesis de doctorado y maestría, trabajos de grado, proyectos de investigación de estudiantes, formación de investigadores, dirección de trabajos de grado, entre otros.
 
+- **Actividades de Ciencia y Tecnología (ACTI):** Son actividades sistemáticas estrechamente relacionadas con la producción, promoción, difusión y aplicación de los conocimientos científicos y técnicos en todos los campos de la ciencia y la tecnología. Incluye I+D, formación científica y tecnológica, servicios científicos y tecnológicos, administración y otras actividades de apoyo para CTeI y actividades conducentes a la innovación. - **Generación de nuevo conocimiento:** Productos que aportan nuevo conocimiento al estado del arte de un área científica, tecnológica o de investigación-creación. Constituyen resultados originales derivados de procesos de investigación. **Principales tipos de productos:** Artículos de investigación, libros resultado de investigación, capítulos de libro resultado de investigación, productos de investigación-creación, patentes, variedades vegetales o animales, entre otros.
+
+- **Desarrollo tecnológico e innovación:** Productos derivados de procesos de investigación, desarrollo tecnológico o innovación orientados a la generación de soluciones, métodos, herramientas, productos, procesos o servicios que atienden necesidades o problemas específicos y pueden generar transformaciones o impactos. **Principales tipos de productos:** Productos tecnológicos, software, prototipos, diseños industriales, plantas piloto, procesos o procedimientos, innovaciones de producto/proceso/servicio, empresas de base tecnológica, entre otros.
+
+- **Apropiación social del conocimiento:** Procesos y productos mediante los cuales el conocimiento científico, tecnológico y de innovación es intercambiado, comprendido, utilizado y apropiado por diferentes actores sociales, promoviendo su participación y transformación de realidades. **Principales tipos de productos:** Procesos de apropiación social, estrategias pedagógicas, eventos científicos de apropiación, contenidos de divulgación, circulación de conocimiento especializado, participación ciudadana en CTeI, entre otros.
+
+- **Formación de recurso humano para CTeI:** Productos asociados con la formación de capacidades y talento humano para la investigación, el desarrollo tecnológico y la innovación, mediante procesos de formación académica y científica. **Principales tipos de productos:** Tesis de doctorado y maestría, trabajos de grado, proyectos de investigación de estudiantes, formación de investigadores, dirección de trabajos de grado, entre otros.
 :::
 
 # Demandas territoriales de los bienios 2023-2024 y 2025-2026
