@@ -581,10 +581,10 @@ Las principales convocatorias de ciencia y tecnología lanzadas por Minciencias 
 - [52 de 2026](https://minciencias.gov.co/convocatorias/plan-convocatorias-asctei-2025-2026/fortalecimiento-capacidades-territoriales-en). Convocatoria para el Fortalecimiento de Capacidades Territoriales en Situaciones de Emergencia. Recursos por  \$100.000.000.000
 - [976 de 2026.](https://minciencias.gov.co/convocatorias/convocatoria-colombia-inteligente-2026) Convocatoria Colombia Inteligente 2026. Recursos por \$24.000.000.000
 
-## Información de financiación en productos de nuevo conocimiento
+## Información de financiación nacional e internacional en productos de nuevo conocimiento
 
-La mayoría de productos de nuevo conocimiento tuvo financiación (ver definición de nuevo conocimiento en Caja siguiente). Entre 2020 y 2025 se analizó una muestra de 507 productos de nuevo conocimiento, a partir de la cual se extrajo información de financiador de las secciones Agradecimientos o Financiación como si/no declara financiación, nombre de la institución financiadora, y país.\
-La mayoría de productos de nuevo conocimiento tuvo financiación. Se encontró que el 62,7% (318 de 507) reporta tener financiación de algún tipo, mientras que el 37,3% (189) no declaró financiación. En cuanto a la institución y país de origen de la financiación nacional e internacional, Minciencias constituye la principal fuente de financiación pública para proyectos de CTeI en todas las áreas de conocimiento, incluyendo la GRD en Colombia financiando el 12.73% (41 de 222) de los productos.
+La mayoría de productos de nuevo conocimiento tuvo financiación (ver definición de nuevo conocimiento en Caja siguiente). Entre 2020 y 2025 se analizó una muestra de 513 productos de nuevo conocimiento, a partir de la cual se extrajo información de financiador de las secciones Agradecimientos o Financiación como si/no declara financiación, nombre de la institución financiadora, y país.\
+La mayoría de productos de nuevo conocimiento tuvo financiación. Se encontró que el 62,6% (321 de 513) reporta tener financiación de algún tipo, mientras que el 37,4% (192) no declaró financiación (@fig-recibe-financiacion-si-no). 
 
 ```{ojs}
 //| label: fig-financiador-sino
@@ -594,6 +594,43 @@ barChartH(countSiNo(financiacionCTeI, "DECLARA_FINANCIADOR"), {
   title: "Declaración de financiador", marginLeft: 60, width: 400
 })
 ```
+
+```{ojs}
+//| label: fig-recibe-financiacion-si-no
+//| echo: false
+function siYNacInt(rows, tipo) {
+  return rows.filter(d =>
+    (d.DECLARA_FINANCIADOR ?? "").toString().trim().toLowerCase() === "si" &&
+    (d.FINANCIADOR_NAL_O_INTERNAL ?? "").toString().trim().toLowerCase() === tipo
+  );
+}
+```
+
+En cuanto a la institución y país de origen de la financiación nacional e internacional, Minciencias constituye la principal fuente de financiación pública para proyectos de CTeI en todas las áreas de conocimiento, incluyendo la GRD en Colombia financiando el 12,8% (41 de 321) de los productos con financiación declarada, siendo el principal financiador nacional (@fig-financiador-nacional-top10). 
+
+```{ojs}
+//| label: fig-financiador-nacional-top10
+//| fig-cap: "Principales fuentes de financiación nacionales de productos de conocimiento (top 10), hoja `Financiacion-CTeI`."
+//| echo: false
+barChartH(
+  countTop(siYNacInt(financiacionCTeI, "nacional"), "FINANCIADOR", 10, { truncate: 45 }),
+  { title: "Principales financiadores nacionales (top 10)", marginLeft: 280, width: 720 }
+)
+```
+
+A nivel internacional las fuentes de financiación fueron: Japan Society for the Promotion of Science; Ministry of Education, Culture, Sports, Science, and Technology of Japan; y UKRI’s Global Challenge Research Fund (@fig-financiador-internacional-top10).
+
+```{ojs}
+//| label: fig-financiador-internacional-top10
+//| fig-cap: "Principales fuentes de financiacion internacional de productos de conocimiento (top 10), hoja `Financiacion-CTeI`."
+//| echo: false
+barChartH(
+  countTop(siYNacInt(financiacionCTeI, "internacional"), "FINANCIADOR", 10, { truncate: 45 }),
+  { title: "Principales financiadores internacionales (top 10)", marginLeft: 280, width: 720 }
+)
+```
+
+
 
 ::: {#box1 .callout-important style="background-color: #e3f0fbff; padding:20px; border: none !important;" appearance="minimal" icon="false"}
 **Caja 1. Definiciones de tipologías de productos de de CTeI acorde con Minciencias empleadas en la medición del estado de la ciencia.** En el Anexo 1 encuentre el detalle de fuente, registro o mecanismo de verificación, indicador, criterio de calidad o clasificación para las tipologías de productos.
@@ -957,11 +994,12 @@ barChartV(countTop(vigilancia, "TIPO", Infinity, { fillna: "Sin especificar" }),
 
 ```{ojs}
 //| label: fig-top-revistas
-//| fig-cap: "Principales revistas y libros de publicación (top 15), hoja `Vigilancia_CTeI`."
+//| fig-cap: "Principales revistas científicas de publicación (top 15, tipo `Articulo_cientifico`), hoja `Vigilancia_CTeI`."
 //| echo: false
-barChartH(countTop(vigilancia, "FUENTE", 15, { truncate: 45 }), {
-  title: "Principales revistas y fuentes de publicación (top 15)", marginLeft: 280, width: 720
-})
+barChartH(
+  countTop(vigilancia.filter(d => d.TIPO === "Articulo_cientifico"), "FUENTE", 15, { truncate: 45 }),
+  { title: "Principales revistas científicas (top 15)", marginLeft: 280, width: 720 }
+)
 ```
 
 ## Ciencia y datos abiertos
