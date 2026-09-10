@@ -429,6 +429,7 @@ INSTITUCION_FIX = ({
   "Universidad de la Guajira": "Universidad de La Guajira",
   "Fundacion Universitaria Autónoma de las Américas": "Fundación Universitaria Autónoma de las Américas",
   "Universidad Catolica de Colombia": "Universidad Católica de Colombia",
+  "Instituto de Investigaciones Marinas y Costeras (INVEMAR)": "Instituto de Investigaciones Marinas y Costeras (Invemar)",
 })
 
 vigilancia = d3.csv(sheetCsvUrl("Vigilancia_CTeI"), (d) => {
@@ -537,7 +538,7 @@ EXCLUDE = {
     "Facultad de Ingeniería", "Observatorio Astronómico Nacional", "Portugal",
 }
 
-_df_vig = pd.read_csv(sheet_csv_url("Vigilancia_CTeI"))
+_df_vig = pd.read_csv(sheet_csv_url("Vigilancia_CTeI")).dropna(subset=["ID"])
 
 _counts: Counter = Counter()
 _top_temas: defaultdict = defaultdict(Counter)
@@ -566,13 +567,41 @@ vigilancia_map_data = [
 ojs_define(vigilancia_map_data=vigilancia_map_data)
 ```
 
+Para monitorear la implementación de la CTeI en el Marco de Sendai, el monitoreo del progreso en las 58 acciones de la Hoja de Ruta de Ciencia y Tecnología constituye un referente para determinar el estado de la ciencia y la tecnología en GRD en los países. Una evaluación del estado de la CTeI es un diagnóstico sistemático y periódico de las capacidades científicas, tecnológicas e institucionales. También de la producción, disponibilidad y aplicación del conocimiento, la innovación, la articulación entre ciencia, política y sociedad y las brechas que limitan la generación y utilización de evidencia, herramientas y soluciones para comprender, anticipar, prevenir y reducir el riesgo de desastres (UNDRR, 2016, 2022, 2024).
+
+Colombia no ha realizado evaluaciones sistemáticas del estado de la CTeI en GRD. Realizarlas constituye un instrumento de inteligencia estratégica para el SNGRD al analizar sus capacidades e infraestructuras, la pertinencia y aplicación del conocimiento frente a las necesidades de la gestión del riesgo, así como sus procesos de adopción, transferencia, articulación e implementación territorial. De esta manera, sus resultados pueden orientar las decisiones de inversión, coordinación institucional, fortalecimiento de capacidades y formulación de agendas de investigación, innovación, desarrollo tecnológico y política científica. 
+
+La evolución de las evaluaciones promovidas por UNDRR han transitado del análisis de la producción de conocimiento e inventario de capacidades hacia la consideración de su aplicación, innovación, gobernanza, capacidades, localización y articulación con otros actores y sectores (UNDRR, 2020, 2022, 2024).
+
+Esta sección presenta la primera evaluación nacional del estado de la CTeI de los desastres a través de cuatro dimensiones: 
+
+1.  **Financiación de la ciencia y la tecnología**
+    1.  **Financiación de la ciencia en convocatorias nacionales.**
+    2.  **Demandas territoriales para el Sistema General de Regalías.**
+2.  **Capacidades en ciencia y la tecnología**
+    1.  **Inventario de los institutos y grupos de investigación en el país.**
+    2.  **Inventario de postgrados en GRD.**
+3.  **Producción científica colombiana en GRD**
+    1.  **Tamaño de la producción científica por temáticas, departamentos y afiliaciones.**
+    2.  **Ciencia abierta.**
+    3.  **Producción de tecnologías en el país.**
+4.  **Transferencia de ciencia y tecnología, e impacto local**
+    1.  **Impacto de proyectos de CTeI en el MEGIR.**
+
+Esta evaluación tiene una correspondencia directa o parcial en 15–18 acciones de la Hoja de Ruta de Ciencia y Tecnología (**Anexo 1**). Sin embargo, no identifica los nuevos problemas o tendencias científicas y tecnológicas que están cambiando en GRD, lo cual se abordará en la actualización del documento de líneas de investigación en GRD. Por favor consulte la metodología de la evaluación del estado en cada sección y en la sección de Anexos.
+
 # Financiación de la ciencia de los desastres en convocatorias nacionales y producción de nuevo conocimiento
 
-## Convocatorias nacionales
+**Convocatorias nacionales de CTeI.** Junto con los vacíos de conocimiento, las necesidades de la sociedad, y el talento humano, la financiación es uno de los motores dinamizadores de la CTeI. En Colombia está bien establecido que Minciencias y el Sistema General de Regalías constituyen la principal fuente de financiación pública para proyectos de CTeI en todas las áreas de conocimiento, incluyendo la GRD. A continuación se analiza la participación de la GRD en las convocatorias Minciencias.
 
-**Convocatorias nacionales.** Junto con los vacíos de conocimiento, las necesidades de la sociedad, y el talento humano, la financiación de la ciencia es uno de los motores dinamizadores de la CTeI. Minciencias y el Sistema General de Regalías constituyen la principal fuente de financiación pública para proyectos de CTeI en todas las áreas de conocimiento, incluyendo la GRD en Colombia. Durante el último cuatrienio (2022–2026), Minciencias lanzó 92 convocatorias, de las cuales 41 declaran en sus términos de referencia la posibilidad de postular proyectos o formar capital humano, lo que evidencia una oferta institucional sostenida y diversificada. Así, la ciencia de los desastres se ha posicionado como relevante en gran parte de las convocatorias disponibles, reflejando una creciente alineación entre la agenda de financiamiento de Minciencias y las prioridades nacionales y de los territorios. Existieron seis convocatorias que incorporaron líneas temáticas explícitas en gestión del riesgo de desastres (Caja 3), en particular las convocatorias 1045 de 2023, 51 de 2025 y la 52 de 2026 que se dirigen a atender situaciones de emergencia y desastre. No obstante, para conocer los proyectos en GRD financiados por estas y otras convocatorias, Colombia requiere de un sistema de información que recopile y sistematice los proyectos y sus productos, ya que actualmente se limita la visibilidad del conocimiento producido y su aprovechamiento en todo el país por medio de acciones de transferencia de conocimiento y tecnología.
+Durante el último cuatrienio (2022–2026), Minciencias lanzó 92 convocatorias, de las cuales 41 declaran en sus términos de referencia la posibilidad de postular proyectos o formar capital humano en temáticas asociadas a la GRD, lo que evidencia una oferta de financiación sostenida en el tiempo y diversificada hacia todas las áreas de conocimiento en GRD, no solo las ingenierías. Así, la ciencia de los desastres se ha posicionado como relevante en gran parte de las convocatorias disponibles, reflejando una creciente alineación entre la agenda de financiamiento de Minciencias y las prioridades nacionales y de los territorios. 
 
-Las principales convocatorias de ciencia y tecnología lanzadas por Minciencias entre 2022 y 2026 fueron:
+Entre 2022 y 2026 existieron seis convocatorias que incorporaron líneas temáticas explícitas en gestión del riesgo de desastres (**Caja 1**), en particular las convocatorias 1045 de 2023, 51 de 2025 y la 52 de 2026 que se dirigen a atender situaciones de emergencia y desastre. 
+
+No obstante, para tener la capacidad de monitorear la inversión en ciencia y tecnología en GRD como lo recomienda la Hoja de Ruta en Ciencia y Tecnología (3.1.2 y 3.1.3), se requiere conocer los proyectos relacionados con GRD financiados por las convocatorias (i.e. financiación disponible y movilizada) por medio de un sistema de información que sistematice los proyectos y sus productos. Actualmente ScienTI posee una limitada capacidad de consulta del conocimiento producido por los proyectos financiados en el país, aspecto que además limita su aprovechamiento por medio de acciones de transferencia de conocimiento y tecnología.
+
+::: {#box-convocatorias .callout-important style="background-color: #e3f0fbff; padding:20px; border: none !important;" appearance="minimal" icon="false"}
+**Caja 1. Las principales convocatorias de ciencia y tecnología lanzadas por Minciencias entre 2022 y 2026.**
 
 - [1045 de 2023](https://minciencias.gov.co/convocatorias/invitacion-para-presentacion-propuestas/invitacion-presentar-propuestas-para-el-2). Conocimiento para la transformación y agregación de valor de la cadena láctea en los departamentos de Cauca, Nariño y Putumayo. Recursos por \$5.472.000.000
 - [37 de 2024.](https://minciencias.gov.co/convocatorias/plan-convocatorias-asctei-2023-2024/convocatoria-no-37-macroproyectos-nacionales) Convocatoria de la Asignación para la Ciencia, Tecnología e Innovación del Sistema General de Regalías para la Conformación de un Listado de Macroproyectos Nacionales Elegibles. Recursos por \$500.000.000.000
@@ -580,11 +609,21 @@ Las principales convocatorias de ciencia y tecnología lanzadas por Minciencias 
 - [48 de 2026](https://minciencias.gov.co/convocatorias/plan-convocatorias-asctei-2025-2026/convocatoria-la-asignacion-para-la-ciencia). Convocatoria de la Asignación para la Ciencia, Tecnología e Innovación del Sistema General de Regalías (SGR) para Proveer Soluciones de Ciencia, Tecnología e Innovación para el Aprovechamiento Sostenible de la Biodiversidad, la Productividad y el Fortalecimiento Territorial. Recursos por \$749.982.430.291
 - [52 de 2026](https://minciencias.gov.co/convocatorias/plan-convocatorias-asctei-2025-2026/fortalecimiento-capacidades-territoriales-en). Convocatoria para el Fortalecimiento de Capacidades Territoriales en Situaciones de Emergencia. Recursos por  \$100.000.000.000
 - [976 de 2026.](https://minciencias.gov.co/convocatorias/convocatoria-colombia-inteligente-2026) Convocatoria Colombia Inteligente 2026. Recursos por \$24.000.000.000
+:::
 
-## Información de financiación nacional e internacional en productos de nuevo conocimiento
+Información de financiación nacional e internacional en productos de conocimiento. Esta medición considera  principalmente productos de conocimiento (ver definición de conocimiento en Caja 5 y tipologías de productos en Anexo 3). Entre 2020 y 2025 se analizó una muestra de 507 productos de nuevo conocimiento, a partir de la cual se extrajo información de financiador de las secciones Agradecimientos o Financiación (Anexo 4). Este análisis establece la presencia o ausencia de financiación, más no su monto.  
+La mayoría de productos de nuevo conocimiento tuvo financiación  (@fig-recibe-financiacion-si-no). Se encontró que el 62,6% (321 de 513) reporta tener financiación de algún tipo, mientras que el 37,4% (192) no declaró financiación. 
 
-La mayoría de productos de nuevo conocimiento tuvo financiación (ver definición de nuevo conocimiento en Caja siguiente). Entre 2020 y 2025 se analizó una muestra de 513 productos de nuevo conocimiento, a partir de la cual se extrajo información de financiador de las secciones Agradecimientos o Financiación como si/no declara financiación, nombre de la institución financiadora, y país.\
-La mayoría de productos de nuevo conocimiento tuvo financiación. Se encontró que el 62,6% (321 de 513) reporta tener financiación de algún tipo, mientras que el 37,4% (192) no declaró financiación (@fig-recibe-financiacion-si-no). 
+::: {#box-tipologias .callout-important style="background-color: #e3f0fbff; padding:20px; border: none !important;" appearance="minimal" icon="false"}
+**Caja 2. Definiciones de tipologías de productos de de CTeI acorde con Minciencias empleadas en la medición del estado de la ciencia.** En el Anexo 1 encuentre el detalle de fuente, registro o mecanismo de verificación, indicador, criterio de calidad o clasificación para las tipologías de productos.
+
+- **Actividades de Ciencia y Tecnología (ACTI).** Son actividades sistemáticas estrechamente relacionadas con la producción, promoción, difusión y aplicación de los conocimientos científicos y técnicos en todos los campos de la ciencia y la tecnología. Incluye I+D, formación científica y tecnológica, servicios científicos y tecnológicos, administración y otras actividades de apoyo para CTeI y actividades conducentes a la innovación.
+- **Generación de conocimiento.** Productos que aportan nuevo conocimiento al estado del arte de un área científica, tecnológica o de investigación-creación. Constituyen resultados originales derivados de procesos de investigación. Principales tipos de productos: Artículos de investigación, libros resultado de investigación, capítulos de libro resultado de investigación, productos de investigación-creación, patentes, variedades vegetales o animales, entre otros.
+- **Desarrollo tecnológico e innovación.** Productos derivados de procesos de investigación, desarrollo tecnológico o innovación orientados a la generación de soluciones, métodos, herramientas, productos, procesos o servicios que atienden necesidades o problemas específicos y pueden generar transformaciones o impactos. Principales tipos de productos: Productos tecnológicos, software, prototipos, diseños industriales, plantas piloto, procesos o procedimientos, innovaciones de producto/proceso/servicio, empresas de base tecnológica, entre otros.
+- **Apropiación social del conocimiento.** Procesos y productos mediante los cuales el conocimiento científico, tecnológico y de innovación es intercambiado, comprendido, utilizado y apropiado por diferentes actores sociales, promoviendo su participación y transformación de realidades. Principales tipos de productos: Procesos de apropiación social, estrategias pedagógicas, eventos científicos de apropiación, contenidos de divulgación, circulación de conocimiento especializado, participación ciudadana en CTeI, entre otros.
+- **Formación de recurso humano para CTeI.** Productos asociados con la formación de capacidades y talento humano para la investigación, el desarrollo tecnológico y la innovación, mediante procesos de formación académica y científica. Principales tipos de productos: Tesis de doctorado y maestría, trabajos de grado, proyectos de investigación de estudiantes, formación de investigadores, dirección de trabajos de grado, entre otros.
+:::
+
 
 ```{ojs}
 //| label: fig-financiador-sino
@@ -606,7 +645,7 @@ function siYNacInt(rows, tipo) {
 }
 ```
 
-En cuanto a la institución y país de origen de la financiación nacional e internacional, Minciencias constituye la principal fuente de financiación pública para proyectos de CTeI en todas las áreas de conocimiento, incluyendo la GRD en Colombia financiando el 12,8% (41 de 321) de los productos con financiación declarada, siendo el principal financiador nacional (@fig-financiador-nacional-top10). 
+En cuanto a la institución y país de origen de la financiación nacional e internacional, Minciencias constituye la principal fuente de financiación pública para proyectos de CTeI en todas las áreas de conocimiento en Colombia, incluyendo la GRD, financiando el 12,8% (41 de 321) de los productos con financiación declarada (@fig-financiador-nacional-top10).
 
 ```{ojs}
 //| label: fig-financiador-nacional-top10
@@ -630,8 +669,6 @@ barChartH(
 )
 ```
 
-
-
 ::: {#box1 .callout-important style="background-color: #e3f0fbff; padding:20px; border: none !important;" appearance="minimal" icon="false"}
 **Caja 1. Definiciones de tipologías de productos de de CTeI acorde con Minciencias empleadas en la medición del estado de la ciencia.** En el Anexo 1 encuentre el detalle de fuente, registro o mecanismo de verificación, indicador, criterio de calidad o clasificación para las tipologías de productos.
 
@@ -648,11 +685,11 @@ barChartH(
 
 # Demandas territoriales de los bienios 2023-2024 y 2025-2026
 
-Las demandas territoriales son los problemas, las necesidades o las oportunidades que puedan solucionarse mediante la CTeI en los territorios acorde a la Ley 2056 de 2020 (Congreso de Colombia, 2020). Los consejos departamentales de ciencia, tecnología e innovación (CODECTI) generan por bienios las declaraciones de las demandas territoriales, las cuales junto con las líneas temáticas priorizadas por Minciencias determinarán la elegibilidad de proyectos en ciencia de los desastres.
+Las demandas territoriales se definen como los problemas, las necesidades o las oportunidades de los territorios que pueden solucionarse mediante la CTeI como lo declara la Ley 2056 de 2020 (Congreso de Colombia, 2020). Cada dos años, los CODECTI tienen la responsabilidad de generar las declaraciones de las demandas territoriales, las cuales junto con las líneas temáticas priorizadas por Minciencias determinarán la elegibilidad de proyectos en CTeI. A continuación se analiza la relación del número de demandas territoriales con alta relación a GRD para los bienios 2023–2024 y 2025–2026.
 
 ## Bienio 2023-2024
 
-En 27 departamentos presentaron 71 (de 397) declaraciones con alta relación a la GRD en todos los retos 1 al reto 6.
+El ejercicio de priorización de demandas territoriales de los  CODECTI produjeron en 27 departamentos 71 declaraciones  (de un total de 397) con alta relación a la GRD (retos 1 a 6).
 
 ```{ojs}
 //| label: fig-demandas-2022-24
@@ -666,7 +703,7 @@ demandFigure(demandas_2022, colombia_geo, {
 
 ## Bienio 2025-2026
 
-Se presentaron 20 declaraciones con alta relación a la GRD en 14 departamentos, concentradas principalmente en el reto 1 "Aprovechar el conocimiento, conservación y uso sostenible de la biodiversidad, bienes y servicios ecosistémicos" (11) y el reto 6 "Asegurar la convergencia regional y el ordenamiento del territorio" (5), además de la categoría "Ambiental" (3) y el reto 2 "Garantizar la soberanía alimentaria y el derecho a la alimentación" (1).
+Para el bienio 2025–2026 se presentaron 20 declaraciones (de un total de 430) con alta relación con la GRD en 14 departamentos (retos 1 y 6). Se destaca que el departamento de Caldas en los dos bienios ha presentado consistentemente demandas territoriales en GRD. 
 
 ```{ojs}
 //| label: fig-demandas-2025-26
@@ -678,9 +715,17 @@ demandFigure(demandas_2025, colombia_geo, {
 })
 ```
 
-# Grupos de investigación
+Se concluye que en el bienio 2023–2024 existió un mayor número de demandas territoriales que en el bienio 2025–2026. Se recomienda que para el bienio 2027–2028 se promuevan las demandas territoriales relacionadas con GRD para brindar oportunidades de financiación para proyectos en los departamentos.
+
+# Institutos y grupos de investigación
+
+Un grupo de investigación, desarrollo tecnológico o de innovación es un conjunto de personas que interactúan para investigar y generar productos de conocimiento según un plan de trabajo. Un grupo se reconoce como tal al demostrar resultados verificables derivados de proyectos y actividades de CTeI. Un centro o instituto de investigación es una organización pública, privada o mixta independiente que tiene como misión institucional desarrollar diversas actividades de investigación (básica o aplicada), con líneas de investigación declaradas y un propósito científico específico. En Colombia existen 6.322 grupos reconocidos de investigación, desarrollo tecnológico o innovación (Minciencias, 2025), así como 40 centros/institutos de investigación reconocidos como actores del SNCTeI. 
 
 Grupos de investigación colombianos con relación a la gestión del riesgo de desastres, reconocidos y clasificados por Minciencias, según la hoja `Grupos_investigación` del libro de datos "20260611_BD_Capacidades_GRD_CTeI_colombia". Use el buscador y el filtro de categoría para explorar los grupos, y haga clic en un encabezado de columna para ordenar la tabla.
+
+Acorde a la Plataforma ScienTI de Minciencias se estima existen 59 grupos de investigación con una relación directa en GRD (Tabla 3). Los grupos corresponden a cuatro grandes áreas de conocimiento: ciencias naturales (15 grupos), ingeniería y tecnología (18 grupos), ciencias médicas y de la salud (7 grupos), ciencias sociales (7 grupos). Las ciudades con mayor cantidad de grupos son Bogotá, D.C. (20), Medellín (6), Cali (5), y Barranquilla (5). Sin embargo, es probable que una proporción significativa del conocimiento relacionado con la GRD se produzca por grupos con líneas de investigación no declaradas explícitamente a desastres en la plataforma ScienTI. Por ejemplo, el número de grupos de investigación puede ser mayor al sumar áreas relacionadas como 15 grupos en geotecnia, 7 grupos de soluciones basadas en la naturaleza, 6 grupos en astrofísica, 3 grupos en ordenamiento territorial, o alguno de los 358 grupos en salud pública citando algunas áreas. 
+Así mismo, se identificaron 13 institutos de investigación de los cuales ocho poseen reconocimiento de Minciencias y cuatro centros de ciencia reconocidos. Estos valores pueden ser mayores entendiendo que cerca del 80% de los 40 centros/institutos de investigación y de los 155 centro de ciencia reconocidos podrían tener capacidades científicas para investigar en ciencia de los desastres (i.e., investigar en al menos uno de los ocho grupos de amenazas definidos por los Hazard Information Profiles de UNDRR-ISC). Estas capacidades muestran que desde hace más de una década en Colombia existen institutos, centros y grupos de investigación bien establecidos, altamente productivos, y con reconocimiento.
+
 
 ```{ojs}
 //| echo: false
@@ -703,7 +748,7 @@ grupos = {
   const rows = await d3.text(libroDatosCsvUrl("Grupos_investigación")).then(d3.csvParseRows);
   // Columnas A, B, C, D, F, H, L, N de la hoja
   return rows.slice(1)
-    .filter(r => (r[0] ?? "").trim() !== "")
+    .filter(r => (r[0] ?? "").trim() !== "" && (r[2] ?? "").trim() !== "")
     .map(r => ({
       id: (r[0] ?? "").trim(),
       actualizacion: (r[1] ?? "").trim(),
@@ -867,13 +912,21 @@ grupos = {
 }
 ```
 
+En la siguiente sección se analiza la producción científica relacionada con la gestión del riesgo de desastres (GRD). Sin embargo, existen limitaciones para atribuir esta producción a los grupos de investigación identificados. Los metadatos bibliográficos de bases de datos como Scopus registran las afiliaciones institucionales de los autores, pero los metadatos no contienen la pertenencia a estos grupos de investigación en la mayoría de los casos. En consecuencia, no es posible establecer una correspondencia directa entre la producción científica identificada y un grupo de investigación particular. Estos grupos e investigadores producen investigaciones relevantes para la ciencia de los desastres, pero su contribución sólo puede identificarse mediante el análisis de publicaciones indexadas en Scopus más no por ScienTi de Minciencias.
+Esta situación evidencia, por una parte, el carácter inherentemente interdisciplinario de la ciencia de los desastres, cuya producción trasciende las estructuras formales como los institutos y grupos de investigación. Por otra parte, la existencia de una producción significativa sobre GRD generada desde grupos que no se reconocen dentro de este campo también puede indicar una fragmentación disciplinaria, en la que conocimientos relevantes para el riesgo de desastres se producen desde comunidades científicas aisladas y sin una articulación explícita bajo el marco conceptual común de la GRD.
+
 # Producción científica de Colombia en GRD
+
+Está bien establecido que los principales actores que generan conocimiento científico y tecnológico en Colombia son principalmente universidades (Fig. 3) y esta tendencia se mantiene desde hace 25 años. En el país existe una sólida tradición en investigación científica en GRD que se ejemplifica en el aumento de artículos científicos publicados en los últimos 25 años con cerca de 3,100 ítems (@fig-produccion-anual). Existen investigadores bien establecidos, altamente productivos, con reconocimiento mundial y liderados por investigadores principales como Juan Carlos Reyes (Universidad de los Ándes), Julián Carrillo (Universidad Militar), y Omar Darío Cardona (Universidad Nacional de Colombia, sede Manizales), todos en riesgo sísmico. 
+Como un reflejo de la producción científica concentrada en las universidades, la producción científica se realiza en los departamentos de Bogotá D.C., Antioquia, Atlántico, Valle del Cauca y Bolívar (Fig. 3)
+
+![Producción científica en Colombia en gestión del riesgo de desastres entre los años 2000 a 2025. Colombia produjo un total de 3,074 ítems (producción científica potencial en Scopus) entre artículos científicos, libros, capítulos de libro, reviews.](images/produccion-anual-scopus.png){#fig-produccion-anual}
 
 ## Producción científica por instituciones
 
 ```{ojs}
 //| label: fig-top-instituciones
-//| fig-cap: "Instituciones colombianas con mayor producción científica en GRD (top 15), 2022-2025, hoja `Vigilancia_CTeI`. n = 528 productos con institución colombiana identificada, de 569 registros totales en el periodo."
+//| fig-cap: "Instituciones colombianas con mayor producción científica en GRD (top 15), 2022-2025, hoja `Vigilancia_CTeI`. n = 545 productos con institución colombiana identificada, de 573 registros totales en el periodo."
 //| echo: false
 barChartH(countTop(vigilancia.filter(d => d["AÑO"] >= 2022 && d["AÑO"] <= 2025), "INSTITUCION COLOMBIANA", 15), {
   title: "Instituciones colombianas con mayor producción científica en GRD, 2022-2025 (top 15)",
@@ -883,11 +936,11 @@ barChartH(countTop(vigilancia.filter(d => d["AÑO"] >= 2022 && d["AÑO"] <= 2025
 
 ## Producción científica por departamento
 
-Producción científica en GRD por departamento de la institución colombiana de afiliación, ranking descendente. Cobertura parcial: el 14% de los registros no tiene departamento de la institución colombiana identificado, y se excluyeron afiliaciones extranjeras.
+Producción científica en GRD por departamento de la institución colombiana de afiliación, ranking descendente. Cobertura parcial: el 12,5% de los registros no tiene departamento de la institución colombiana identificado, y se excluyeron afiliaciones extranjeras.
 
 ```{ojs}
 //| label: fig-mapa-vigilancia
-//| fig-cap: "Producción científica en GRD por departamento de la institución colombiana de afiliación, ranking descendente. Cobertura parcial: el 14% de los registros no tiene departamento de la institución colombiana identificado, y se excluyeron afiliaciones extranjeras."
+//| fig-cap: "Producción científica en GRD por departamento de la institución colombiana de afiliación, ranking descendente. Cobertura parcial: el 12,5% de los registros no tiene departamento de la institución colombiana identificado, y se excluyeron afiliaciones extranjeras."
 //| echo: false
 rankBarChart(vigilancia_map_data, {
   title: "Producción científica en GRD por departamento de la institución colombiana",
@@ -897,7 +950,7 @@ rankBarChart(vigilancia_map_data, {
 
 ## Producción científica por procesos de la gestión del riesgo de desastres
 
-En el periodo 2020-2026, la distribución anual de la producción científica en GRD según el proceso de la gestión del riesgo (conocimiento del riesgo, reducción del riesgo y manejo de desastres), el proceso de conocimiento del riesgo concentra el 77,4% de la producción (671 de 867 productos clasificados), seguido por reducción del riesgo con 16,5% (143) y manejo del riesgo con 6,1% (53).
+En el periodo 2020-2026, la distribución anual de la producción científica en GRD según el proceso de la gestión del riesgo (conocimiento del riesgo, reducción del riesgo y manejo de desastres), el proceso de conocimiento del riesgo concentra el 76,4% de la producción (691 de 904 productos clasificados), seguido por reducción del riesgo con 16,9% (153) y manejo del riesgo con 6,6% (60).
 
 ```{ojs}
 //| label: fig-vigilancia-resumen
@@ -910,7 +963,7 @@ stackedBarV(pivotByYearProceso(vigilancia), Object.keys(PROCESO_COLORS), PROCESO
 
 ## Producción científica para las principales amenazas
 
-Frecuencia de la producción científica en GRD por tipo de amenaza (n = 554 productos con amenaza identificada). El riesgo sísmico concentra el 30,5% de la producción (169 productos), seguido por movimientos en masa con 17,3% (96) e inundación con 8,1% (45); el resto de amenazas registran individualmente menos del 7% cada una.
+Frecuencia de la producción científica en GRD por tipo de amenaza (n = 561 productos con amenaza identificada). El riesgo sísmico concentra el 31,9% de la producción (179 productos), seguido por movimientos en masa con 10,7% (60) e inundación con 8,9% (50); el resto de amenazas registran individualmente menos del 7% cada una.
 
 ```{ojs}
 //| label: fig-amenazas-frecuencia
@@ -938,6 +991,24 @@ Frecuencia de la producción científica en GRD por tipo de amenaza (n = 554 pro
     .filter(d => AMENAZAS.has(d.TEMA));
   return barChartH(countTop(rows, "TEMA"), {
     title: "Producción por las principales amenazas", marginLeft: 220, width: 720
+  });
+}
+```
+
+## Producción científica por amenaza específica
+
+Frecuencia de la producción científica en GRD por amenaza específica, clasificada según la taxonomía Hazard Information Profiles (HIPs) de UNDRR-ISC (n = 665 productos clasificados; se excluyen registros sin amenaza específica identificada o marcados como "Por determinar"). El terremoto (sismo) concentra el 29,9% de la producción (199 productos), seguido por movimiento en masa gravitacional ("deslizamiento") con 11,6% (77) e inundación con 11,3% (75); el resto de amenazas específicas registran individualmente menos del 7% cada una.
+
+```{ojs}
+//| label: fig-amenaza-especifica-frecuencia
+//| fig-cap: "Frecuencia de la producción de nuevo conocimiento por amenaza específica (taxonomía Hazard Information Profiles - HIPs de UNDRR-ISC), hoja `Vigilancia_CTeI`, columna `AMENAZA_ESPECIFICA`. Se excluyen registros sin amenaza identificada o marcados como \"Por determinar\"."
+//| echo: false
+{
+  const rows = vigilancia
+    .map(d => ({ AMENAZA_ESPECIFICA: (d.AMENAZA_ESPECIFICA ?? "").trim() }))
+    .filter(d => d.AMENAZA_ESPECIFICA !== "" && d.AMENAZA_ESPECIFICA.toUpperCase() !== "POR DETERMINAR");
+  return barChartH(countTop(rows, "AMENAZA_ESPECIFICA", Infinity, { truncate: 55 }), {
+    title: "Producción por amenaza específica (HIPs)", marginLeft: 340, width: 760
   });
 }
 ```
