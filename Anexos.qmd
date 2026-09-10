@@ -2,7 +2,136 @@
 title: "Anexos"
 ---
 
-## Anexo 1. Tipología oficial de productos de CTeI
+## Anexo 1. Hoja de ruta de ciencia y tecnología para apoyar la implementación del Marco de Sendai para la Reducción del Riesgo de Desastres 2015-2030
+
+**Estructura de la hoja de ruta.** La Hoja de Ruta de Ciencia y Tecnología revisada para apoyar la implementación del Marco de Sendai para la Reducción del Riesgo de Desastres 2015-2030 incluye cuatro resultados esperados y cincuenta y ocho acciones en el marco de las cuatro Prioridades de Acción del Marco de Sendai:
+
+- **Resultado 1: Evaluar y actualizar datos y conocimientos.** El estado de los datos, el conocimiento científico, local e indígena y la experiencia técnica se evalúan, actualizan y están disponibles sobre el espectro de peligros de Sendai.
+- **Resultado 2: Difusión.** La evidencia científica se sintetiza, produce y difunde de manera oportuna y accesible, respondiendo a las necesidades de conocimiento de los responsables políticos y los profesionales.
+- **Resultado 3: Seguimiento y revisión.** Los datos científicos y el apoyo informativo se utilizan para monitorear y revisar el progreso hacia la reducción del riesgo de desastres y la resiliencia.
+- **Resultado 4: Desarrollo de capacidades.** Mejor capacidad en todos los sectores y países para acceder, comprender y utilizar información científica para mejorar la toma de decisiones informada.
+
+**Medios de implementación.** Se espera que la implementación de la Hoja de Ruta requiera la colaboración, cooperación y compromisos de todos los sectores de la sociedad, incluidas las asociaciones de ciencia y tecnología, los gobiernos nacionales y locales, el sector privado, la sociedad civil, los medios de comunicación y otras partes interesadas. Esto puede considerarse como una herramienta de promoción general, y se alentaría a los socios/redes a asumir sus compromisos voluntarios y a detallar los medios para su implementación. Se desarrollará una guía de implementación detallada en cooperación con los socios de ciencia y tecnología.
+
+**Seguimiento del progreso.** La hoja de ruta es un documento estratégico y, en un principio, tenía una duración de 15 años. Se considera un documento de trabajo que se revisará y actualizará periódicamente en caso de que evolucione el conocimiento, surjan nuevas tecnologías, se detecten nuevos riesgos relacionados con Sendai y aumente la importancia del conocimiento indígena y local, así como de la ciencia ciudadana. Esta revisión determinará el progreso en la implementación y facilitará la corrección del rumbo según sea necesario para garantizar relevancia y flexibilidad en circunstancias cambiantes, y para fortalecer la colaboración norte-sur en ciencia y tecnología. El seguimiento del progreso también se realizará a través de los Compromisos Voluntarios del Marco de Sendai en línea, así como mediante conferencias periódicas de socios de ciencia y tecnología como GADRI, IRDR, entre otros.
+
+### Prioridad de acción 1. Comprender el riesgo de desastres
+
+**Resultado 1: Evaluar y actualizar datos y conocimientos**
+
+- **1.1.1** Promover la investigación integrada y multidisciplinaria en todos los sectores.
+- **1.1.2** Realizar investigación orientada a soluciones en todos los niveles que involucre a los usuarios en las etapas más tempranas.
+- **1.1.3** Establecer/vincular y actualizar/mantener bases de datos globales existentes.
+- **1.1.4** Desarrollar métodos, modelos, escenarios y herramientas de evaluación de riesgos.
+- **1.1.5** Realizar evaluaciones de riesgo integradas en todos los sectores.
+- **1.1.6** Promover el enfoque científico en las causas fundamentales del riesgo de desastres, los riesgos emergentes y las amenazas para la salud pública, los seguros, la protección social y las redes de seguridad.
+- **1.1.7** Analizar la ética de la información científica.
+- **1.1.8** Adoptar un enfoque de múltiples peligros que integre las lecciones aprendidas, incluidos los peligros transfronterizos, biológicos, tecnológicos y Natech.
+
+**Resultado 2: Difusión**
+
+- **1.2.1** Desarrollar investigación basada en evidencia sobre la eficacia de las estrategias de difusión para la toma de decisiones informadas y la formulación de políticas.
+- **1.2.2** Promover el acceso a datos, información y tecnología.
+- **1.2.3** Integrar los conocimientos y prácticas tradicionales, indígenas y locales.
+- **1.2.4** Desarrollar alianzas entre todas las partes interesadas de ciencia, tecnología y reducción del riesgo de desastres, e integrar la igualdad de género.
+
+**Resultado 3: Seguimiento y revisión**
+
+- **1.3.1** Vincular el progreso de la ciencia y la tecnología con los indicadores de seguimiento de Sendai y el informe, mediante el sistema de compromiso voluntario en línea.
+- **1.3.2** Promover la coherencia en la recopilación de datos e indicadores de seguimiento y evaluación con los ODS y el Acuerdo de París.
+- **1.3.3** Desarrollar un grupo de alianzas entre la comunidad de reducción del riesgo de desastres y las principales evaluaciones mundiales, como el 6.º Informe de Evaluación del IPCC y otras evaluaciones relacionadas.
+
+**Resultado 4: Desarrollo de capacidades**
+
+- **1.4.1** Construir capacidades a nivel nacional y local para el diseño, implementación y mejora de planes de reducción del riesgo de desastres.
+- **1.4.2** Promover la inclusión, y enfoques interdisciplinarios, participativos e intergeneracionales.
+- **1.4.3** Desarrollar experiencia y personal para utilizar datos, información y tecnología.
+- **1.4.4** Promover el desarrollo y uso de normas y protocolos, incluidas las certificaciones.
+- **1.4.5** Utilizar los recursos de conocimiento de la comunidad científica y tecnológica para programas educativos eficaces sobre reducción del riesgo de desastres, dirigidos a científicos, profesionales y comunidades.
+- **1.4.6** Promover enfoques sistémicos en la comprensión del riesgo de desastres para una toma de decisiones mejor informada.
+
+### Prioridad de acción 2. Fortalecimiento de la gobernanza del riesgo de desastres para gestionar dicho riesgo
+
+**Resultado 1: Evaluar y actualizar datos y conocimientos**
+
+- **2.1.1** Considerar las causas fundamentales del riesgo y los aportes del conocimiento tradicional para la toma de decisiones.
+- **2.1.2** Promover la evaluación del riesgo de desastres en la planificación y el desarrollo espacial, tanto en los sectores público como privado, y aumentar la participación de la sociedad civil en este proceso.
+- **2.1.3** Integrar la adaptación al cambio climático y la gestión del riesgo de desastres, así como otros sectores relevantes (bienestar, medio ambiente, salud, economía, etc.), en el mecanismo de gobernanza.
+- **2.1.4** Desarrollar un sistema de gobernanza flexible para adaptarse a los riesgos emergentes y al cambio climático.
+- **2.1.5** Promover la evaluación de opciones de desarrollo basadas en ecosistemas.
+
+**Resultado 2: Difusión**
+
+- **2.2.1** Promover el diálogo y la creación de redes sobre la reducción del riesgo de desastres entre científicos, académicos, responsables políticos, la sociedad civil, los medios de comunicación, las empresas y los sectores privados, a nivel regional, nacional y subnacional.
+- **2.2.2** Fomentar la conciencia científica y mejorar la comprensión entre los responsables de la toma de decisiones y los formuladores de políticas.
+- **2.2.3** Establecer un conocimiento científico comprensible, práctico y basado en la evidencia para todos los actores.
+- **2.2.4** Mejorar el acceso a los datos sobre reducción del riesgo de desastres generados por organizaciones internacionales, comunidades de ciencia y tecnología, gobiernos de diferentes niveles y otras partes interesadas.
+
+**Resultado 3: Seguimiento y revisión**
+
+- **2.3.1** Fortalecer la participación de la ciencia y la tecnología en la coordinación nacional y promover la implementación subnacional.
+- **2.3.2** Promover la evaluación del riesgo de desastres en la planificación y el desarrollo.
+- **2.3.3** Promover mecanismos de monitoreo participativos que involucren a organizaciones de la sociedad civil y comunidades locales.
+
+**Resultado 4: Desarrollo de capacidades**
+
+- **2.4.1** Promover el diálogo y la creación de redes sobre reducción del riesgo de desastres entre científicos, responsables políticos, la sociedad civil y las empresas.
+- **2.4.2** Fomentar la conciencia científica y mejorar la comprensión, considerando el riesgo futuro.
+
+### Prioridad de acción 3. Invertir en la reducción del riesgo de desastres para la resiliencia
+
+**Resultado 1: Evaluar y actualizar datos y conocimientos**
+
+- **3.1.1** Evaluar y actualizar el estado de la integración de la ciencia y la tecnología en la reducción del riesgo de desastres.
+- **3.1.2** Proporcionar financiación para la ciencia y la tecnología en la reducción del riesgo de desastres, con el fin de mejorar el conocimiento, la investigación y la transferencia de tecnología.
+- **3.1.3** Evaluar el impacto de la inversión en ciencia y tecnología en la reducción del riesgo de desastres.
+- **3.1.4** Incluir a científicos de todas las disciplinas en el análisis de la inversión en reducción del riesgo de desastres, así como en la adaptación al cambio climático, incluidas las pérdidas y los daños.
+- **3.1.5** Realizar investigaciones, desarrollar herramientas y explorar desafíos en ciencia y tecnología en materia de reducción de riesgos de desastres.
+
+**Resultado 2: Difusión**
+
+- **3.2.1** Promover diversos medios de comunicación científica dirigidos a la toma de decisiones y a los responsables políticos
+- **3.2.2** Promover roles cambiantes de la ciencia y prácticas reflexivas de implementación que contribuyan a la efectividad de la reducción del riesgo de desastres.
+
+**Resultado 3: Seguimiento y revisión**
+
+- **3.3.1** Monitorear la inversión en ciencia y tecnología en reducción del riesgo de desastres como parte integral del plan y las políticas nacionales.
+- **3.3.2** Recopilar periódicamente información sobre la evaluación voluntaria de los logros de las inversiones en ciencia y tecnología, en colaboración con los socios de ciencia y tecnología.
+- **3.3.3** Apoyar las innovaciones en la observación de la Tierra y los datos geoespaciales para la elaboración de perfiles de riesgo y la toma de decisiones.
+
+**Resultado 4: Desarrollo de capacidades**
+
+- **3.4.1** Fomentar y mejorar la capacidad de las partes interesadas en la reducción del riesgo de desastres para aumentar la inversión en ciencia y tecnología.
+
+### Prioridad de acción 4. Mejorar la preparación ante desastres para lograr una respuesta eficaz y una “reconstrucción mejor” en recuperación, rehabilitación y reconstrucción
+
+**Resultado 1: Evaluar y actualizar datos y conocimientos**
+
+- **4.1.1** Promover sistemas de alerta temprana multirriesgo con información climática mejorada, datos aéreos y espaciales, servicios de respuesta a emergencias y comunicación a los usuarios finales.
+- **4.1.2** Desarrollar y compartir las mejores prácticas frente a nuevas amenazas y riesgos (incluidas las enfermedades infecciosas) para informar la planificación de la preparación.
+- **4.1.3** Identificar, recopilar y analizar estudios de caso, y evaluar opciones para fortalecer los esfuerzos de recuperación y reconstrucción.
+- **4.1.4** Colaborar con la comunidad humanitaria en la exploración de las mejores prácticas para la respuesta y reconstrucción lideradas por sobrevivientes.
+
+**Resultado 2: Difusión**
+
+- **4.2.1** Desarrollar y difundir información y prácticas sobre planificación de contingencia y protección de infraestructura crítica, incluyendo la promoción de un enfoque de reconstrucción mejor en recuperación, rehabilitación y reconstrucción.
+- **4.2.2** Informar los planes y estrategias nacionales de reducción del riesgo de desastres centrados en la preparación y la concienciación de la comunidad, incluidas las necesidades de mujeres, niños, personas con discapacidad y personas mayores en situaciones de vulnerabilidad.
+- **4.2.3** Revisar y compartir la compilación de mejores indicadores entre las partes interesadas relevantes.
+
+**Resultado 3: Seguimiento y revisión**
+
+- **4.3.1** Identificar y abordar las necesidades y deficiencias de los sistemas de alerta temprana en los países menos adelantados y los pequeños estados insulares en desarrollo.
+- **4.3.2** Incorporar mejores prácticas de reconstrucción en las pólizas de seguros.
+
+**Resultado 4: Desarrollo de capacidades**
+
+- **4.4.1** Institucionalizar la recuperación y reconstrucción efectivas como estrategias para reducir el riesgo y promover desarrollos resilientes.
+- **4.4.2** Promover la toma de decisiones basada en la ciencia para los procesos de reasentamiento.
+- **4.4.3** Generar y utilizar información científica para obtener consenso público previo sobre las acciones post desastre, y para habilitar su implementación sin problemas después del desastre.
+
+Fuente: UNDRR (United Nations Office for Disaster Risk Reduction). (2016). The Science and Technology Roadmap to Support the Implementation of the Sendai Framework for Disaster Risk Reduction 2015-2030. <https://www.preventionweb.net/files/65131_file.pdf>
+
+## Anexo 2. Tipología oficial de productos de CTeI
 
 Acorde con el Modelo de Reconocimiento y Medición de Grupos de Investigación e Investigadores, 2024, existen cuatro tipologías independientes para categorizar los  resultados y productos de ACTI: 1) Generación de Nuevo Conocimiento, 2) Desarrollo Tecnológico e Innovación, 3) Apropiación Social del Conocimiento y 4) Formación de Recurso Humano para la CTeI (Minciencias, 2024). 
 

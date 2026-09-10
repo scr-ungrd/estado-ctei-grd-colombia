@@ -567,6 +567,8 @@ vigilancia_map_data = [
 ojs_define(vigilancia_map_data=vigilancia_map_data)
 ```
 
+# Introducción
+
 Para monitorear la implementación de la CTeI en el Marco de Sendai, el monitoreo del progreso en las 58 acciones de la Hoja de Ruta de Ciencia y Tecnología constituye un referente para determinar el estado de la ciencia y la tecnología en GRD en los países. Una evaluación del estado de la CTeI es un diagnóstico sistemático y periódico de las capacidades científicas, tecnológicas e institucionales. También de la producción, disponibilidad y aplicación del conocimiento, la innovación, la articulación entre ciencia, política y sociedad y las brechas que limitan la generación y utilización de evidencia, herramientas y soluciones para comprender, anticipar, prevenir y reducir el riesgo de desastres (UNDRR, 2016, 2022, 2024).
 
 Colombia no ha realizado evaluaciones sistemáticas del estado de la CTeI en GRD. Realizarlas constituye un instrumento de inteligencia estratégica para el SNGRD al analizar sus capacidades e infraestructuras, la pertinencia y aplicación del conocimiento frente a las necesidades de la gestión del riesgo, así como sus procesos de adopción, transferencia, articulación e implementación territorial. De esta manera, sus resultados pueden orientar las decisiones de inversión, coordinación institucional, fortalecimiento de capacidades y formulación de agendas de investigación, innovación, desarrollo tecnológico y política científica. 
@@ -576,29 +578,204 @@ La evolución de las evaluaciones promovidas por UNDRR han transitado del análi
 Esta sección presenta la primera evaluación nacional del estado de la CTeI de los desastres a través de cuatro dimensiones: 
 
 1.  **Financiación de la ciencia y la tecnología**
-    1.  **Financiación de la ciencia en convocatorias nacionales.**
-    2.  **Demandas territoriales para el Sistema General de Regalías.**
+    1.  Financiación de la ciencia en convocatorias nacionales.
+    2.  Demandas territoriales para el Sistema General de Regalías.
 2.  **Capacidades en ciencia y la tecnología**
-    1.  **Inventario de los institutos y grupos de investigación en el país.**
-    2.  **Inventario de postgrados en GRD.**
+    1.  Inventario de los institutos y grupos de investigación en el país.
+    2.  Inventario de postgrados en GRD.
 3.  **Producción científica colombiana en GRD**
-    1.  **Tamaño de la producción científica por temáticas, departamentos y afiliaciones.**
-    2.  **Ciencia abierta.**
-    3.  **Producción de tecnologías en el país.**
+    1.  Tamaño de la producción científica por temáticas, departamentos y afiliaciones.
+    2.  Ciencia abierta.
+    3.  Producción de tecnologías en el país.
 4.  **Transferencia de ciencia y tecnología, e impacto local**
-    1.  **Impacto de proyectos de CTeI en el MEGIR.**
+    1.  Impacto de proyectos de CTeI en el MEGIR.
 
 Esta evaluación tiene una correspondencia directa o parcial en 15–18 acciones de la Hoja de Ruta de Ciencia y Tecnología (**Anexo 1**). Sin embargo, no identifica los nuevos problemas o tendencias científicas y tecnológicas que están cambiando en GRD, lo cual se abordará en la actualización del documento de líneas de investigación en GRD. Por favor consulte la metodología de la evaluación del estado en cada sección y en la sección de Anexos.
 
-# Financiación de la ciencia de los desastres en convocatorias nacionales y producción de nuevo conocimiento
+# Financiación de la ciencia y tecnología de los desastres 
 
-**Convocatorias nacionales de CTeI.** Junto con los vacíos de conocimiento, las necesidades de la sociedad, y el talento humano, la financiación es uno de los motores dinamizadores de la CTeI. En Colombia está bien establecido que Minciencias y el Sistema General de Regalías constituyen la principal fuente de financiación pública para proyectos de CTeI en todas las áreas de conocimiento, incluyendo la GRD. A continuación se analiza la participación de la GRD en las convocatorias Minciencias.
+## Convocatorias nacionales de CTeI
+Junto con los vacíos de conocimiento, las necesidades de la sociedad, y el talento humano, la financiación es uno de los motores dinamizadores de la CTeI. En Colombia está bien establecido que Minciencias y el Sistema General de Regalías constituyen la principal fuente de financiación pública para proyectos de CTeI en todas las áreas de conocimiento, incluyendo la GRD. A continuación se analiza la participación de la GRD en las convocatorias Minciencias.
 
 Durante el último cuatrienio (2022–2026), Minciencias lanzó 92 convocatorias, de las cuales 41 declaran en sus términos de referencia la posibilidad de postular proyectos o formar capital humano en temáticas asociadas a la GRD, lo que evidencia una oferta de financiación sostenida en el tiempo y diversificada hacia todas las áreas de conocimiento en GRD, no solo las ingenierías. Así, la ciencia de los desastres se ha posicionado como relevante en gran parte de las convocatorias disponibles, reflejando una creciente alineación entre la agenda de financiamiento de Minciencias y las prioridades nacionales y de los territorios. 
 
-Entre 2022 y 2026 existieron seis convocatorias que incorporaron líneas temáticas explícitas en gestión del riesgo de desastres (**Caja 1**), en particular las convocatorias 1045 de 2023, 51 de 2025 y la 52 de 2026 que se dirigen a atender situaciones de emergencia y desastre. 
+```{ojs}
+//| echo: false
+financiacionNal = d3.csv(sheetCsvUrl("Financiacion-Nal"))
+```
 
-No obstante, para tener la capacidad de monitorear la inversión en ciencia y tecnología en GRD como lo recomienda la Hoja de Ruta en Ciencia y Tecnología (3.1.2 y 3.1.3), se requiere conocer los proyectos relacionados con GRD financiados por las convocatorias (i.e. financiación disponible y movilizada) por medio de un sistema de información que sistematice los proyectos y sus productos. Actualmente ScienTI posee una limitada capacidad de consulta del conocimiento producido por los proyectos financiados en el país, aspecto que además limita su aprovechamiento por medio de acciones de transferencia de conocimiento y tecnología.
+```{ojs}
+//| echo: false
+convocatorias = financiacionNal
+  .slice(18, 67) // filas 20-68 de la hoja (ID N-19 a N-66); fila 1 = encabezado
+  .filter(d => d["CONTIENE GRD"]?.trim() === "Si")
+  .map(d => ({
+    institucion: (d.INSTITUCION_FINANCIADORA ?? "").trim(),
+    anio: (d["AÑO"] ?? "").trim(),
+    area: (d.AREA ?? "").trim(),
+    titulo: (d["TITULO OPORTUNIDAD DE FINANCIACION"] ?? "").trim(),
+    monto: (d.MONTO ?? "").trim(),
+    url: (d.URL ?? "").trim()
+  }))
+
+YEAR_COLORS = ({ 2022: colors.blueDark, 2023: colors.blue, 2024: colors.aqua, 2025: colors.yellow, 2026: colors.orange })
+```
+
+```{ojs}
+//| label: tbl-financiacion-nal
+//| tbl-cap: "**Convocatorias nacionales de CTeI relacionadas con la GRD**. Tabla interactiva con opciones de busqueda y filtros por año y columnas ordenables."
+//| echo: false
+{
+  const COLS = [
+    { key: "institucion", label: "Institución financiadora", sortable: true, width: "170px" },
+    { key: "anio", label: "Año", sortable: true, width: "70px" },
+    { key: "area", label: "Área", sortable: true },
+    { key: "titulo", label: "Título de la convocatoria", sortable: true },
+    { key: "monto", label: "Monto", sortable: false, width: "220px" },
+    { key: "url", label: "Enlace", sortable: false, width: "84px" }
+  ];
+
+  const anios = Array.from(new Set(convocatorias.map(d => d.anio))).sort();
+  const state = { query: "", anio: "", sortKey: "anio", sortDir: -1 };
+
+  const root = document.createElement("div");
+  root.style.cssText = `font:${FONT};color:${colors.textPrimary}`;
+
+  const controls = document.createElement("div");
+  controls.style.cssText = "display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:10px";
+
+  const searchInput = document.createElement("input");
+  searchInput.type = "search";
+  searchInput.placeholder = "Buscar por institución, área o título...";
+  searchInput.style.cssText = `flex:1;min-width:220px;padding:7px 10px;border:1px solid ${colors.grid};border-radius:6px;font:${FONT};background:${colors.surface};color:${colors.textPrimary}`;
+
+  const yearSelect = document.createElement("select");
+  yearSelect.style.cssText = `padding:7px 10px;border:1px solid ${colors.grid};border-radius:6px;font:${FONT};background:${colors.surface};color:${colors.textPrimary}`;
+  const optAll = document.createElement("option");
+  optAll.value = "";
+  optAll.textContent = "Todos los años";
+  yearSelect.appendChild(optAll);
+  for (const a of anios) {
+    const opt = document.createElement("option");
+    opt.value = a;
+    opt.textContent = a;
+    yearSelect.appendChild(opt);
+  }
+
+  const countEl = document.createElement("div");
+  countEl.style.cssText = `color:${colors.textSecondary};font-size:11px;white-space:nowrap;margin-left:auto`;
+
+  controls.append(searchInput, yearSelect, countEl);
+
+  const tableWrap = document.createElement("div");
+  tableWrap.style.cssText = `max-height:520px;overflow:auto;border:1px solid ${colors.grid};border-radius:8px`;
+
+  const table = document.createElement("table");
+  table.style.cssText = "width:100%;border-collapse:collapse;font-size:12px";
+
+  const thead = table.createTHead();
+  const headRow = thead.insertRow();
+  headRow.style.cssText = `position:sticky;top:0;background:${colors.surface};z-index:1`;
+
+  for (const col of COLS) {
+    const th = document.createElement("th");
+    th.textContent = col.label;
+    th.style.cssText = `text-align:left;padding:8px 10px;border-bottom:2px solid ${colors.grid};cursor:${col.sortable ? "pointer" : "default"};white-space:nowrap;user-select:none${col.width ? `;width:${col.width}` : ""}`;
+    if (col.sortable) {
+      const arrow = document.createElement("span");
+      arrow.style.cssText = "margin-left:4px;opacity:0.5;font-size:10px";
+      th.appendChild(arrow);
+      th.addEventListener("click", () => {
+        if (state.sortKey === col.key) state.sortDir *= -1;
+        else { state.sortKey = col.key; state.sortDir = 1; }
+        render();
+      });
+    }
+    headRow.appendChild(th);
+  }
+
+  const tbody = table.createTBody();
+  table.append(thead, tbody);
+  tableWrap.appendChild(table);
+  root.append(controls, tableWrap);
+
+  function badge(anio) {
+    const span = document.createElement("span");
+    span.textContent = anio || "s/a";
+    span.style.cssText = `display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;color:#fff;background:${YEAR_COLORS[anio] ?? colors.muted}`;
+    return span;
+  }
+
+  function render() {
+    const q = state.query.trim().toLowerCase();
+    const filtered = convocatorias.filter(d => {
+      if (state.anio !== "" && d.anio !== state.anio) return false;
+      if (q === "") return true;
+      return (d.institucion + " " + d.area + " " + d.titulo).toLowerCase().includes(q);
+    });
+
+    filtered.sort((a, b) => {
+      let av = a[state.sortKey], bv = b[state.sortKey];
+      if (state.sortKey === "anio") { av = +av || 0; bv = +bv || 0; }
+      if (av < bv) return -1 * state.sortDir;
+      if (av > bv) return 1 * state.sortDir;
+      return 0;
+    });
+
+    Array.from(headRow.children).forEach((th, i) => {
+      const arrow = th.querySelector("span");
+      if (arrow) arrow.textContent = state.sortKey === COLS[i].key ? (state.sortDir === 1 ? "▲" : "▼") : "";
+    });
+
+    tbody.replaceChildren();
+    for (const d of filtered) {
+      const tr = tbody.insertRow();
+      tr.style.borderBottom = `1px solid ${colors.grid}`;
+      tr.addEventListener("mouseenter", () => tr.style.background = "rgba(42,120,214,0.06)");
+      tr.addEventListener("mouseleave", () => tr.style.background = "");
+
+      const instTd = tr.insertCell();
+      instTd.textContent = d.institucion;
+      instTd.style.cssText = "padding:6px 10px;vertical-align:top";
+
+      const anioTd = tr.insertCell();
+      anioTd.style.cssText = "padding:6px 10px;vertical-align:top";
+      anioTd.appendChild(badge(d.anio));
+
+      [d.area, d.titulo, d.monto].forEach(v => {
+        const td = tr.insertCell();
+        td.textContent = v || "";
+        td.style.cssText = "padding:6px 10px;vertical-align:top";
+      });
+
+      const linkTd = tr.insertCell();
+      linkTd.style.cssText = "padding:6px 10px;vertical-align:top";
+      if (d.url) {
+        const a = document.createElement("a");
+        a.href = d.url;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.textContent = "Ver ↗";
+        a.style.color = colors.blue;
+        linkTd.appendChild(a);
+      }
+    }
+
+    countEl.textContent = `${filtered.length} de ${convocatorias.length} convocatorias`;
+  }
+
+  searchInput.addEventListener("input", () => { state.query = searchInput.value; render(); });
+  yearSelect.addEventListener("change", () => { state.anio = yearSelect.value; render(); });
+
+  render();
+  return root;
+  return table;
+}
+```
+
+**@tbl-financiacion-nal.** Convocatorias nacionales de CTeI relacionadas con la GRD. Tabla interactiva con opciones de búsqueda y filtros por año y columnas ordenables.
+
+Entre 2022 y 2026 existieron seis convocatorias que incorporaron líneas temáticas explícitas en gestión del riesgo de desastres (**Caja 1**), en particular las convocatorias 1045 de 2023, 51 de 2025 y la 52 de 2026 que se dirigen a atender situaciones de emergencia y desastre. 
 
 ::: {#box-convocatorias .callout-important style="background-color: #e3f0fbff; padding:20px; border: none !important;" appearance="minimal" icon="false"}
 **Caja 1. Las principales convocatorias de ciencia y tecnología lanzadas por Minciencias entre 2022 y 2026.**
@@ -611,11 +788,14 @@ No obstante, para tener la capacidad de monitorear la inversión en ciencia y te
 - [976 de 2026.](https://minciencias.gov.co/convocatorias/convocatoria-colombia-inteligente-2026) Convocatoria Colombia Inteligente 2026. Recursos por \$24.000.000.000
 :::
 
-Información de financiación nacional e internacional en productos de conocimiento. Esta medición considera  principalmente productos de conocimiento (ver definición de conocimiento en Caja 5 y tipologías de productos en Anexo 3). Entre 2020 y 2025 se analizó una muestra de 507 productos de nuevo conocimiento, a partir de la cual se extrajo información de financiador de las secciones Agradecimientos o Financiación (Anexo 4). Este análisis establece la presencia o ausencia de financiación, más no su monto.  
-La mayoría de productos de nuevo conocimiento tuvo financiación  (@fig-recibe-financiacion-si-no). Se encontró que el 62,6% (321 de 513) reporta tener financiación de algún tipo, mientras que el 37,4% (192) no declaró financiación. 
+No obstante, para tener la capacidad de monitorear la inversión en ciencia y tecnología en GRD como lo recomienda la Hoja de Ruta en Ciencia y Tecnología (3.1.2 y 3.1.3), se requiere conocer los proyectos relacionados con GRD financiados por las convocatorias (i.e. financiación disponible y movilizada) por medio de un sistema de información que sistematice los proyectos y sus productos. Actualmente ScienTI posee una limitada capacidad de consulta del conocimiento producido por los proyectos financiados en el país, aspecto que además limita su aprovechamiento por medio de acciones de transferencia de conocimiento y tecnología.
+
+## Financiación nacional e internacional en productos de conocimiento
+
+Esta medición considera principalmente productos de conocimiento (ver definición de conocimiento en @box-tipologias **Caja 2** y tipologías de productos en Anexo 2). Entre 2020 y 2025 se analizó una muestra de 507 productos de nuevo conocimiento, a partir de la cual se extrajo información de financiador de las secciones Agradecimientos o Financiación (Anexo 4). Este análisis establece la presencia o ausencia de financiación, más no su monto.\
 
 ::: {#box-tipologias .callout-important style="background-color: #e3f0fbff; padding:20px; border: none !important;" appearance="minimal" icon="false"}
-**Caja 2. Definiciones de tipologías de productos de de CTeI acorde con Minciencias empleadas en la medición del estado de la ciencia.** En el Anexo 1 encuentre el detalle de fuente, registro o mecanismo de verificación, indicador, criterio de calidad o clasificación para las tipologías de productos.
+**Caja 2. Definiciones de tipologías de productos de de CTeI acorde con Minciencias empleadas en la medición del estado de la ciencia.** En el Anexo 2 encuentre el detalle de fuente, registro o mecanismo de verificación, indicador, criterio de calidad o clasificación para las tipologías de productos.
 
 - **Actividades de Ciencia y Tecnología (ACTI).** Son actividades sistemáticas estrechamente relacionadas con la producción, promoción, difusión y aplicación de los conocimientos científicos y técnicos en todos los campos de la ciencia y la tecnología. Incluye I+D, formación científica y tecnológica, servicios científicos y tecnológicos, administración y otras actividades de apoyo para CTeI y actividades conducentes a la innovación.
 - **Generación de conocimiento.** Productos que aportan nuevo conocimiento al estado del arte de un área científica, tecnológica o de investigación-creación. Constituyen resultados originales derivados de procesos de investigación. Principales tipos de productos: Artículos de investigación, libros resultado de investigación, capítulos de libro resultado de investigación, productos de investigación-creación, patentes, variedades vegetales o animales, entre otros.
@@ -624,6 +804,7 @@ La mayoría de productos de nuevo conocimiento tuvo financiación  (@fig-recibe-
 - **Formación de recurso humano para CTeI.** Productos asociados con la formación de capacidades y talento humano para la investigación, el desarrollo tecnológico y la innovación, mediante procesos de formación académica y científica. Principales tipos de productos: Tesis de doctorado y maestría, trabajos de grado, proyectos de investigación de estudiantes, formación de investigadores, dirección de trabajos de grado, entre otros.
 :::
 
+La mayoría de productos de nuevo conocimiento tuvo financiación (@fig-recibe-financiacion-si-no). Se encontró que el 62,6% (321 de 513) reporta tener financiación de algún tipo, mientras que el 37,4% (192) no declaró financiación.
 
 ```{ojs}
 //| label: fig-financiador-sino
@@ -669,27 +850,13 @@ barChartH(
 )
 ```
 
-::: {#box1 .callout-important style="background-color: #e3f0fbff; padding:20px; border: none !important;" appearance="minimal" icon="false"}
-**Caja 1. Definiciones de tipologías de productos de de CTeI acorde con Minciencias empleadas en la medición del estado de la ciencia.** En el Anexo 1 encuentre el detalle de fuente, registro o mecanismo de verificación, indicador, criterio de calidad o clasificación para las tipologías de productos.
-
-- **Actividades de Ciencia y Tecnología (ACTI):** Son actividades sistemáticas estrechamente relacionadas con la producción, promoción, difusión y aplicación de los conocimientos científicos y técnicos en todos los campos de la ciencia y la tecnología. Incluye I+D, formación científica y tecnológica, servicios científicos y tecnológicos, administración y otras actividades de apoyo para CTeI y actividades conducentes a la innovación.
-
-- **Generación de nuevo conocimiento:** Productos que aportan nuevo conocimiento al estado del arte de un área científica, tecnológica o de investigación-creación. Constituyen resultados originales derivados de procesos de investigación. **Principales tipos de productos:** Artículos de investigación, libros resultado de investigación, capítulos de libro resultado de investigación, productos de investigación-creación, patentes, variedades vegetales o animales, entre otros.
-
-- **Desarrollo tecnológico e innovación:** Productos derivados de procesos de investigación, desarrollo tecnológico o innovación orientados a la generación de soluciones, métodos, herramientas, productos, procesos o servicios que atienden necesidades o problemas específicos y pueden generar transformaciones o impactos. **Principales tipos de productos:** Productos tecnológicos, software, prototipos, diseños industriales, plantas piloto, procesos o procedimientos, innovaciones de producto/proceso/servicio, empresas de base tecnológica, entre otros.
-
-- **Apropiación social del conocimiento:** Procesos y productos mediante los cuales el conocimiento científico, tecnológico y de innovación es intercambiado, comprendido, utilizado y apropiado por diferentes actores sociales, promoviendo su participación y transformación de realidades. **Principales tipos de productos:** Procesos de apropiación social, estrategias pedagógicas, eventos científicos de apropiación, contenidos de divulgación, circulación de conocimiento especializado, participación ciudadana en CTeI, entre otros.
-
-- **Formación de recurso humano para CTeI:** Productos asociados con la formación de capacidades y talento humano para la investigación, el desarrollo tecnológico y la innovación, mediante procesos de formación académica y científica. **Principales tipos de productos:** Tesis de doctorado y maestría, trabajos de grado, proyectos de investigación de estudiantes, formación de investigadores, dirección de trabajos de grado, entre otros.
-:::
-
-# Demandas territoriales de los bienios 2023-2024 y 2025-2026
+## Demandas territoriales de los bienios 2023-2024 y 2025-2026
 
 Las demandas territoriales se definen como los problemas, las necesidades o las oportunidades de los territorios que pueden solucionarse mediante la CTeI como lo declara la Ley 2056 de 2020 (Congreso de Colombia, 2020). Cada dos años, los CODECTI tienen la responsabilidad de generar las declaraciones de las demandas territoriales, las cuales junto con las líneas temáticas priorizadas por Minciencias determinarán la elegibilidad de proyectos en CTeI. A continuación se analiza la relación del número de demandas territoriales con alta relación a GRD para los bienios 2023–2024 y 2025–2026.
 
-## Bienio 2023-2024
+### Bienio 2023-2024
 
-El ejercicio de priorización de demandas territoriales de los  CODECTI produjeron en 27 departamentos 71 declaraciones  (de un total de 397) con alta relación a la GRD (retos 1 a 6).
+El ejercicio de priorización de demandas territoriales de los CODECTI produjeron en 27 departamentos 71 declaraciones (de un total de 397) con alta relación a la GRD (retos 1 a 6).
 
 ```{ojs}
 //| label: fig-demandas-2022-24
@@ -701,9 +868,9 @@ demandFigure(demandas_2022, colombia_geo, {
 })
 ```
 
-## Bienio 2025-2026
+### Bienio 2025-2026
 
-Para el bienio 2025–2026 se presentaron 20 declaraciones (de un total de 430) con alta relación con la GRD en 14 departamentos (retos 1 y 6). Se destaca que el departamento de Caldas en los dos bienios ha presentado consistentemente demandas territoriales en GRD. 
+Para el bienio 2025–2026 se presentaron 20 declaraciones (de un total de 430) con alta relación con la GRD en 14 departamentos (retos 1 y 6). Se destaca que el departamento de Caldas en los dos bienios ha presentado consistentemente demandas territoriales en GRD.
 
 ```{ojs}
 //| label: fig-demandas-2025-26
@@ -717,15 +884,14 @@ demandFigure(demandas_2025, colombia_geo, {
 
 Se concluye que en el bienio 2023–2024 existió un mayor número de demandas territoriales que en el bienio 2025–2026. Se recomienda que para el bienio 2027–2028 se promuevan las demandas territoriales relacionadas con GRD para brindar oportunidades de financiación para proyectos en los departamentos.
 
-# Institutos y grupos de investigación
+# Capacidades nacionales en ciencia y la tecnología
 
-Un grupo de investigación, desarrollo tecnológico o de innovación es un conjunto de personas que interactúan para investigar y generar productos de conocimiento según un plan de trabajo. Un grupo se reconoce como tal al demostrar resultados verificables derivados de proyectos y actividades de CTeI. Un centro o instituto de investigación es una organización pública, privada o mixta independiente que tiene como misión institucional desarrollar diversas actividades de investigación (básica o aplicada), con líneas de investigación declaradas y un propósito científico específico. En Colombia existen 6.322 grupos reconocidos de investigación, desarrollo tecnológico o innovación (Minciencias, 2025), así como 40 centros/institutos de investigación reconocidos como actores del SNCTeI. 
+## Institutos y grupos de investigación
+Un grupo de investigación, desarrollo tecnológico o de innovación es un conjunto de personas que interactúan para investigar y generar productos de conocimiento según un plan de trabajo. Un grupo se reconoce como tal al demostrar resultados verificables derivados de proyectos y actividades de CTeI. Un centro o instituto de investigación es una organización pública, privada o mixta independiente que tiene como misión institucional desarrollar diversas actividades de investigación (básica o aplicada), con líneas de investigación declaradas y un propósito científico específico. En Colombia existen 6.322 grupos reconocidos de investigación, desarrollo tecnológico o innovación (Minciencias, 2025), así como 40 centros/institutos de investigación reconocidos como actores del SNCTeI. 
 
-Grupos de investigación colombianos con relación a la gestión del riesgo de desastres, reconocidos y clasificados por Minciencias, según la hoja `Grupos_investigación` del libro de datos "20260611_BD_Capacidades_GRD_CTeI_colombia". Use el buscador y el filtro de categoría para explorar los grupos, y haga clic en un encabezado de columna para ordenar la tabla.
+Acorde a la Plataforma ScienTI de Minciencias se estima existen 58 grupos de investigación con una relación directa en GRD (ver tabla a continuación). Los grupos corresponden a cuatro grandes áreas de conocimiento: ciencias naturales (15 grupos), ingeniería y tecnología (18 grupos), ciencias médicas y de la salud (7 grupos), ciencias sociales (7 grupos). Las ciudades con mayor cantidad de grupos son Bogotá, D.C. (20), Medellín (6), Cali (5), y Barranquilla (5). Sin embargo, es probable que una proporción significativa del conocimiento relacionado con la GRD se produzca por grupos con líneas de investigación no declaradas explícitamente a desastres en la plataforma ScienTI. Por ejemplo, el número de grupos de investigación puede ser mayor al sumar áreas relacionadas como 15 grupos en geotecnia, 7 grupos de soluciones basadas en la naturaleza, 6 grupos en astrofísica, 3 grupos en ordenamiento territorial, o alguno de los 358 grupos en salud pública citando algunas áreas. 
 
-Acorde a la Plataforma ScienTI de Minciencias se estima existen 59 grupos de investigación con una relación directa en GRD (Tabla 3). Los grupos corresponden a cuatro grandes áreas de conocimiento: ciencias naturales (15 grupos), ingeniería y tecnología (18 grupos), ciencias médicas y de la salud (7 grupos), ciencias sociales (7 grupos). Las ciudades con mayor cantidad de grupos son Bogotá, D.C. (20), Medellín (6), Cali (5), y Barranquilla (5). Sin embargo, es probable que una proporción significativa del conocimiento relacionado con la GRD se produzca por grupos con líneas de investigación no declaradas explícitamente a desastres en la plataforma ScienTI. Por ejemplo, el número de grupos de investigación puede ser mayor al sumar áreas relacionadas como 15 grupos en geotecnia, 7 grupos de soluciones basadas en la naturaleza, 6 grupos en astrofísica, 3 grupos en ordenamiento territorial, o alguno de los 358 grupos en salud pública citando algunas áreas. 
 Así mismo, se identificaron 13 institutos de investigación de los cuales ocho poseen reconocimiento de Minciencias y cuatro centros de ciencia reconocidos. Estos valores pueden ser mayores entendiendo que cerca del 80% de los 40 centros/institutos de investigación y de los 155 centro de ciencia reconocidos podrían tener capacidades científicas para investigar en ciencia de los desastres (i.e., investigar en al menos uno de los ocho grupos de amenazas definidos por los Hazard Information Profiles de UNDRR-ISC). Estas capacidades muestran que desde hace más de una década en Colombia existen institutos, centros y grupos de investigación bien establecidos, altamente productivos, y con reconocimiento.
-
 
 ```{ojs}
 //| echo: false
@@ -913,16 +1079,212 @@ grupos = {
 ```
 
 En la siguiente sección se analiza la producción científica relacionada con la gestión del riesgo de desastres (GRD). Sin embargo, existen limitaciones para atribuir esta producción a los grupos de investigación identificados. Los metadatos bibliográficos de bases de datos como Scopus registran las afiliaciones institucionales de los autores, pero los metadatos no contienen la pertenencia a estos grupos de investigación en la mayoría de los casos. En consecuencia, no es posible establecer una correspondencia directa entre la producción científica identificada y un grupo de investigación particular. Estos grupos e investigadores producen investigaciones relevantes para la ciencia de los desastres, pero su contribución sólo puede identificarse mediante el análisis de publicaciones indexadas en Scopus más no por ScienTi de Minciencias.
+
 Esta situación evidencia, por una parte, el carácter inherentemente interdisciplinario de la ciencia de los desastres, cuya producción trasciende las estructuras formales como los institutos y grupos de investigación. Por otra parte, la existencia de una producción significativa sobre GRD generada desde grupos que no se reconocen dentro de este campo también puede indicar una fragmentación disciplinaria, en la que conocimientos relevantes para el riesgo de desastres se producen desde comunidades científicas aisladas y sin una articulación explícita bajo el marco conceptual común de la GRD.
+
+## Inventario de postgrados en gestión del riesgo de desastres
+
+Existe interés en las universidades en ofrecer programas de postgrado en GRD. Hay disponibles 10 especializaciones y 13 programas de maestrías en GRD (@tbl-postgrados). No existe un programa acreditado de doctorado, sino el desarrollo de trabajos de doctorado en GRD en programas de doctorados acreditados existentes, particularmente en programas de ingenierías.
+
+```{ojs}
+//| echo: false
+postgrados = {
+  const rows = await d3.text(libroDatosCsvUrl("Postgrados")).then(d3.csvParseRows);
+  const body = rows.slice(1);
+  const stopIdx = body.findIndex(r => (r[1] ?? "").trim() === "Ya no se ofertan");
+  const activos = stopIdx === -1 ? body : body.slice(0, stopIdx);
+  return activos
+    .filter(r => (r[1] ?? "").trim() !== "")
+    .map(r => ({
+      ies: (r[1] ?? "").trim(),
+      tipo: (r[2] ?? "").trim(),
+      sector: (r[3] ?? "").trim(),
+      programa: (r[4] ?? "").trim(),
+      departamento: (r[5] ?? "").trim(),
+      municipio: (r[6] ?? "").trim(),
+      modalidad: (r[7] ?? "").trim(),
+      semestres: (r[8] ?? "").trim(),
+      snies: (r[9] ?? "").trim(),
+      linkU: (r[10] ?? "").trim(),
+      linkP: (r[11] ?? "").trim(),
+    }));
+}
+
+TIPO_POSTGRADO_COLORS = ({ "Especialización": colors.aqua, "Maestria": colors.blue })
+```
+
+```{ojs}
+//| label: tbl-postgrados
+//| tbl-cap: "Inventario de postgrados en gestión del riesgo de desastres, hoja `Postgrados`. Tabla interactiva: buscador, filtro por tipo y columnas ordenables."
+//| echo: false
+{
+  const COLS = [
+    { key: "ies", label: "Nombre de la IES", sortable: true },
+    { key: "tipo", label: "Tipo", sortable: true, width: "110px" },
+    { key: "sector", label: "Sector", sortable: true, width: "80px" },
+    { key: "programa", label: "Nombre del programa", sortable: true },
+    { key: "departamento", label: "Departamento", sortable: true, width: "130px" },
+    { key: "municipio", label: "Municipio", sortable: true, width: "110px" },
+    { key: "modalidad", label: "Modalidad", sortable: true, width: "110px" },
+    { key: "semestres", label: "Semestres", sortable: true, width: "80px" },
+    { key: "snies", label: "Código SNIES", sortable: true, width: "100px" },
+    { key: "linkU", label: "Link universidad", sortable: false, width: "90px" },
+    { key: "linkP", label: "Link programa", sortable: false, width: "90px" }
+  ];
+
+  const tipos = Array.from(new Set(postgrados.map(d => d.tipo))).sort();
+  const state = { query: "", tipo: "", sortKey: "ies", sortDir: 1 };
+
+  const root = document.createElement("div");
+  root.style.cssText = `font:${FONT};color:${colors.textPrimary}`;
+
+  const controls = document.createElement("div");
+  controls.style.cssText = "display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:10px";
+
+  const searchInput = document.createElement("input");
+  searchInput.type = "search";
+  searchInput.placeholder = "Buscar por institución, programa, departamento o municipio...";
+  searchInput.style.cssText = `flex:1;min-width:220px;padding:7px 10px;border:1px solid ${colors.grid};border-radius:6px;font:${FONT};background:${colors.surface};color:${colors.textPrimary}`;
+
+  const tipoSelect = document.createElement("select");
+  tipoSelect.style.cssText = `padding:7px 10px;border:1px solid ${colors.grid};border-radius:6px;font:${FONT};background:${colors.surface};color:${colors.textPrimary}`;
+  const optAll = document.createElement("option");
+  optAll.value = "";
+  optAll.textContent = "Todos los tipos";
+  tipoSelect.appendChild(optAll);
+  for (const t of tipos) {
+    const opt = document.createElement("option");
+    opt.value = t;
+    opt.textContent = t;
+    tipoSelect.appendChild(opt);
+  }
+
+  const countEl = document.createElement("div");
+  countEl.style.cssText = `color:${colors.textSecondary};font-size:11px;white-space:nowrap;margin-left:auto`;
+
+  controls.append(searchInput, tipoSelect, countEl);
+
+  const tableWrap = document.createElement("div");
+  tableWrap.style.cssText = `max-height:520px;overflow:auto;border:1px solid ${colors.grid};border-radius:8px`;
+
+  const table = document.createElement("table");
+  table.style.cssText = "width:100%;border-collapse:collapse;font-size:12px";
+
+  const thead = table.createTHead();
+  const headRow = thead.insertRow();
+  headRow.style.cssText = `position:sticky;top:0;background:${colors.surface};z-index:1`;
+
+  for (const col of COLS) {
+    const th = document.createElement("th");
+    th.textContent = col.label;
+    th.style.cssText = `text-align:left;padding:8px 10px;border-bottom:2px solid ${colors.grid};cursor:${col.sortable ? "pointer" : "default"};white-space:nowrap;user-select:none${col.width ? `;width:${col.width}` : ""}`;
+    if (col.sortable) {
+      const arrow = document.createElement("span");
+      arrow.style.cssText = "margin-left:4px;opacity:0.5;font-size:10px";
+      th.appendChild(arrow);
+      th.addEventListener("click", () => {
+        if (state.sortKey === col.key) state.sortDir *= -1;
+        else { state.sortKey = col.key; state.sortDir = 1; }
+        render();
+      });
+    }
+    headRow.appendChild(th);
+  }
+
+  const tbody = table.createTBody();
+  table.append(thead, tbody);
+  tableWrap.appendChild(table);
+  root.append(controls, tableWrap);
+
+  function badge(tipo) {
+    const span = document.createElement("span");
+    span.textContent = tipo || "s/t";
+    span.style.cssText = `display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;color:#fff;background:${TIPO_POSTGRADO_COLORS[tipo] ?? colors.muted}`;
+    return span;
+  }
+
+  function linkCell(url) {
+    const td = document.createElement("td");
+    td.style.cssText = "padding:6px 10px;vertical-align:top";
+    if (url) {
+      const a = document.createElement("a");
+      a.href = url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = "Ver ↗";
+      a.style.color = colors.blue;
+      td.appendChild(a);
+    }
+    return td;
+  }
+
+  function render() {
+    const q = state.query.trim().toLowerCase();
+    const filtered = postgrados.filter(d => {
+      if (state.tipo !== "" && d.tipo !== state.tipo) return false;
+      if (q === "") return true;
+      return (d.ies + " " + d.programa + " " + d.departamento + " " + d.municipio).toLowerCase().includes(q);
+    });
+
+    filtered.sort((a, b) => {
+      let av = a[state.sortKey], bv = b[state.sortKey];
+      if (state.sortKey === "semestres") { av = +av || 0; bv = +bv || 0; }
+      if (av < bv) return -1 * state.sortDir;
+      if (av > bv) return 1 * state.sortDir;
+      return 0;
+    });
+
+    Array.from(headRow.children).forEach((th, i) => {
+      const arrow = th.querySelector("span");
+      if (arrow) arrow.textContent = state.sortKey === COLS[i].key ? (state.sortDir === 1 ? "▲" : "▼") : "";
+    });
+
+    tbody.replaceChildren();
+    for (const d of filtered) {
+      const tr = tbody.insertRow();
+      tr.style.borderBottom = `1px solid ${colors.grid}`;
+      tr.addEventListener("mouseenter", () => tr.style.background = "rgba(42,120,214,0.06)");
+      tr.addEventListener("mouseleave", () => tr.style.background = "");
+
+      const iesTd = tr.insertCell();
+      iesTd.textContent = d.ies;
+      iesTd.style.cssText = "padding:6px 10px;vertical-align:top";
+
+      const tipoTd = tr.insertCell();
+      tipoTd.style.cssText = "padding:6px 10px;vertical-align:top";
+      tipoTd.appendChild(badge(d.tipo));
+
+      [d.sector, d.programa, d.departamento, d.municipio, d.modalidad, d.semestres, d.snies].forEach(v => {
+        const td = tr.insertCell();
+        td.textContent = v || "";
+        td.style.cssText = "padding:6px 10px;vertical-align:top";
+      });
+
+      tr.append(linkCell(d.linkU), linkCell(d.linkP));
+    }
+
+    countEl.textContent = `${filtered.length} de ${postgrados.length} programas`;
+  }
+
+  searchInput.addEventListener("input", () => { state.query = searchInput.value; render(); });
+  tipoSelect.addEventListener("change", () => { state.tipo = tipoSelect.value; render(); });
+
+  render();
+  return root;
+}
+```
+
+**@tbl-postgrados.** Inventario de postgrados en gestión del riesgo de desastres, hoja `Postgrados`. Tabla interactiva: buscador, filtro por tipo y columnas ordenables.
 
 # Producción científica de Colombia en GRD
 
-Está bien establecido que los principales actores que generan conocimiento científico y tecnológico en Colombia son principalmente universidades (Fig. 3) y esta tendencia se mantiene desde hace 25 años. En el país existe una sólida tradición en investigación científica en GRD que se ejemplifica en el aumento de artículos científicos publicados en los últimos 25 años con cerca de 3,100 ítems (@fig-produccion-anual). Existen investigadores bien establecidos, altamente productivos, con reconocimiento mundial y liderados por investigadores principales como Juan Carlos Reyes (Universidad de los Ándes), Julián Carrillo (Universidad Militar), y Omar Darío Cardona (Universidad Nacional de Colombia, sede Manizales), todos en riesgo sísmico. 
-Como un reflejo de la producción científica concentrada en las universidades, la producción científica se realiza en los departamentos de Bogotá D.C., Antioquia, Atlántico, Valle del Cauca y Bolívar (Fig. 3)
+## **Tamaño de la producción científica por instituciones, procesos y amenazas**
+
+Está bien establecido que los principales actores que generan conocimiento científico y tecnológico en Colombia son principalmente universidades (Fig. 3) y esta tendencia se mantiene desde hace 25 años. En el país existe una sólida tradición en investigación científica en GRD que se ejemplifica en el aumento de artículos científicos publicados en los últimos 25 años con cerca de 3,100 ítems (@fig-produccion-anual). Existen investigadores bien establecidos, altamente productivos, con reconocimiento mundial y liderados por investigadores principales como Juan Carlos Reyes (Universidad de los Ándes), Julián Carrillo (Universidad Militar), y Omar Darío Cardona (Universidad Nacional de Colombia, sede Manizales), todos en riesgo sísmico. Como un reflejo de la producción científica concentrada en las universidades, la producción científica se realiza en los departamentos de Bogotá D.C., Antioquia, Atlántico, Valle del Cauca y Bolívar (Fig. 3)
 
 ![Producción científica en Colombia en gestión del riesgo de desastres entre los años 2000 a 2025. Colombia produjo un total de 3,074 ítems (producción científica potencial en Scopus) entre artículos científicos, libros, capítulos de libro, reviews.](images/produccion-anual-scopus.png){#fig-produccion-anual}
 
-## Producción científica por instituciones
+### Producción científica por instituciones
 
 ```{ojs}
 //| label: fig-top-instituciones
@@ -934,7 +1296,7 @@ barChartH(countTop(vigilancia.filter(d => d["AÑO"] >= 2022 && d["AÑO"] <= 2025
 })
 ```
 
-## Producción científica por departamento
+### Producción científica por departamentos
 
 Producción científica en GRD por departamento de la institución colombiana de afiliación, ranking descendente. Cobertura parcial: el 12,5% de los registros no tiene departamento de la institución colombiana identificado, y se excluyeron afiliaciones extranjeras.
 
@@ -948,26 +1310,26 @@ rankBarChart(vigilancia_map_data, {
 })
 ```
 
-## Producción científica por procesos de la gestión del riesgo de desastres
+### Producción científica por procesos de la gestión del riesgo de desastres
 
-En el periodo 2020-2026, la distribución anual de la producción científica en GRD según el proceso de la gestión del riesgo (conocimiento del riesgo, reducción del riesgo y manejo de desastres), el proceso de conocimiento del riesgo concentra el 76,4% de la producción (691 de 904 productos clasificados), seguido por reducción del riesgo con 16,9% (153) y manejo del riesgo con 6,6% (60).
+En cuanto a la producción científica por procesos de la gestión del riesgo de desastres, para el periodo 2020–2026 (junio) se observa que el proceso de conocimiento del riesgo el proceso de conocimiento del riesgo concentra el 77,4% de la producción (671 de 867 productos clasificados), seguido por reducción del riesgo con 16,5% (143) y manejo de desastres con 6,1% (53) @fig-vigilancia-resumen.
 
 ```{ojs}
 //| label: fig-vigilancia-resumen
-//| fig-cap: "Evolución anual de la producción científica por proceso de gestión del riesgo (Conocimiento, Reducción, Manejo), hoja `Vigilancia_CTeI`."
+//| fig-cap: "**Producción científica por procesos de gestión del riesgo.** Según la base de datos de vigilancia tecnológica, entre 2020 y 2026 (junio), la producción científica osciló entre un mínimo de 61 productos en 2020 y un máximo de 162 en 2025 (izquierda). Asimismo, al desagregar la producción científica por proceso de gestión del riesgo (conocimiento del riesgo, reducción del riesgo y manejo de desastres), se observa que el proceso de conocimiento del riesgo concentra la mayor proporción de nuevo conocimiento generado."
 //| echo: false
 stackedBarV(pivotByYearProceso(vigilancia), Object.keys(PROCESO_COLORS), PROCESO_COLORS, {
   title: "Evolución anual por proceso GRD", width: 400, height: 460
 })
 ```
 
-## Producción científica para las principales amenazas
+### Producción científica para las principales amenazas
 
-Frecuencia de la producción científica en GRD por tipo de amenaza (n = 561 productos con amenaza identificada). El riesgo sísmico concentra el 31,9% de la producción (179 productos), seguido por movimientos en masa con 10,7% (60) e inundación con 8,9% (50); el resto de amenazas registran individualmente menos del 7% cada una.
+Frecuencia de la producción científica en GRD por tipo de amenaza (n = 561 productos con amenaza identificada). Terremotos (sismo) concentra el 29,9% de la producción (199 productos), seguido por movimiento en masa gravitacional ("deslizamiento") con 11,6% (77) e inundación con 11,3% (75); el resto de amenazas específicas registran individualmente menos del 7% cada una @fig-amenazas-frecuencia.
 
 ```{ojs}
 //| label: fig-amenazas-frecuencia
-//| fig-cap: "Frecuencia de la producción de nuevo conocimiento para las principales amenazas."
+//| fig-cap: "**Producción científica por amenazas**. La frecuencia de producción de nuevo conocimiento por amenaza muestra que la amenaza sísmica presenta la mayor producción, seguida de los movimientos en masa, las inundaciones y los incendios forestales. La asignación a una amenaza para cada producto de conocimiento se realizó mediante un método híbrido según la taxonomía HIPs de UNDRR & ICS (2025d). La cual contiene 281 amenazas clasificadas en 8 clústeres. Se empleó un clasificador determinístico local (diccionario TEMA→HIPs + palabras clave, sin LLM) cubrió ~75 % de los registros válidos; el 25 % restante, con temas genéricos sin correspondencia léxica, se revisó manualmente mediante lectura de título y objetivo por Claude Sonnet 4.5 (Anthropic), validando cada asignación contra el catálogo oficial antes de incorporarla."
 //| echo: false
 {
   const RENAME = {
@@ -995,29 +1357,13 @@ Frecuencia de la producción científica en GRD por tipo de amenaza (n = 561 pro
 }
 ```
 
-## Producción científica por amenaza específica
+### Producción científica por subprocesos y otras temáticas
 
-Frecuencia de la producción científica en GRD por amenaza específica, clasificada según la taxonomía Hazard Information Profiles (HIPs) de UNDRR-ISC (n = 665 productos clasificados; se excluyen registros sin amenaza específica identificada o marcados como "Por determinar"). El terremoto (sismo) concentra el 29,9% de la producción (199 productos), seguido por movimiento en masa gravitacional ("deslizamiento") con 11,6% (77) e inundación con 11,3% (75); el resto de amenazas específicas registran individualmente menos del 7% cada una.
-
-```{ojs}
-//| label: fig-amenaza-especifica-frecuencia
-//| fig-cap: "Frecuencia de la producción de nuevo conocimiento por amenaza específica (taxonomía Hazard Information Profiles - HIPs de UNDRR-ISC), hoja `Vigilancia_CTeI`, columna `AMENAZA_ESPECIFICA`. Se excluyen registros sin amenaza identificada o marcados como \"Por determinar\"."
-//| echo: false
-{
-  const rows = vigilancia
-    .map(d => ({ AMENAZA_ESPECIFICA: (d.AMENAZA_ESPECIFICA ?? "").trim() }))
-    .filter(d => d.AMENAZA_ESPECIFICA !== "" && d.AMENAZA_ESPECIFICA.toUpperCase() !== "POR DETERMINAR");
-  return barChartH(countTop(rows, "AMENAZA_ESPECIFICA", Infinity, { truncate: 55 }), {
-    title: "Producción por amenaza específica (HIPs)", marginLeft: 340, width: 760
-  });
-}
-```
-
-## Producción científica por subprocesos y otras temáticas
+La clasificación anterior de productos de nuevo conocimiento enfatizó una clasificación hacia la amenaza. Así mismo, se clasificaron los productos en otras categorias como los subprocesos de la GRD y en otros conceptos generales como cambio climático cuando no existia una categoria desde la GRD.
 
 ```{ojs}
 //| label: fig-otros-temas-frecuencia
-//| fig-cap: "Frecuencia de productos de vigilancia CTeI por subproceso u otra temáticas"
+//| fig-cap: "**Frecuencia de productos de vigilancia CTeI por subprocesos y otras temáticas.** Se destacan temáticas como hidrología, infraestructural cambio climático o vulnerabilidad. Estos productos requieres un análisis más detallado para establacer su relación con por ejemplo el tipo de vulnerabilidad a una amenaza especifica."
 //| echo: false
 {
   const RENAME = {
@@ -1050,7 +1396,7 @@ Frecuencia de la producción científica en GRD por amenaza específica, clasifi
 }
 ```
 
-## Principales tipos de productos de nuevo conocimiento
+### Principales tipos de productos de nuevo conocimiento
 
 ```{ojs}
 //| label: fig-tipo-frecuencia
@@ -1061,7 +1407,7 @@ barChartV(countTop(vigilancia, "TIPO", Infinity, { fillna: "Sin especificar" }),
 })
 ```
 
-## Principales revistas científicas y libros dónde autores colombianos publican
+### Principales revistas científicas y libros dónde autores colombianos publican
 
 ```{ojs}
 //| label: fig-top-revistas
@@ -1108,180 +1454,36 @@ function countSiNo(rows, column) {
 }
 ```
 
-# Anexos
+## **Producción de tecnologías en el país** 
 
-## Convocatorias nacionales Minciencias 2022-2026
+# **Transferencia de ciencia y tecnología, e impacto local**
 
-```{ojs}
-//| echo: false
-financiacionNal = d3.csv(sheetCsvUrl("Financiacion-Nal"))
-```
+## **Marco Estratégico de Gestión Integral del Riesgo de Desastres (MEGIR)**
 
-```{ojs}
-//| echo: false
-convocatorias = financiacionNal
-  .slice(18, 67) // filas 20-68 de la hoja (ID N-19 a N-66); fila 1 = encabezado
-  .filter(d => d["CONTIENE GRD"]?.trim() === "Si")
-  .map(d => ({
-    institucion: (d.INSTITUCION_FINANCIADORA ?? "").trim(),
-    anio: (d["AÑO"] ?? "").trim(),
-    area: (d.AREA ?? "").trim(),
-    titulo: (d["TITULO OPORTUNIDAD DE FINANCIACION"] ?? "").trim(),
-    monto: (d.MONTO ?? "").trim(),
-    url: (d.URL ?? "").trim()
-  }))
+El MEGIR (<https://portal.gestiondelriesgo.gov.co/marcoestrategico>), es una línea orientadora del proceso de implementación del Plan Nacional para la Gestión del Riesgo de Desastres 2015-2030 (PNGRD), que emplea encuestas anuales para monitorear la inclusión de las políticas públicas de gestión de riesgo en los niveles territoriales (departamental y municipal), sectores nacionales, y sociedad-sector privado. El MEGIR tiene el propósito de fortalecer los procesos sociales de la gestión del riesgo en el marco de la Ley 1523 de 2012 y las capacidades mínimas a nivel territorial y sectorial.
 
-YEAR_COLORS = ({ 2022: colors.blueDark, 2023: colors.blue, 2024: colors.aqua, 2025: colors.yellow, 2026: colors.orange })
-```
+Para realizar los diagnósticos territoriales y sectoriales en los 32 departamentos y 1102 municipios del país, el MEGIR realiza una encuesta con nueve componentes agrupados en cuatro ejes: i) Gobernanza territorial, ii) Gestión de los procesos de planificación e inversión, iii) Fortalecimiento operacional y iv) Gestión local, comunitaria y privada. 
 
-```{ojs}
-//| label: fig-financiacion-nal-tabla
-//| fig-cap: "Convocatorias nacionales de financiación con relación a GRD (ID N-19 a N-66), hoja `Financiacion-Nal`. Tabla interactiva: buscador, filtro por año y columnas ordenables."
-//| echo: false
-{
-  const COLS = [
-    { key: "institucion", label: "Institución financiadora", sortable: true, width: "170px" },
-    { key: "anio", label: "Año", sortable: true, width: "70px" },
-    { key: "area", label: "Área", sortable: true },
-    { key: "titulo", label: "Título de la convocatoria", sortable: true },
-    { key: "monto", label: "Monto", sortable: false, width: "220px" },
-    { key: "url", label: "Enlace", sortable: false, width: "84px" }
-  ];
+Desde 2024, el MEGIR en su Componente 3 “Acordar planes de fortalecimiento institucional y/o hojas de ruta, para fortalecer capacidades en gestión del riesgo de desastres en cada sector estratégico (Art 2, 8, 12 y 14. Capítulo I Ley 1523 de 2012)” pregunta sobre la  “Participación en Ciencia, Tecnología e Innovación (CTI)”.
 
-  const anios = Array.from(new Set(convocatorias.map(d => d.anio))).sort();
-  const state = { query: "", anio: "", sortKey: "anio", sortDir: -1 };
+En el reporte MEGIR de 2025, solo 6 departamentos respondieron "SI" a la participación en actividades de CTeI: Antioquia, Caquetá, Cauca, Quindío, Tolima, y Vichada. Sin embargo, ninguno realizó gestiones o inversiones de su presupuesto en CTeI.
 
-  const root = document.createElement("div");
-  root.style.cssText = `font:${FONT};color:${colors.textPrimary}`;
+En cuanto a los municipios, 71 municipios de 1103 respuestas indicaron que participaron en actividades de CTeI, y 92 municipios respondieron que sí se realizó gestión o inversión de recursos para CTeI. Así mismo, 12 municipios reportaron ejecutar proyectos, y 12 municipios formular proyectos.	
 
-  const controls = document.createElement("div");
-  controls.style.cssText = "display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:10px";
+# **Conclusiones**
 
-  const searchInput = document.createElement("input");
-  searchInput.type = "search";
-  searchInput.placeholder = "Buscar por institución, área o título...";
-  searchInput.style.cssText = `flex:1;min-width:220px;padding:7px 10px;border:1px solid ${colors.grid};border-radius:6px;font:${FONT};background:${colors.surface};color:${colors.textPrimary}`;
+::: {.callout-important style="background-color: #e3f0fbff; padding:20px; border: none !important;" appearance="minimal" icon="false"}
+**Caja 3 \| Mensajes clave del estado de la ciencia de los desastres.**
 
-  const yearSelect = document.createElement("select");
-  yearSelect.style.cssText = `padding:7px 10px;border:1px solid ${colors.grid};border-radius:6px;font:${FONT};background:${colors.surface};color:${colors.textPrimary}`;
-  const optAll = document.createElement("option");
-  optAll.value = "";
-  optAll.textContent = "Todos los años";
-  yearSelect.appendChild(optAll);
-  for (const a of anios) {
-    const opt = document.createElement("option");
-    opt.value = a;
-    opt.textContent = a;
-    yearSelect.appendChild(opt);
-  }
+**Convocatorias nacionales**: La ciencia de los desastres se ha posicionado en las  convocatorias Minciencias dentro de su agenda de financiamiento. Minciencias lanzó 92 convocatorias de CTeI, de las cuales 41 permitieron postular proyectos o capital humano, con líneas temáticas explícitas en GRD.
 
-  const countEl = document.createElement("div");
-  countEl.style.cssText = `color:${colors.textSecondary};font-size:11px;white-space:nowrap;margin-left:auto`;
+**Demandas territoriales**: Los departamentos sí postulan demandas territoriales en GRD. En el bienio 2023–2024, 27 departamentos declararon 71 demandas territoriales vinculadas a la GRD. Para el bienio 2025–2026, 15 departamentos presentaron 20 demandas territoriales. Existe una articulación territorial de la CTeI con las prioridades de gestión del riesgo que debe mantenerse y promoverse en cada bienio.
 
-  controls.append(searchInput, yearSelect, countEl);
+**Grupos e institutos de investigación**: Colombia tiene grupos consolidados en GRD. Existen 58 grupos de investigación con alta relación a GRD, concentrados en ingeniería y ciencias naturales. Los grupos se localizan en Bogotá, Medellín, Cali y Barranquilla..
 
-  const tableWrap = document.createElement("div");
-  tableWrap.style.cssText = `max-height:520px;overflow:auto;border:1px solid ${colors.grid};border-radius:8px`;
+**Generación de conocimiento creciente**: Colombia tiene producción científica sólida y creciente en GRD liderada por universidades. Entre 2020 y 2025 Colombia produjo 2.974 productos científicos en GRD. La producción se concentra en la Universidad Nacional de Colombia, la Universidad de los Andes y la Universidad de Antioquia, evidenciando capacidades sólidas, pero concentrada en Universidades. 
 
-  const table = document.createElement("table");
-  table.style.cssText = "width:100%;border-collapse:collapse;font-size:12px";
+**Formación posgradual**: Existe una oferta activa de 10 especializaciones y 13 maestrías en GRD; sin embargo, no existe un programa de doctorado acreditado específico en GRD.
 
-  const thead = table.createTHead();
-  const headRow = thead.insertRow();
-  headRow.style.cssText = `position:sticky;top:0;background:${colors.surface};z-index:1`;
-
-  for (const col of COLS) {
-    const th = document.createElement("th");
-    th.textContent = col.label;
-    th.style.cssText = `text-align:left;padding:8px 10px;border-bottom:2px solid ${colors.grid};cursor:${col.sortable ? "pointer" : "default"};white-space:nowrap;user-select:none${col.width ? `;width:${col.width}` : ""}`;
-    if (col.sortable) {
-      const arrow = document.createElement("span");
-      arrow.style.cssText = "margin-left:4px;opacity:0.5;font-size:10px";
-      th.appendChild(arrow);
-      th.addEventListener("click", () => {
-        if (state.sortKey === col.key) state.sortDir *= -1;
-        else { state.sortKey = col.key; state.sortDir = 1; }
-        render();
-      });
-    }
-    headRow.appendChild(th);
-  }
-
-  const tbody = table.createTBody();
-  table.append(thead, tbody);
-  tableWrap.appendChild(table);
-  root.append(controls, tableWrap);
-
-  function badge(anio) {
-    const span = document.createElement("span");
-    span.textContent = anio || "s/a";
-    span.style.cssText = `display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;color:#fff;background:${YEAR_COLORS[anio] ?? colors.muted}`;
-    return span;
-  }
-
-  function render() {
-    const q = state.query.trim().toLowerCase();
-    const filtered = convocatorias.filter(d => {
-      if (state.anio !== "" && d.anio !== state.anio) return false;
-      if (q === "") return true;
-      return (d.institucion + " " + d.area + " " + d.titulo).toLowerCase().includes(q);
-    });
-
-    filtered.sort((a, b) => {
-      let av = a[state.sortKey], bv = b[state.sortKey];
-      if (state.sortKey === "anio") { av = +av || 0; bv = +bv || 0; }
-      if (av < bv) return -1 * state.sortDir;
-      if (av > bv) return 1 * state.sortDir;
-      return 0;
-    });
-
-    Array.from(headRow.children).forEach((th, i) => {
-      const arrow = th.querySelector("span");
-      if (arrow) arrow.textContent = state.sortKey === COLS[i].key ? (state.sortDir === 1 ? "▲" : "▼") : "";
-    });
-
-    tbody.replaceChildren();
-    for (const d of filtered) {
-      const tr = tbody.insertRow();
-      tr.style.borderBottom = `1px solid ${colors.grid}`;
-      tr.addEventListener("mouseenter", () => tr.style.background = "rgba(42,120,214,0.06)");
-      tr.addEventListener("mouseleave", () => tr.style.background = "");
-
-      const instTd = tr.insertCell();
-      instTd.textContent = d.institucion;
-      instTd.style.cssText = "padding:6px 10px;vertical-align:top";
-
-      const anioTd = tr.insertCell();
-      anioTd.style.cssText = "padding:6px 10px;vertical-align:top";
-      anioTd.appendChild(badge(d.anio));
-
-      [d.area, d.titulo, d.monto].forEach(v => {
-        const td = tr.insertCell();
-        td.textContent = v || "";
-        td.style.cssText = "padding:6px 10px;vertical-align:top";
-      });
-
-      const linkTd = tr.insertCell();
-      linkTd.style.cssText = "padding:6px 10px;vertical-align:top";
-      if (d.url) {
-        const a = document.createElement("a");
-        a.href = d.url;
-        a.target = "_blank";
-        a.rel = "noopener";
-        a.textContent = "Ver ↗";
-        a.style.color = colors.blue;
-        linkTd.appendChild(a);
-      }
-    }
-
-    countEl.textContent = `${filtered.length} de ${convocatorias.length} convocatorias`;
-  }
-
-  searchInput.addEventListener("input", () => { state.query = searchInput.value; render(); });
-  yearSelect.addEventListener("change", () => { state.anio = yearSelect.value; render(); });
-
-  render();
-  return root;
-  return table;
-}
-```
+**MEGIR**: La participación territorial en CTeI para GRD es baja, sin inversión departamental real. Existen pocos registros en las encuestas de departamentos y municipios. Aunque sí existe participación en actividades de CTeI, pocos municipios invierten, y muy pocos formulan o ejecutan proyectos. La promoción continua desde los CDGRD y CMGRD hacia los CODECTI es necesaria.
+:::
