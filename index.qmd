@@ -569,7 +569,7 @@ ojs_define(vigilancia_map_data=vigilancia_map_data)
 
 # Introducción
 
-Para monitorear la implementación de la CTeI en el Marco de Sendai, el monitoreo del progreso en las 58 acciones de la Hoja de Ruta de Ciencia y Tecnología constituye un referente para determinar el estado de la ciencia y la tecnología en GRD en los países. Una evaluación del estado de la CTeI es un diagnóstico sistemático y periódico de las capacidades científicas, tecnológicas e institucionales. También de la producción, disponibilidad y aplicación del conocimiento, la innovación, la articulación entre ciencia, política y sociedad y las brechas que limitan la generación y utilización de evidencia, herramientas y soluciones para comprender, anticipar, prevenir y reducir el riesgo de desastres (UNDRR, 2016, 2022, 2024).
+Para monitorear la implementación de la CTeI en el Marco de Sendai, el progreso en las 58 acciones de la Hoja de Ruta de Ciencia y Tecnología constituye un referente para determinar el estado de la ciencia y la tecnología en GRD en los países. Una evaluación del estado de la CTeI es un diagnóstico sistemático y periódico de las capacidades científicas, tecnológicas e institucionales. También un diagnóstico de la producción, disponibilidad y aplicación del conocimiento, la innovación, la articulación entre ciencia, política y sociedad y las brechas que limitan la generación y utilización de evidencia, herramientas y soluciones para comprender, anticipar, prevenir y reducir el riesgo de desastres (UNDRR, 2016, 2022, 2024).
 
 Colombia no ha realizado evaluaciones sistemáticas del estado de la CTeI en GRD. Realizarlas constituye un instrumento de inteligencia estratégica para el SNGRD al analizar sus capacidades e infraestructuras, la pertinencia y aplicación del conocimiento frente a las necesidades de la gestión del riesgo, así como sus procesos de adopción, transferencia, articulación e implementación territorial. De esta manera, sus resultados pueden orientar las decisiones de inversión, coordinación institucional, fortalecimiento de capacidades y formulación de agendas de investigación, innovación, desarrollo tecnológico y política científica. 
 
@@ -889,7 +889,7 @@ Se concluye que en el bienio 2023–2024 existió un mayor número de demandas t
 ## Institutos y grupos de investigación
 Un grupo de investigación, desarrollo tecnológico o de innovación es un conjunto de personas que interactúan para investigar y generar productos de conocimiento según un plan de trabajo. Un grupo se reconoce como tal al demostrar resultados verificables derivados de proyectos y actividades de CTeI. Un centro o instituto de investigación es una organización pública, privada o mixta independiente que tiene como misión institucional desarrollar diversas actividades de investigación (básica o aplicada), con líneas de investigación declaradas y un propósito científico específico. En Colombia existen 6.322 grupos reconocidos de investigación, desarrollo tecnológico o innovación (Minciencias, 2025), así como 40 centros/institutos de investigación reconocidos como actores del SNCTeI. 
 
-Acorde a la Plataforma ScienTI de Minciencias se estima existen 58 grupos de investigación con una relación directa en GRD (ver tabla a continuación). Los grupos corresponden a cuatro grandes áreas de conocimiento: ciencias naturales (15 grupos), ingeniería y tecnología (18 grupos), ciencias médicas y de la salud (7 grupos), ciencias sociales (7 grupos). Las ciudades con mayor cantidad de grupos son Bogotá, D.C. (20), Medellín (6), Cali (5), y Barranquilla (5). Sin embargo, es probable que una proporción significativa del conocimiento relacionado con la GRD se produzca por grupos con líneas de investigación no declaradas explícitamente a desastres en la plataforma ScienTI. Por ejemplo, el número de grupos de investigación puede ser mayor al sumar áreas relacionadas como 15 grupos en geotecnia, 7 grupos de soluciones basadas en la naturaleza, 6 grupos en astrofísica, 3 grupos en ordenamiento territorial, o alguno de los 358 grupos en salud pública citando algunas áreas. 
+Acorde a la Plataforma ScienTI de Minciencias se estima existen 58 grupos de investigación con una relación directa en GRD (Tabla 3). Los grupos corresponden a cuatro grandes áreas de conocimiento: ingeniería y tecnología (18 grupos), ciencias naturales (15 grupos), ciencias médicas y de la salud (7 grupos), ciencias sociales (7 grupos). Las ciudades con mayor cantidad de grupos son Bogotá, D.C. (20), Medellín (6), Cali (5), y Barranquilla (5). Sin embargo, es probable que una proporción significativa del conocimiento relacionado con la GRD se produzca por grupos con líneas de investigación no declaradas explícitamente a desastres en la plataforma ScienTI. Por ejemplo, el número de grupos de investigación puede ser mayor al sumar áreas relacionadas como 15 grupos en geotecnia, 7 grupos de soluciones basadas en la naturaleza, 6 grupos en astrofísica, 3 grupos en ordenamiento territorial, o alguno de los 358 grupos en salud pública citando algunas áreas. 
 
 Así mismo, se identificaron 13 institutos de investigación de los cuales ocho poseen reconocimiento de Minciencias y cuatro centros de ciencia reconocidos. Estos valores pueden ser mayores entendiendo que cerca del 80% de los 40 centros/institutos de investigación y de los 155 centro de ciencia reconocidos podrían tener capacidades científicas para investigar en ciencia de los desastres (i.e., investigar en al menos uno de los ocho grupos de amenazas definidos por los Hazard Information Profiles de UNDRR-ISC). Estas capacidades muestran que desde hace más de una década en Colombia existen institutos, centros y grupos de investigación bien establecidos, altamente productivos, y con reconocimiento.
 
@@ -1280,9 +1280,120 @@ TIPO_POSTGRADO_COLORS = ({ "Especialización": colors.aqua, "Maestria": colors.b
 
 ## **Tamaño de la producción científica por instituciones, procesos y amenazas**
 
-Está bien establecido que los principales actores que generan conocimiento científico y tecnológico en Colombia son principalmente universidades (Fig. 3) y esta tendencia se mantiene desde hace 25 años. En el país existe una sólida tradición en investigación científica en GRD que se ejemplifica en el aumento de artículos científicos publicados en los últimos 25 años con cerca de 3,100 ítems (@fig-produccion-anual). Existen investigadores bien establecidos, altamente productivos, con reconocimiento mundial y liderados por investigadores principales como Juan Carlos Reyes (Universidad de los Ándes), Julián Carrillo (Universidad Militar), y Omar Darío Cardona (Universidad Nacional de Colombia, sede Manizales), todos en riesgo sísmico. Como un reflejo de la producción científica concentrada en las universidades, la producción científica se realiza en los departamentos de Bogotá D.C., Antioquia, Atlántico, Valle del Cauca y Bolívar (Fig. 3)
+Está bien establecido que los principales actores que generan conocimiento científico y tecnológico en Colombia son principalmente universidades (Fig. 3) y esta tendencia se mantiene desde hace 25 años. En el país existe una sólida tradición en investigación científica en GRD que se ejemplifica en el aumento de productos de conocimiento publicados en los últimos 25 años con cerca de tres mil ítems (artículos, libros, capítulos de libros y reviews). (@fig-produccion-anual). Existen investigadores bien establecidos, altamente productivos, con reconocimiento mundial y liderados por investigadores principales como Juan Carlos Reyes (Universidad de los Ándes), Julián Carrillo (Universidad Militar), y Omar Darío Cardona (Universidad Nacional de Colombia, sede Manizales), todos en riesgo sísmico. Como un reflejo de la producción científica concentrada en las universidades, la producción científica se realiza en los departamentos de Bogotá D.C., Antioquia, Atlántico, Valle del Cauca y Bolívar (Fig. 3)
 
-![Producción científica en Colombia en gestión del riesgo de desastres entre los años 2000 a 2025. Colombia produjo un total de 3,074 ítems (producción científica potencial en Scopus) entre artículos científicos, libros, capítulos de libro, reviews.](images/produccion-anual-scopus.png){#fig-produccion-anual}
+```{ojs}
+//| echo: false
+calcPaises = {
+  const rows = await d3.csv(sheetCsvUrl("Calc_Data"), d3.autoType);
+  return rows
+    .filter(d => Number.isInteger(d["Año"]) && d["Año"] >= 2000 && d["Año"] <= 2025)
+    .map(d => ({
+      year: d["Año"],
+      Colombia: d.Colombia, Argentina: d.Argentina, Brasil: d.Brazil,
+      Chile: d.Chile, Mexico: d.Mexico
+    }));
+}
+
+PAIS_COLORS = ({ Colombia: colors.blue, Argentina: colors.violet, Brasil: colors.orange, Chile: colors.aqua, Mexico: colors.green })
+
+function multiLineChart(data, series, colorMap, { title, width = 720, height = 440 } = {}) {
+  const marginTop = 64, marginRight = 20, marginBottom = 30, marginLeft = 56;
+  const years = data.map(d => d.year);
+  const x = d3.scaleLinear().domain(d3.extent(years)).range([marginLeft, width - marginRight]);
+  const maxVal = d3.max(data, d => d3.max(series, k => d[k]));
+  const y = d3.scaleLinear().domain([0, maxVal * 1.08]).nice().range([height - marginBottom, marginTop]);
+
+  const svg = d3.create("svg")
+    .attr("viewBox", [0, 0, width, height]).attr("width", width).attr("height", height)
+    .attr("style", `max-width:100%;height:auto;font:${FONT}`);
+
+  if (title) svg.append("text").attr("x", marginLeft).attr("y", 20)
+    .attr("font-size", 14).attr("font-weight", 600).attr("fill", colors.textPrimary).text(title);
+
+  // Leyenda (el ancho del texto se mide con canvas porque el SVG aún no está
+  // adjunto al DOM en este punto, y getComputedTextLength() da 0 en ese caso).
+  const measureCtx = document.createElement("canvas").getContext("2d");
+  measureCtx.font = "11px system-ui, -apple-system, 'Segoe UI', sans-serif";
+  let lx = 0;
+  const legend = svg.append("g").attr("transform", `translate(${marginLeft},40)`);
+  for (const key of series) {
+    const g = legend.append("g").attr("transform", `translate(${lx},0)`);
+    g.append("circle").attr("r", 4).attr("cy", -4).attr("fill", colorMap[key]);
+    g.append("text").attr("x", 10).attr("y", 0)
+      .attr("font-size", 11).attr("fill", colors.textSecondary).text(key);
+    lx += 24 + measureCtx.measureText(key).width;
+  }
+
+  // Líneas guía horizontales delgadas
+  const yTicks = y.ticks(6);
+  svg.append("g").selectAll("line").data(yTicks).join("line")
+    .attr("x1", marginLeft).attr("x2", width - marginRight)
+    .attr("y1", d => y(d)).attr("y2", d => y(d))
+    .attr("stroke", colors.grid).attr("stroke-width", 1);
+  svg.append("g").selectAll("text").data(yTicks).join("text")
+    .attr("x", marginLeft - 8).attr("y", d => y(d)).attr("dy", "0.32em")
+    .attr("text-anchor", "end").attr("fill", colors.muted).attr("font-size", 10)
+    .text(d3.format(","));
+
+  // Eje X (años)
+  const uniqueYears = Array.from(new Set(years));
+  const xTicks = uniqueYears.filter(yr => yr % 5 === 0 || yr === uniqueYears[0] || yr === uniqueYears[uniqueYears.length - 1]);
+  svg.append("g").selectAll("text").data(xTicks).join("text")
+    .attr("x", d => x(d)).attr("y", height - marginBottom + 16)
+    .attr("text-anchor", "middle").attr("fill", colors.muted).attr("font-size", 10)
+    .text(d => d);
+
+  const line = d3.line().x(d => x(d.year)).y(d => y(d.value)).curve(d3.curveMonotoneX);
+  const seriesData = series.map(key => ({
+    key, color: colorMap[key],
+    values: data.map(d => ({ year: d.year, value: d[key] }))
+  }));
+
+  svg.append("g").selectAll("path").data(seriesData).join("path")
+    .attr("fill", "none")
+    .attr("stroke", d => d.color)
+    .attr("stroke-width", d => d.key === "Colombia" ? 3 : 2)
+    .attr("d", d => line(d.values));
+
+  // Interacción: línea guía vertical + tooltip con los 5 países del año más cercano
+  const crosshair = svg.append("line")
+    .attr("y1", marginTop).attr("y2", height - marginBottom)
+    .attr("stroke", colors.muted).attr("stroke-width", 1).attr("opacity", 0);
+
+  svg.append("rect")
+    .attr("x", marginLeft).attr("y", marginTop)
+    .attr("width", width - marginLeft - marginRight).attr("height", height - marginTop - marginBottom)
+    .attr("fill", "transparent")
+    .on("pointerenter pointermove", function (event) {
+      const [mx] = d3.pointer(event);
+      const yr = Math.max(uniqueYears[0], Math.min(uniqueYears[uniqueYears.length - 1], Math.round(x.invert(mx))));
+      const row = data.find(d => d.year === yr);
+      if (!row) return;
+      crosshair.attr("x1", x(yr)).attr("x2", x(yr)).attr("opacity", 1);
+      const ordered = series.map(k => ({ label: k, raw: row[k] })).sort((a, b) => b.raw - a.raw);
+      showTooltip(event, [
+        { label: `Año ${yr}` },
+        ...ordered.map(d => ({ label: d.label, value: d3.format(",")(d.raw) }))
+      ]);
+    })
+    .on("pointerleave", function () {
+      crosshair.attr("opacity", 0);
+      hideTooltip();
+    });
+
+  return svg.node();
+}
+```
+
+```{ojs}
+//| label: fig-produccion-anual
+//| fig-cap: "**Comparación de la producción científica en GRD en Argentina, Brasil, Chile, Colombia y Mexico entre los años 2000 a 2025**. Colombia produjo un total de 2.892 ítems entre los años 2000 a 2025 ocupando el cuarto lugar entre las mayores economías de latinoamérica (producción científica potencial. Fuente Scopus)."
+//| echo: false
+multiLineChart(calcPaises, ["Colombia", "Argentina", "Brasil", "Chile", "Mexico"], PAIS_COLORS, {
+  title: "Producción científica en GRD por país, 2000-2025", width: 720, height: 440
+})
+```
 
 ### Producción científica por instituciones
 
