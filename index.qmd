@@ -1565,6 +1565,108 @@ function countSiNo(rows, column) {
 }
 ```
 
+## Género en la producción de conocimiento
+Se analizó una tabla de investigadores de 259 registros del monitoreo de capacidades nacionales de CTeI en GRD. Este listado de nombres se considera como una lista nacional expertos en GRD que se ha empleado para los ejercicios de prospectiva en determinar las líneas de investigación en GRD.  Para cada nombre se determinó el género que sugiere lingüísticamente, aplicando reglas onomásticas propias del español y de nombres colombianos, además de criterios para casos de origen extranjero (alemán, italiano, ruso, catalán, vasco). De los 259 nombres, 176 corresponden a género masculino (68 %) y 76 a género femenino (29 %), mientras que 7 (3 %) no pudieron clasificarse por tratarse de nombres de género ambiguo o indeterminado (@fig-genero-investigadores).
+
+```{ojs}
+//| echo: false
+generoInvestigadores = {
+  const rows = await d3.text(libroDatosCsvUrl("Investigadores")).then(d3.csvParseRows);
+  const body = rows.slice(1).filter(r => (r[0] ?? "").trim() !== "");
+  const counts = { Masculino: 0, Femenino: 0 };
+  for (const r of body) {
+    const g = (r[16] ?? "").trim();
+    if (g === "Masculino" || g === "Femenino") counts[g]++;
+  }
+  return [
+    { label: "Masculino", value: counts.Masculino },
+    { label: "Femenino", value: counts.Femenino }
+  ];
+}
+
+GENERO_COLORS = ({ Masculino: colors.blue, Femenino: colors.orange })
+
+function pieChart(data, colorMap, { title, width = 320, height = 280, valueLabel = "" } = {}) {
+  const marginTop = title ? 34 : 10;
+  const legendH = 26;
+  const radius = Math.min(width, height - marginTop - legendH) / 2 - 6;
+  const cx = width / 2, cy = marginTop + radius + 6;
+
+  const svg = d3.create("svg")
+    .attr("viewBox", [0, 0, width, height]).attr("width", width).attr("height", height)
+    .attr("style", `max-width:100%;height:auto;font:${FONT}`);
+
+  if (title) svg.append("text").attr("x", width / 2).attr("y", 20)
+    .attr("text-anchor", "middle").attr("font-size", 14).attr("font-weight", 600)
+    .attr("fill", colors.textPrimary).text(title);
+
+  const total = d3.sum(data, d => d.value);
+  const pie = d3.pie().value(d => d.value).sort(null);
+  const arc = d3.arc().innerRadius(radius * 0.55).outerRadius(radius);
+  const arcs = pie(data);
+
+  const g = svg.append("g").attr("transform", `translate(${cx},${cy})`);
+
+  const paths = g.selectAll("path").data(arcs).join("path")
+    .attr("d", arc)
+    .attr("fill", d => colorMap[d.data.label])
+    .attr("stroke", colors.surface)
+    .attr("stroke-width", 2);
+
+  g.append("text").attr("text-anchor", "middle").attr("dy", "-0.15em")
+    .attr("font-size", 20).attr("font-weight", 700).attr("fill", colors.textPrimary)
+    .text(total);
+  g.append("text").attr("text-anchor", "middle").attr("dy", "1.3em")
+    .attr("font-size", 10).attr("fill", colors.muted)
+    .text(valueLabel);
+
+  paths
+    .on("pointerenter pointermove", function (event, d) {
+      d3.select(this).attr("opacity", 0.85);
+      showTooltip(event, [{ label: d.data.label, value: `${d.data.value} (${(d.data.value / total * 100).toFixed(1)}%)` }]);
+    })
+    .on("pointerleave", function () {
+      d3.select(this).attr("opacity", 1);
+      hideTooltip();
+    });
+
+  // Leyenda centrada (ancho de texto medido con canvas: el SVG aún no está
+  // adjunto al DOM aquí, así que getComputedTextLength() daría 0).
+  const measureCtx = document.createElement("canvas").getContext("2d");
+  measureCtx.font = "11px system-ui, -apple-system, 'Segoe UI', sans-serif";
+  const items = data.map(d => ({
+    ...d,
+    w: 22 + measureCtx.measureText(`${d.label} (${(d.value / total * 100).toFixed(0)}%)`).width
+  }));
+  const totalW = d3.sum(items, d => d.w);
+  let lx = (width - totalW) / 2;
+  const legend = svg.append("g").attr("transform", `translate(0,${height - legendH + 6})`);
+  for (const d of items) {
+    const item = legend.append("g").attr("transform", `translate(${lx},0)`);
+    item.append("circle").attr("r", 4).attr("cy", -4).attr("fill", colorMap[d.label]);
+    item.append("text").attr("x", 10).attr("y", 0)
+      .attr("font-size", 11).attr("fill", colors.textSecondary)
+      .text(`${d.label} (${(d.value / total * 100).toFixed(0)}%)`);
+    lx += d.w;
+  }
+
+  return svg.node();
+}
+```
+
+```{ojs}
+//| label: fig-genero-investigadores
+//| fig-cap: "Proporción de género (masculino/femenino) inferido lingüísticamente en la lista nacional de investigadores en GRD, hoja `Investigadores`. n = 252 investigadores clasificados como masculino o femenino, de 259 registros totales (7 con género ambiguo o indeterminado se excluyen)."
+//| echo: false
+pieChart(generoInvestigadores, GENERO_COLORS, {
+  title: "Género de investigadores en GRD", valueLabel: "investigadores"
+})
+```
+
+Estos resultados sugieren una brecha de género significativa en la conformación del talento humano dedicado a la investigación en gestión del riesgo de desastres en Colombia, con una subrepresentación de mujeres —cercana a un tercio del total— frente a una mayoría masculina. Dado que esta tabla de datos nutre los ejercicios de prospectiva para definir las líneas de investigación en GRD, dicha asimetría podría traducirse en una menor incidencia de perspectivas, prioridades o enfoques metodológicos propios de investigadoras en la agenda científica del sector, así como en los espacios de decisión y liderazgo asociados a ella. 
+Esto plantea la necesidad de revisar los mecanismos de identificación, vinculación y visibilización de investigadoras en GRD, con miras a fortalecer la participación femenina tanto en el registro de capacidades como en los procesos de formulación de la agenda nacional de CTeI en gestión del riesgo, evitando que la desigualdad observada en el talento humano se traslade a los resultados y prioridades de la política pública en la materia.
+
+
 ## **Producción de tecnologías en el país** 
 
 # **Transferencia de ciencia y tecnología, e impacto local**
