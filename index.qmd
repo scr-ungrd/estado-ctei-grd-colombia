@@ -1399,7 +1399,7 @@ multiLineChart(calcPaises, ["Colombia", "Argentina", "Brasil", "Chile", "Mexico"
 
 ```{ojs}
 //| label: fig-top-instituciones
-//| fig-cap: "Instituciones colombianas con mayor producción científica en GRD (top 15), 2022-2025, hoja `Vigilancia_CTeI`. n = 545 productos con institución colombiana identificada, de 573 registros totales en el periodo."
+//| fig-cap: "Instituciones colombianas con mayor producción científica en GRD (top 15), 2022-2025, hoja `Vigilancia_CTeI`. n = 553 productos con institución colombiana identificada, de 583 registros totales en el periodo."
 //| echo: false
 barChartH(countTop(vigilancia.filter(d => d["AÑO"] >= 2022 && d["AÑO"] <= 2025), "INSTITUCION COLOMBIANA", 15), {
   title: "Instituciones colombianas con mayor producción científica en GRD, 2022-2025 (top 15)",
@@ -1423,11 +1423,11 @@ rankBarChart(vigilancia_map_data, {
 
 ### Producción científica por procesos de la gestión del riesgo de desastres
 
-En cuanto a la producción científica por procesos de la gestión del riesgo de desastres, para el periodo 2020–2026 (junio) se observa que el proceso de conocimiento del riesgo el proceso de conocimiento del riesgo concentra el 77,4% de la producción (671 de 867 productos clasificados), seguido por reducción del riesgo con 16,5% (143) y manejo de desastres con 6,1% (53) @fig-vigilancia-resumen.
+En cuanto a la producción científica por procesos de la gestión del riesgo de desastres, para el periodo 2020–2026 (junio) se observa que el proceso de conocimiento del riesgo concentra el 76,2% de la producción (696 de 913 productos clasificados), seguido por reducción del riesgo con 17,3% (158) y manejo de desastres con 6,5% (59) @fig-vigilancia-resumen.
 
 ```{ojs}
 //| label: fig-vigilancia-resumen
-//| fig-cap: "**Producción científica por procesos de gestión del riesgo.** Según la base de datos de vigilancia tecnológica, entre 2020 y 2026 (junio), la producción científica osciló entre un mínimo de 61 productos en 2020 y un máximo de 162 en 2025 (izquierda). Asimismo, al desagregar la producción científica por proceso de gestión del riesgo (conocimiento del riesgo, reducción del riesgo y manejo de desastres), se observa que el proceso de conocimiento del riesgo concentra la mayor proporción de nuevo conocimiento generado."
+//| fig-cap: "**Producción científica por procesos de gestión del riesgo.** Según la base de datos de vigilancia tecnológica, entre 2020 y 2026 (junio), la producción científica osciló entre un mínimo de 61 productos en 2020 y un máximo de 170 en 2025 (izquierda). Asimismo, al desagregar la producción científica por proceso de gestión del riesgo (conocimiento del riesgo, reducción del riesgo y manejo de desastres), se observa que el proceso de conocimiento del riesgo concentra la mayor proporción de nuevo conocimiento generado."
 //| echo: false
 stackedBarV(pivotByYearProceso(vigilancia), Object.keys(PROCESO_COLORS), PROCESO_COLORS, {
   title: "Evolución anual por proceso GRD", width: 400, height: 460
@@ -1436,7 +1436,7 @@ stackedBarV(pivotByYearProceso(vigilancia), Object.keys(PROCESO_COLORS), PROCESO
 
 ### Producción científica para las principales amenazas
 
-Frecuencia de la producción científica en GRD por tipo de amenaza (n = 561 productos con amenaza identificada). Terremotos (sismo) concentra el 29,9% de la producción (199 productos), seguido por movimiento en masa gravitacional ("deslizamiento") con 11,6% (77) e inundación con 11,3% (75); el resto de amenazas específicas registran individualmente menos del 7% cada una @fig-amenazas-frecuencia.
+Frecuencia de la producción científica en GRD por tipo de amenaza (n = 561 productos con amenaza identificada). El riesgo sísmico concentra el 31,9% de la producción (179 productos), seguido por movimientos en masa con 10,9% (61) e inundación con 8,9% (50); el resto de amenazas registran individualmente menos del 7% cada una @fig-amenazas-frecuencia.
 
 ```{ojs}
 //| label: fig-amenazas-frecuencia
@@ -1566,7 +1566,7 @@ function countSiNo(rows, column) {
 ```
 
 ## Género en la producción de conocimiento
-Se analizó una tabla de investigadores de 259 registros del monitoreo de capacidades nacionales de CTeI en GRD. Este listado de nombres se considera como una lista nacional expertos en GRD que se ha empleado para los ejercicios de prospectiva en determinar las líneas de investigación en GRD. Para cada nombre se determinó el género que sugiere lingüísticamente, aplicando reglas onomásticas propias del español y de nombres colombianos, además de criterios para casos de origen extranjero (alemán, italiano, ruso, catalán, vasco). De los 259 nombres, 176 corresponden a género masculino (68 %) y 76 a género femenino (29 %), mientras que 7 (3 %) no pudieron clasificarse por tratarse de nombres de género ambiguo o indeterminado (@fig-genero-investigadores).
+Se analizó una tabla de investigadores de 259 registros del monitoreo de capacidades nacionales de CTeI en GRD. Este listado de nombres se considera como una lista nacional expertos en GRD que se ha empleado para los ejercicios de prospectiva en determinar las líneas de investigación en GRD. Para cada nombre se determinó el género que sugiere lingüísticamente, aplicando reglas onomásticas del español y de nombres colombianos, además de criterios para casos de origen extranjero (alemán, italiano, ruso, catalán, vasco). De los 259 nombres, 176 corresponden a género masculino (68 %) y 76 a género femenino (29 %), mientras que 7 (3 %) no pudieron clasificarse por tratarse de nombres de género ambiguo o indeterminado (@fig-genero-investigadores).
 
 ```{ojs}
 //| echo: false
