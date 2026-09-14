@@ -1566,7 +1566,7 @@ function countSiNo(rows, column) {
 ```
 
 ## Género en la producción de conocimiento
-Se analizó una tabla de investigadores de 259 registros del monitoreo de capacidades nacionales de CTeI en GRD. Este listado de nombres se considera como una lista nacional expertos en GRD que se ha empleado para los ejercicios de prospectiva en determinar las líneas de investigación en GRD.  Para cada nombre se determinó el género que sugiere lingüísticamente, aplicando reglas onomásticas propias del español y de nombres colombianos, además de criterios para casos de origen extranjero (alemán, italiano, ruso, catalán, vasco). De los 259 nombres, 176 corresponden a género masculino (68 %) y 76 a género femenino (29 %), mientras que 7 (3 %) no pudieron clasificarse por tratarse de nombres de género ambiguo o indeterminado (@fig-genero-investigadores).
+Se analizó una tabla de investigadores de 259 registros del monitoreo de capacidades nacionales de CTeI en GRD. Este listado de nombres se considera como una lista nacional expertos en GRD que se ha empleado para los ejercicios de prospectiva en determinar las líneas de investigación en GRD. Para cada nombre se determinó el género que sugiere lingüísticamente, aplicando reglas onomásticas propias del español y de nombres colombianos, además de criterios para casos de origen extranjero (alemán, italiano, ruso, catalán, vasco). De los 259 nombres, 176 corresponden a género masculino (68 %) y 76 a género femenino (29 %), mientras que 7 (3 %) no pudieron clasificarse por tratarse de nombres de género ambiguo o indeterminado (@fig-genero-investigadores).
 
 ```{ojs}
 //| echo: false
@@ -1664,7 +1664,8 @@ pieChart(generoInvestigadores, GENERO_COLORS, {
 ```
 
 Estos resultados sugieren una brecha de género significativa en la conformación del talento humano dedicado a la investigación en gestión del riesgo de desastres en Colombia, con una subrepresentación de mujeres —cercana a un tercio del total— frente a una mayoría masculina. Dado que esta tabla de datos nutre los ejercicios de prospectiva para definir las líneas de investigación en GRD, dicha asimetría podría traducirse en una menor incidencia de perspectivas, prioridades o enfoques metodológicos propios de investigadoras en la agenda científica del sector, así como en los espacios de decisión y liderazgo asociados a ella. 
-Esto plantea la necesidad de revisar los mecanismos de identificación, vinculación y visibilización de investigadoras en GRD, con miras a fortalecer la participación femenina tanto en el registro de capacidades como en los procesos de formulación de la agenda nacional de CTeI en gestión del riesgo, evitando que la desigualdad observada en el talento humano se traslade a los resultados y prioridades de la política pública en la materia.
+
+Esto plantea la necesidad de revisar los mecanismos de identificación, vinculación y visibilización de investigadoras en GRD, con miras a fortalecer la participación de las mujeres tanto en el registro de capacidades como en los procesos de formulación de la agenda nacional de CTeI en gestión del riesgo, evitando que la desigualdad observada en el talento humano se traslade a los resultados y prioridades de la política pública en la materia.
 
 
 ## **Producción de tecnologías en el país** 
