@@ -1681,6 +1681,55 @@ Esto plantea la necesidad de revisar los mecanismos de identificación, vinculac
 
 ## **Producción de tecnologías en el país** 
 
+Las tecnologías asociadas a la GRD como sistemas de alerta temprana, materiales y estructuras resistentes a sismos, dispositivos de extinción de incendios, obras de control hidráulico y equipos de rescate, constituyen una herramienta para reducir la vulnerabilidad de un país. La capacidad de innovar y aplicar estas tecnologías incide en la reducción de pérdidas humanas y económicas asociadas a desastres, y determina la autonomía de un país frente a proveedores externos en momentos críticos de respuesta y reconstrucción.
+
+La actividad de patentamiento es uno de los productos de Generación de Conocimiento reconocidos por Minciencias, en el mismo nivel tipológico que los artículos y libros de investigación. A diferencia de estos, sin embargo, revela dónde se concentra el esfuerzo inventivo, qué actores lo lideran y qué tan dependiente es un país del conocimiento generado en el exterior. Analizar sistemáticamente el registro de patentes vinculadas a la GRD permite, por tanto, identificar debilidades y fortalezas tecnológicas nacionales, orientar recursos de CTeI hacia los subcampos rezagados, y valorar si el país construye capacidades propias o si importa soluciones ya desarrolladas por otros.
+
+```{python}
+#| echo: false
+# Cifras del apartado calculadas desde la hoja `Vigilancia_Patentes` en cada render.
+# Para actualizar: editar la hoja y volver a renderizar (push a main o `quarto render --execute`).
+# Nota: "Total" suma filas por clase IPC (una patente en dos clases cuenta dos veces).
+from IPython.display import Markdown, display
+
+_pat = pd.read_csv(sheet_csv_url("Vigilancia_Patentes")).dropna(subset=["Clase IPC"])
+_pat["co"] = _pat["Clasificación"].str.strip().eq("CO")
+_cls = _pat.groupby("Clase IPC")["co"].agg(total="size", co="sum")
+_cls["pct"] = _cls["co"] / _cls["total"] * 100
+_cls = _cls.sort_values("pct")
+fp = lambda x: f"{x:.1f}%"
+
+pat_total = int(_cls["total"].sum())
+pat_co = int(_cls["co"].sum())
+pat_pct = fp(pat_co / pat_total * 100)
+pat_n_clases = len(_cls)
+pat_fecha = str(_pat["FECHA"].iloc[0]).strip()
+pat_min_cls, pat_max_cls = _cls.index[0], _cls.index[-1]
+pat_min, pat_max = fp(_cls["pct"].iloc[0]), fp(_cls["pct"].iloc[-1])
+pat_G01V1, pat_G08B, pat_A62B = (fp(_cls.loc[c, "pct"]) for c in ("G01V1", "G08B", "A62B"))
+```
+
+Se consultaron patentes asociadas a códigos de la Clasificación Internacional de Patentes (International Patent Classification, IPC) en el Sistema de Información de Propiedad Industrial (SIPI) (ver Anexo 6). Se encontró que el desarrollo de tecnologías en Colombia es liderado por universidades, en línea con el patrón ya identificado para la producción científica en GRD. El registro de patentes muestra también una participación activa de la industria privada nacional. Del total de `{python} pat_total` patentes relevantes identificadas en SIPI para las `{python} pat_n_clases` clases IPC genéricas más asociadas a GRD, el `{python} pat_pct` (`{python} pat_co`) tiene titular colombiano (@tbl-patentes).
+
+Universidades EAFIT, del Valle, EIA, de la Costa y de Medellín concentran buena parte de esa producción, junto con empresas privadas nacionales como Ecopetrol S.A., Cementos Argos S.A., Interconexión Eléctrica S.A. E.S.P. y numerosas S.A.S. de base tecnológica más pequeñas. Esta participación privada no es homogénea, ya que por ejemplo los instrumentos de prospección sísmica (G01V1) son dominados por multinacionales petroleras y la titularidad colombiana cae al `{python} pat_G01V1`, mientras que en sistemas de alarma y señalización (G08B) y en equipos de rescate y protección personal (A62B) alcanza el `{python} pat_G08B` y el `{python} pat_A62B`, respectivamente, impulsada principalmente por universidades y micro y pequeñas empresas más que por grandes compañías. El patrón sugiere que la tecnología colombiana se concentra en soluciones de menor intensidad de capital, dejando los subcampos más especializados en manos extranjeras.
+
+Estos resultados podrían tener implicaciones para la política de CTeI ya que la brecha de titularidad colombiana entre subcampos técnicos (de `{python} pat_min` en `{python} pat_min_cls` a `{python} pat_max` en `{python} pat_max_cls`) indica que el fortalecimiento de capacidades nacionales debe priorizarse donde la dependencia extranjera es mayor, como en la instrumentación sísmica de uso industrial, en lugar de tratar la innovación en GRD como un bloque homogéneo.
+
+Esta actualización, que analiza las `{python} pat_n_clases` clases IPC completas (`{python} pat_total` patentes) frente a las 67 del ejercicio piloto reportado en el Anexo, matiza además el mensaje clave de que la producción en GRD está concentrada en universidades lo que confirma su liderazgo. Sin embargo, revela una contribución real de la industria privada nacional en subcampos específicos, más amplia de lo que sugería la cifra preliminar de 24% colombiana.
+
+Un hallazgo metodológico relevante para la vigilancia tecnológica futura es que 20 titulares que en el listado inicial de SIPI aparecían como colombianos corresponden en realidad a apoderados o contactos locales de solicitantes extranjeros, lo que subraya la necesidad de verificar el campo "Solicitante(s)", y no solo el campo "Titular", para no sobreestimar la capacidad tecnológica nacional en futuros ejercicios de este tipo.
+
+```{python}
+#| echo: false
+#| output: asis
+#| label: tbl-patentes
+#| tbl-cap: "**Vigilancia de patentes GRD en Colombia.** Resumen consolidado por clase IPC de las patentes registradas en SIPI (hoja `Vigilancia_Patentes`, conteo vigente al renderizar el cuaderno). La clasificación de patentes colombianas no solo se realizó consultando el campo 'Solicitante(s)' de cada expediente, sino también el campo 'Titular' de la tabla de resultados (la cual puede mostrar solo el apoderado o contacto colombiano). Este proceso identificó 20 casos de 'Apoderado/Contacto diferente del Solicitante', ya que los titulares que aparecían como colombianos en el listado de resultados tenían domicilio en el extranjero (España, México, Canadá, Ecuador, Perú, Brasil, Chile, Argentina, EE. UU.)."
+_t = _cls.sort_values("total")
+_rows = [f"| {c} | {int(r.total)} | {int(r.co)} | {fp(r.pct)} |" for c, r in _t.iterrows()]
+print("\n".join(["| Clase IPC | Total | Colombianas | % Colombianas |", "|:---|---:|---:|---:|", *_rows,
+                  f"| **Total** | **{pat_total}** | **{pat_co}** | **{pat_pct}** |"]))
+```
+
 # **Transferencia de ciencia y tecnología, e impacto local**
 
 ## **Marco Estratégico de Gestión Integral del Riesgo de Desastres (MEGIR)**
