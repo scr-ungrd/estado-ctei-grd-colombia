@@ -1566,16 +1566,27 @@ function countSiNo(rows, column) {
 ```
 
 ## Género en la producción de conocimiento
-Se analizó una tabla de investigadores de 259 registros del monitoreo de capacidades nacionales de CTeI en GRD. Este listado de nombres se considera como una lista nacional expertos en GRD que se ha empleado para los ejercicios de prospectiva en determinar las líneas de investigación en GRD. Para cada nombre se determinó el género que sugiere lingüísticamente, aplicando reglas onomásticas del español y de nombres colombianos, además de criterios para casos de origen extranjero (alemán, italiano, ruso, catalán, vasco). De los 259 nombres, 176 corresponden a género masculino (68 %) y 76 a género femenino (29 %), mientras que 7 (3 %) no pudieron clasificarse por tratarse de nombres de género ambiguo o indeterminado (@fig-genero-investigadores).
+Se analizó una tabla de 252 investigadores (nombres únicos) del monitoreo de capacidades nacionales de CTeI en GRD. Este listado de nombres se considera como una lista nacional expertos en GRD que se ha empleado para los ejercicios de prospectiva en determinar las líneas de investigación en GRD. Para cada nombre se determinó el género que sugiere lingüísticamente, aplicando reglas onomásticas del español y de nombres colombianos, además de criterios para casos de origen extranjero (alemán, italiano, ruso, catalán, vasco). De los 252 nombres, 173 corresponden a género masculino (69 %) y 73 a género femenino (29 %), mientras que 6 (2 %) no pudieron clasificarse por tratarse de nombres de género ambiguo o indeterminado (@fig-genero-investigadores).
 
 ```{ojs}
 //| echo: false
 generoInvestigadores = {
   const rows = await d3.text(libroDatosCsvUrl("Investigadores")).then(d3.csvParseRows);
-  const body = rows.slice(1).filter(r => (r[0] ?? "").trim() !== "");
+  // Columna ubicada por encabezado (no por posición): la hoja ya reordenó columnas una vez.
+  const iGen = rows[0].findIndex(h => h.trim().toUpperCase() === "GENERO");
+  const iNom = rows[0].findIndex(h => h.trim().toUpperCase() === "NOMBRE INVESTIGADOR");
+  const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().split(/\s+/).filter(Boolean).join(" ");
+  // Una persona = un nombre normalizado; se descartan filas sin nombre y duplicados
+  // (se conserva la primera fila con género asignado).
+  const porNombre = new Map();
+  for (const r of rows.slice(1)) {
+    const k = norm(r[iNom] ?? "");
+    if (!k) continue;
+    const g = (r[iGen] ?? "").trim();
+    if (!porNombre.has(k) || (!porNombre.get(k) && g)) porNombre.set(k, g);
+  }
   const counts = { Masculino: 0, Femenino: 0 };
-  for (const r of body) {
-    const g = (r[16] ?? "").trim();
+  for (const g of porNombre.values()) {
     if (g === "Masculino" || g === "Femenino") counts[g]++;
   }
   return [
@@ -1656,7 +1667,7 @@ function pieChart(data, colorMap, { title, width = 320, height = 280, valueLabel
 
 ```{ojs}
 //| label: fig-genero-investigadores
-//| fig-cap: "Proporción de género (masculino/femenino) inferido lingüísticamente en la lista nacional de investigadores en GRD, hoja `Investigadores`. n = 252 investigadores clasificados como masculino o femenino, de 259 registros totales (7 con género ambiguo o indeterminado se excluyen)."
+//| fig-cap: "Proporción de género (masculino/femenino) inferido lingüísticamente en la lista nacional de investigadores en GRD, hoja `Investigadores`. n = 246 investigadores clasificados como masculino o femenino, de 252 nombres únicos (6 con género ambiguo, indeterminado o sin asignar se excluyen)."
 //| echo: false
 pieChart(generoInvestigadores, GENERO_COLORS, {
   title: "Género de investigadores en GRD", valueLabel: "investigadores"
