@@ -1730,6 +1730,30 @@ print("\n".join(["| Clase IPC | Total | Colombianas | % Colombianas |", "|:---|-
                   f"| **Total** | **{pat_total}** | **{pat_co}** | **{pat_pct}** |"]))
 ```
 
+::: {.callout-important style="background-color: #e3f0fbff; padding:20px; border: none !important;" appearance="minimal" icon="false"}
+**Caja 4 \| Mensajes clave de la producción científica de Colombia en GRD.**
+
+**Instituciones**: La producción científica en GRD está concentrada en un grupo reducido de universidades líderes, confirmando que la generación de conocimiento recae principalmente en el sector académico y no en la industria o el Estado.
+
+**Departamentos**: La producción se concentra geográficamente en Bogotá D.C., Antioquia, Atlántico, Valle del Cauca y Bolívar, dejando al resto del país con una contribución marginal; el 12,5% de los registros no tiene departamento de la institución colombiana identificado.
+
+**Procesos de la GRD**: Entre 2020 y 2026 (junio), el conocimiento del riesgo concentra el 76,2% de la producción científica (696 de 913 productos), frente a 17,3% de reducción del riesgo y 6,5% de manejo de desastres, lo que evidencia un fuerte desbalance hacia la investigación diagnóstica sobre la aplicada u operativa.
+
+**Amenazas**: El riesgo sísmico concentra el 31,9% de la producción con amenaza identificada, seguido de movimientos en masa (10,9%) e inundación (8,9%); el resto de amenazas, incluidas varias de alta recurrencia en el país, reciben individualmente menos del 7% de la atención científica.
+
+**Subprocesos y otras temáticas**: Una parte relevante de la producción no se clasifica directamente por amenaza sino por temas transversales como hidrología, infraestructura, cambio climático o vulnerabilidad, lo que sugiere oportunidades para precisar su relación explícita con amenazas específicas.
+
+**Tipos de producto**: El artículo científico es, por amplio margen, el tipo de producto de nuevo conocimiento predominante en GRD, por encima de capítulos de libro, ponencias y otras tipologías reconocidas por Minciencias.
+
+**Revistas científicas**: La revista más frecuente es la Revista de Estudios Latinoamericanos sobre Reducción del Riesgo de Desastres (30 de 800 artículos, 3,8%), seguida de cerca por International Journal of Disaster Risk Reduction (27, 3,4%); ninguna concentra una proporción alta y el resto de la producción se reparte en un conjunto amplio de revistas disciplinares internacionales (Natural Hazards, Earthquake Spectra, Hydrology, entre otras), lo que refleja la naturaleza multidisciplinar del campo.
+
+**Ciencia y datos abiertos**: Las prácticas de ciencia abierta siguen siendo bajas: solo el 10,4% de los productos con dato declarado reporta datos abiertos y el 7,3% reporta código abierto, lo que limita la reproducibilidad y el aprovechamiento de los resultados de investigación en GRD.
+
+**Género**: Existe una brecha de género significativa en el talento humano registrado para GRD: de 252 investigadores identificados, el 69% son hombres y el 29% mujeres, lo que puede traducirse en una menor incidencia de las perspectivas de las investigadoras en la agenda científica del sector.
+
+**Producción de tecnologías (patentes)**: El desarrollo tecnológico en GRD es liderado por universidades con participación activa de la industria privada nacional, pero la titularidad colombiana de las patentes varía fuertemente entre subcampos: es baja en instrumentación sísmica de uso industrial y más alta en sistemas de alarma y equipos de rescate, de menor intensidad de capital.
+:::
+
 # **Transferencia de ciencia y tecnología, e impacto local**
 
 ## **Marco Estratégico de Gestión Integral del Riesgo de Desastres (MEGIR)**
