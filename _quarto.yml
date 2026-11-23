@@ -27,7 +27,7 @@ format:
       - hub-icon.html
     comments:
       giscus:
-        repo: scr-ungrd/estrategia-ciencia-grd
+        repo: scr-ungrd/estado-ctei-grd-colombia
         repo-id: R_kgDOTYqUWQ
         category: Announcements
         category-id: DIC_kwDOTYqUWc4DDGhX
