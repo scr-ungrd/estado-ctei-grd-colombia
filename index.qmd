@@ -16,7 +16,7 @@ abstract: |
 data_availability: |
   Todas las figuras consultan directamente, en el navegador o al renderizar el documento,
   las hojas `Demandas-Territoriales-2022-24`, `Demandas-Territoriales-2025-26` y
-  `Vigilancia_CTeI` del libro "Estrategia CyT GRD" en Google Sheets, la hoja
+  `Vigilancia-CTeI`, `Financiacion-CTeI` y `Vigilancia_Patentes` del libro "Estrategia CyT GRD" en Google Sheets, la hoja
   `Grupos_investigación` del libro "20260611_BD_Capacidades_GRD_CTeI_colombia" en Google Sheets,
   así como los límites departamentales del repositorio
   [colombia_mapa](https://github.com/caticoa3/colombia_mapa).
@@ -33,7 +33,7 @@ jupyter: python3
 // infraestructura compartida por todo el documento, no contenido narrativo:
 // - Definiciones OJS reutilizables (paleta de colores, tooltip, funciones
 //   genéricas de gráficas como barChartH/countTop/pivotByYearProceso, y la
-//   carga de la hoja Vigilancia_CTeI). En OJS el orden de ejecución se
+//   carga de la hoja Vigilancia-CTeI). En OJS el orden de ejecución se
 //   resuelve por dependencias, no por posición en el documento, así que
 //   técnicamente podrían ir en cualquier parte; se ponen aquí por
 //   legibilidad, para que quien lea el .qmd vea primero "la librería"
@@ -432,7 +432,7 @@ INSTITUCION_FIX = ({
   "Instituto de Investigaciones Marinas y Costeras (INVEMAR)": "Instituto de Investigaciones Marinas y Costeras (Invemar)",
 })
 
-vigilancia = d3.csv(sheetCsvUrl("Vigilancia_CTeI"), (d) => {
+vigilancia = d3.csv(sheetCsvUrl("Vigilancia-CTeI"), (d) => {
   const row = d3.autoType(d);
   const inst = (row["INSTITUCION COLOMBIANA"] ?? "").trim().replace(/\s+/g, " ");
   row["INSTITUCION COLOMBIANA"] = INSTITUCION_FIX[inst] ?? inst;
@@ -538,7 +538,7 @@ EXCLUDE = {
     "Facultad de Ingeniería", "Observatorio Astronómico Nacional", "Portugal",
 }
 
-_df_vig = pd.read_csv(sheet_csv_url("Vigilancia_CTeI")).dropna(subset=["ID"])
+_df_vig = pd.read_csv(sheet_csv_url("Vigilancia-CTeI")).dropna(subset=["ID"])
 
 _counts: Counter = Counter()
 _top_temas: defaultdict = defaultdict(Counter)
@@ -565,6 +565,125 @@ vigilancia_map_data = [
 ]
 
 ojs_define(vigilancia_map_data=vigilancia_map_data)
+```
+
+```{python}
+#| echo: false
+# Cifras del texto calculadas en cada render desde las hojas `Vigilancia-CTeI` y
+# `Financiacion-CTeI` (misma lógica que las gráficas OJS). Así el texto no queda
+# desactualizado cuando cambian las hojas.
+def _s(x) -> str:
+    return "" if pd.isna(x) else str(x).strip()
+
+
+def _n(x: int) -> str:
+    return f"{int(x):,}".replace(",", ".")
+
+
+def _pct(a: int, b: int) -> str:
+    return f"{a / b * 100:.1f}".replace(".", ",") + "%" if b else "–"
+
+
+# --- Vigilancia-CTeI -------------------------------------------------------
+_v = _df_vig.copy()
+_per = _v[(_v["AÑO"] >= 2022) & (_v["AÑO"] <= 2025)]
+vig_inst_total = _n(len(_per))
+vig_inst_n = _n((_per["INSTITUCION COLOMBIANA"].map(_s) != "").sum())
+vig_total = _n(len(_v))
+_sin_dep = (_v["DEPARTAMENTO DE COLOMBIA"].map(_s) == "").sum()
+vig_sin_dep_pct = _pct(_sin_dep, len(_v))
+
+PROC_YEARS = (2020, 2026)  # mismo rango que fig-vigilancia-resumen
+_pr = _v[_v["PROCESO"].isin(["Conocimiento", "Reduccion", "Manejo"])
+         & _v["AÑO"].between(*PROC_YEARS)]
+_pc = _pr["PROCESO"].value_counts()
+proc_n = _n(len(_pr))
+proc_con, proc_red, proc_man = (_n(_pc.get(k, 0)) for k in ("Conocimiento", "Reduccion", "Manejo"))
+proc_con_pct, proc_red_pct, proc_man_pct = (_pct(_pc.get(k, 0), len(_pr)) for k in ("Conocimiento", "Reduccion", "Manejo"))
+_py = _pr["AÑO"].astype(int).value_counts().sort_index()
+_py_full = _py[_py.index < PROC_YEARS[1]]  # el último año está incompleto
+proc_min_y, proc_min = int(_py_full.idxmin()), _n(_py_full.min())
+proc_max_y, proc_max = int(_py_full.idxmax()), _n(_py_full.max())
+proc_last = _n(_py.get(PROC_YEARS[1], 0))
+
+_REN = {"Tsunami caribe": "Tsunami", "Tsunami pacifico": "Tsunami",
+        "Disturbio geomagnético": "Amenazas extraterrestres", "Riesgos biosanitarios": "Biosanitarios"}
+_AM = {"Amenazas extraterrestres", "Avenidas torrenciales", "Biosanitarios", "Ciclones tropicales",
+       "Covid", "El Niño", "Erosion costera", "Erosion fluvial", "Geoamenzas", "Incendios forestales",
+       "Inundación", "Inundación costera", "Inundación urbana", "Movimientos en masa", "Natech",
+       "Nivel del mar, aumento", "Olas de calor", "Olas de calor marinas", "Riesgo sismico", "Sequia",
+       "Tormentas convectivas", "Tsunami", "Variabilidad climatica", "Volcanes"}
+_t = _v["TEMA"].map(_s).map(lambda x: _REN.get(x, x))
+_am = _t[_t.isin(_AM)].value_counts()
+am_n = _n(_am.sum())
+am_sis, am_mm, am_inu = (_n(_am.get(k, 0)) for k in ("Riesgo sismico", "Movimientos en masa", "Inundación"))
+am_sis_pct, am_mm_pct, am_inu_pct = (_pct(_am.get(k, 0), _am.sum()) for k in ("Riesgo sismico", "Movimientos en masa", "Inundación"))
+am_resto_max = _pct(_am.drop(["Riesgo sismico", "Movimientos en masa", "Inundación"], errors="ignore").max(), _am.sum())
+
+_fu = _v.loc[_v["TIPO"] == "Articulo_cientifico", "FUENTE"].map(_s).str.replace(r"\s+", " ", regex=True)
+_fu = _fu[_fu != ""].value_counts()
+rev_n = _n(_fu.sum())
+rev1, rev1_n, rev1_pct = _fu.index[0], _n(_fu.iloc[0]), _pct(_fu.iloc[0], _fu.sum())
+rev2, rev2_n, rev2_pct = _fu.index[1], _n(_fu.iloc[1]), _pct(_fu.iloc[1], _fu.sum())
+
+# --- Financiacion-CTeI -----------------------------------------------------
+# Una fila por producto (mismo ID que Vigilancia-CTeI). Las columnas FINANCIADOR,
+# FINANCIADOR_NAL_O_INTERNAL, TIPO_DE_FINANCIADOR y PAIS_DE_FINANCIACION pueden
+# traer varios valores separados por ";" que se corresponden por posición
+# (el i-ésimo financiador con la i-ésima clasificación).
+_f = pd.read_csv(sheet_csv_url("Financiacion-CTeI")).dropna(subset=["ID"])
+_f["dec"] = _f["DECLARA_FINANCIADOR"].map(_s).str.lower()
+
+
+def _split(x) -> list[str]:
+    return [t.strip() for t in _s(x).split(";") if t.strip()]
+
+
+_rev = _f[_f["dec"].isin(["si", "no"])]
+_si = _f[_f["dec"] == "si"]
+fin_n = _n(len(_rev))
+fin_si, fin_no = _n(len(_si)), _n(len(_rev) - len(_si))
+fin_si_pct, fin_no_pct = _pct(len(_si), len(_rev)), _pct(len(_rev) - len(_si), len(_rev))
+_yrs = _rev["AÑO"].dropna().astype(int)
+fin_y0, fin_y1 = 2020, 2023
+fin_core_pct = _pct(_yrs.between(fin_y0, fin_y1).sum(), len(_rev))
+fin_pend = _n(len(_f) - len(_rev))
+
+_pairs = pd.DataFrame([
+    {"ID": r.ID, "fin": fi,
+     "nal": (_split(r.FINANCIADOR_NAL_O_INTERNAL) + [""] * 9)[i],
+     "tipo": (_split(r.TIPO_DE_FINANCIADOR) + [""] * 9)[i]}
+    for r in _si.itertuples() for i, fi in enumerate(_split(r.FINANCIADOR))
+]).drop_duplicates(["ID", "fin"])
+_con_fin = _pairs["ID"].nunique()
+fin_con_nombre = _n(_con_fin)
+fin_sin_nombre = _n(len(_si) - _con_fin)
+fin_menciones = _n(len(_pairs))
+fin_distintos = _n(_pairs["fin"].nunique())
+_nper = _pairs.groupby("ID").size()
+fin_multi, fin_multi_pct = _n((_nper > 1).sum()), _pct((_nper > 1).sum(), _con_fin)
+_orig = _pairs.groupby("ID")["nal"].agg(lambda x: "Ambas" if {"Nacional", "Internacional"} <= set(x) else x.iloc[0])
+_oc = _orig.value_counts()
+fin_solo_nal, fin_solo_int, fin_ambas = (_n(_oc.get(k, 0)) for k in ("Nacional", "Internacional", "Ambas"))
+fin_solo_nal_pct, fin_solo_int_pct, fin_ambas_pct = (_pct(_oc.get(k, 0), _con_fin) for k in ("Nacional", "Internacional", "Ambas"))
+fin_min = _pairs.loc[_pairs["fin"] == "Minciencias", "ID"].nunique()
+fin_min_n, fin_min_pct = _n(fin_min), _pct(fin_min, len(_si))
+_tipo = _pairs["tipo"].value_counts()
+fin_tipo1, fin_tipo1_pct = _tipo.index[0].lower(), _pct(_tipo.iloc[0], len(_pairs))
+fin_univ_pct = _pct(_tipo.filter(like="Universidad").sum(), len(_pairs))
+_int = _pairs[_pairs["nal"] == "Internacional"]["fin"].value_counts()
+fin_int_top = "; ".join(f"{k} ({v})" for k, v in _int.head(3).items())
+
+_da = _f["DATOS_ABIERTOS"].map(_s).str.lower()
+_ca = _f["CODIGO_ABIERTO"].map(_s).str.lower()
+_ex = _f["EXPRESA_DISPONIBILIDAD_DE_ACCESO_A_DATOS"].map(_s).str.lower()
+_da_n = _da.isin(["si", "no"]).sum()
+oa_n, oa_si, oa_no = _n(_da_n), _n((_da == "si").sum()), _n((_da == "no").sum())
+oa_si_pct, oa_no_pct = _pct((_da == "si").sum(), _da_n), _pct((_da == "no").sum(), _da_n)
+oa_alt = _n(((_da == "no") & (_ex == "si")).sum())
+oa_alt_pct = _pct(((_da == "no") & (_ex == "si")).sum(), (_da == "no").sum())
+_ca_n = _ca.isin(["si", "no"]).sum()
+ca_n, ca_si, ca_si_pct = _n(_ca_n), _n((_ca == "si").sum()), _pct((_ca == "si").sum(), _ca_n)
 ```
 
 # Introducción
@@ -792,7 +911,7 @@ No obstante, para tener la capacidad de monitorear la inversión en ciencia y te
 
 ## Financiación nacional e internacional en productos de conocimiento
 
-Esta medición considera principalmente productos de conocimiento (ver definición de conocimiento en @box-tipologias **Caja 2** y tipologías de productos en Anexo 2). Entre 2020 y 2025 se analizó una muestra de 507 productos de nuevo conocimiento, a partir de la cual se extrajo información de financiador de las secciones Agradecimientos o Financiación (Anexo 4). Este análisis establece la presencia o ausencia de financiación, más no su monto.\
+Esta medición considera principalmente productos de conocimiento (ver definición de conocimiento en la **Caja 2** y tipologías de productos en Anexo 2). Se analizó una muestra de `{python} fin_n` productos de nuevo conocimiento de la hoja `Financiacion-CTeI` (el `{python} fin_core_pct` publicados entre `{python} fin_y0` y `{python} fin_y1`), a partir de la cual se extrajo información de financiador de las secciones Agradecimientos o Financiación (Anexo 4); los `{python} fin_pend` registros restantes de la hoja aún no han sido revisados. Cada fila corresponde a un producto y, cuando un producto tiene varios financiadores, estos se registran en la misma celda separados por punto y coma y se cuentan como entidades independientes. Este análisis establece la presencia o ausencia de financiación, mas no su monto.
 
 ::: {#box-tipologias .callout-important style="background-color: #e3f0fbff; padding:20px; border: none !important;" appearance="minimal" icon="false"}
 **Caja 2. Definiciones de tipologías de productos de de CTeI acorde con Minciencias empleadas en la medición del estado de la ciencia.** En el Anexo 2 encuentre el detalle de fuente, registro o mecanismo de verificación, indicador, criterio de calidad o clasificación para las tipologías de productos.
@@ -804,7 +923,7 @@ Esta medición considera principalmente productos de conocimiento (ver definici�
 - **Formación de recurso humano para CTeI.** Productos asociados con la formación de capacidades y talento humano para la investigación, el desarrollo tecnológico y la innovación, mediante procesos de formación académica y científica. Principales tipos de productos: Tesis de doctorado y maestría, trabajos de grado, proyectos de investigación de estudiantes, formación de investigadores, dirección de trabajos de grado, entre otros.
 :::
 
-La mayoría de productos de nuevo conocimiento tuvo financiación (@fig-recibe-financiacion-si-no). Se encontró que el 62,6% (321 de 513) reporta tener financiación de algún tipo, mientras que el 37,4% (192) no declaró financiación.
+La mayoría de productos de nuevo conocimiento tuvo financiación (@fig-financiador-sino). El `{python} fin_si_pct` (`{python} fin_si` de `{python} fin_n`) declara tener financiación de algún tipo, mientras que el `{python} fin_no_pct` (`{python} fin_no`) no declara financiación.
 
 ```{ojs}
 //| label: fig-financiador-sino
@@ -816,36 +935,78 @@ barChartH(countSiNo(financiacionCTeI, "DECLARA_FINANCIADOR"), {
 ```
 
 ```{ojs}
-//| label: fig-recibe-financiacion-si-no
 //| echo: false
-function siYNacInt(rows, tipo) {
-  return rows.filter(d =>
-    (d.DECLARA_FINANCIADOR ?? "").toString().trim().toLowerCase() === "si" &&
-    (d.FINANCIADOR_NAL_O_INTERNAL ?? "").toString().trim().toLowerCase() === tipo
-  );
+// Financiacion-CTeI tiene una fila por producto. FINANCIADOR, FINANCIADOR_NAL_O_INTERNAL,
+// TIPO_DE_FINANCIADOR y PAIS_DE_FINANCIACION pueden traer varias entradas separadas por ";"
+// que se corresponden por posición. Aquí se "explota" cada producto en un registro por
+// financiador (ID, financiador, nal/int, tipo, país), sin repetir un financiador en el mismo producto.
+function splitSC(v) {
+  return (v ?? "").toString().split(";").map(s => s.trim()).filter(Boolean);
+}
+
+financiadoresCTeI = {
+  const out = [];
+  for (const d of financiacionCTeI) {
+    if ((d.DECLARA_FINANCIADOR ?? "").toString().trim().toLowerCase() !== "si") continue;
+    const fin = splitSC(d.FINANCIADOR), nal = splitSC(d.FINANCIADOR_NAL_O_INTERNAL);
+    const tipo = splitSC(d.TIPO_DE_FINANCIADOR), pais = splitSC(d.PAIS_DE_FINANCIACION);
+    const vistos = new Set();
+    fin.forEach((f, i) => {
+      if (vistos.has(f)) return;
+      vistos.add(f);
+      out.push({ ID: d.ID, FINANCIADOR: f, NAL_INT: nal[i] ?? "", TIPO: tipo[i] ?? "", PAIS: pais[i] ?? "" });
+    });
+  }
+  return out;
+}
+
+function porOrigen(tipo) {
+  return financiadoresCTeI.filter(d => d.NAL_INT.toLowerCase() === tipo);
+}
+
+origenFinanciacion = {
+  const porProducto = d3.rollup(financiadoresCTeI, v => new Set(v.map(d => d.NAL_INT)), d => d.ID);
+  const counts = new Map([["Solo nacional", 0], ["Solo internacional", 0], ["Nacional e internacional", 0]]);
+  for (const s of porProducto.values()) {
+    const k = s.has("Nacional") && s.has("Internacional") ? "Nacional e internacional"
+      : s.has("Internacional") ? "Solo internacional" : "Solo nacional";
+    counts.set(k, counts.get(k) + 1);
+  }
+  return Array.from(counts, ([label, value]) => ({ label, value }));
 }
 ```
 
-En cuanto a la institución y país de origen de la financiación nacional e internacional, Minciencias constituye la principal fuente de financiación pública para proyectos de CTeI en todas las áreas de conocimiento en Colombia, incluyendo la GRD, financiando el 12,8% (41 de 321) de los productos con financiación declarada (@fig-financiador-nacional-top10).
+De los `{python} fin_si` productos con financiación declarada, `{python} fin_con_nombre` identifican al menos un financiador (`{python} fin_sin_nombre` declaran financiación sin nombrarlo). Estos productos suman `{python} fin_menciones` menciones de `{python} fin_distintos` entidades financiadoras distintas, y el `{python} fin_multi_pct` (`{python} fin_multi`) tiene más de un financiador. Según el origen, el `{python} fin_solo_nal_pct` (`{python} fin_solo_nal`) se financió solo con fuentes nacionales, el `{python} fin_solo_int_pct` (`{python} fin_solo_int`) solo con fuentes internacionales y el `{python} fin_ambas_pct` (`{python} fin_ambas`) combinó ambas (@fig-origen-financiacion). Por tipo de entidad, las instituciones públicas aportan el `{python} fin_tipo1_pct` de las menciones y las universidades (públicas y privadas) el `{python} fin_univ_pct`.
+
+```{ojs}
+//| label: fig-origen-financiacion
+//| fig-cap: "Productos de nuevo conocimiento con financiador identificado según el origen de su financiación (solo nacional, solo internacional o ambas), hoja `Financiacion-CTeI`."
+//| echo: false
+barChartH(origenFinanciacion, {
+  title: "Origen de la financiación por producto", marginLeft: 180, width: 560
+})
+```
+
+En cuanto a la financiación nacional, Minciencias constituye la principal fuente de financiación pública para proyectos de CTeI en todas las áreas de conocimiento en Colombia, incluyendo la GRD, y aparece en el `{python} fin_min_pct` (`{python} fin_min_n` de `{python} fin_si`) de los productos con financiación declarada. Le siguen, con mucha menor frecuencia, universidades como la Universidad Nacional de Colombia, la Universidad del Valle y la Universidad de los Andes (@fig-financiador-nacional-top10).
 
 ```{ojs}
 //| label: fig-financiador-nacional-top10
-//| fig-cap: "Principales fuentes de financiación nacionales de productos de conocimiento (top 10), hoja `Financiacion-CTeI`."
+//| fig-cap: "Principales fuentes de financiación nacionales de productos de conocimiento (top 10, número de productos que financia cada entidad), hoja `Financiacion-CTeI`."
 //| echo: false
 barChartH(
-  countTop(siYNacInt(financiacionCTeI, "nacional"), "FINANCIADOR", 10, { truncate: 45 }),
+  countTop(porOrigen("nacional"), "FINANCIADOR", 10, { truncate: 45 }),
   { title: "Principales financiadores nacionales (top 10)", marginLeft: 280, width: 720 }
 )
 ```
 
-A nivel internacional las fuentes de financiación fueron: Japan Society for the Promotion of Science; Ministry of Education, Culture, Sports, Science, and Technology of Japan; y UKRI’s Global Challenge Research Fund (@fig-financiador-internacional-top10).
+A nivel internacional la financiación está más dispersa y ninguna entidad concentra una proporción alta. Las fuentes más frecuentes fueron: `{python} fin_int_top` (@fig-financiador-internacional-top10).
 
 ```{ojs}
 //| label: fig-financiador-internacional-top10
-//| fig-cap: "Principales fuentes de financiacion internacional de productos de conocimiento (top 10), hoja `Financiacion-CTeI`."
+//| fig-cap: "Principales fuentes de financiación internacional de productos de conocimiento (top 10, número de productos que financia cada entidad), hoja `Financiacion-CTeI`."
 //| echo: false
 barChartH(
-  countTop(siYNacInt(financiacionCTeI, "internacional"), "FINANCIADOR", 10, { truncate: 45 }),
+  countTop(porOrigen("internacional"), "FINANCIADOR", 10, { truncate: 45 }),
   { title: "Principales financiadores internacionales (top 10)", marginLeft: 280, width: 720 }
 )
 ```
@@ -1280,7 +1441,7 @@ TIPO_POSTGRADO_COLORS = ({ "Especialización": colors.aqua, "Maestria": colors.b
 
 ## **Tamaño de la producción científica por instituciones, procesos y amenazas**
 
-Está bien establecido que los principales actores que generan conocimiento científico y tecnológico en Colombia son principalmente universidades (Fig. 3) y esta tendencia se mantiene desde hace 25 años. En el país existe una sólida tradición en investigación científica en GRD que se ejemplifica en el aumento de productos de conocimiento publicados en los últimos 25 años con cerca de tres mil ítems (artículos, libros, capítulos de libros y reviews). (@fig-produccion-anual). Existen investigadores bien establecidos, altamente productivos, con reconocimiento mundial y liderados por investigadores principales como Juan Carlos Reyes (Universidad de los Ándes), Julián Carrillo (Universidad Militar), y Omar Darío Cardona (Universidad Nacional de Colombia, sede Manizales), todos en riesgo sísmico. Como un reflejo de la producción científica concentrada en las universidades, la producción científica se realiza en los departamentos de Bogotá D.C., Antioquia, Atlántico, Valle del Cauca y Bolívar (Fig. 3)
+Está bien establecido que los principales actores que generan conocimiento científico y tecnológico en Colombia son principalmente universidades (Fig. 3) y esta tendencia se mantiene desde hace 25 años. En el país existe una sólida tradición en investigación científica en GRD que se ejemplifica en el aumento de productos de conocimiento publicados en los últimos 25 años con cerca de tres mil ítems (artículos, libros, capítulos de libros y reviews). (@fig-produccion-anual). Existen investigadores bien establecidos, altamente productivos, con reconocimiento mundial y liderados por investigadores principales como Juan Carlos Reyes (Universidad de los Ándes), Julián Carrillo (Universidad Militar), y Omar Darío Cardona (Universidad Nacional de Colombia, sede Manizales), todos en riesgo sísmico. Como un reflejo de la producción científica concentrada en las universidades, la producción científica se realiza en los departamentos de Bogotá D.C., Antioquia, Atlántico, Valle del Cauca y Caldas (Fig. 3)
 
 ```{ojs}
 //| echo: false
@@ -1397,9 +1558,11 @@ multiLineChart(calcPaises, ["Colombia", "Argentina", "Brasil", "Chile", "Mexico"
 
 ### Producción científica por instituciones
 
+Entre 2022 y 2025, `{python} vig_inst_n` de los `{python} vig_inst_total` productos registrados tienen institución colombiana identificada (@fig-top-instituciones).
+
 ```{ojs}
 //| label: fig-top-instituciones
-//| fig-cap: "Instituciones colombianas con mayor producción científica en GRD (top 15), 2022-2025, hoja `Vigilancia_CTeI`. n = 553 productos con institución colombiana identificada, de 583 registros totales en el periodo."
+//| fig-cap: "Instituciones colombianas con mayor producción científica en GRD (top 15), 2022-2025, hoja `Vigilancia-CTeI`. Se cuentan solo los productos con institución colombiana identificada."
 //| echo: false
 barChartH(countTop(vigilancia.filter(d => d["AÑO"] >= 2022 && d["AÑO"] <= 2025), "INSTITUCION COLOMBIANA", 15), {
   title: "Instituciones colombianas con mayor producción científica en GRD, 2022-2025 (top 15)",
@@ -1409,11 +1572,11 @@ barChartH(countTop(vigilancia.filter(d => d["AÑO"] >= 2022 && d["AÑO"] <= 2025
 
 ### Producción científica por departamentos
 
-Producción científica en GRD por departamento de la institución colombiana de afiliación, ranking descendente. Cobertura parcial: el 12,5% de los registros no tiene departamento de la institución colombiana identificado, y se excluyeron afiliaciones extranjeras.
+Producción científica en GRD por departamento de la institución colombiana de afiliación, ranking descendente. Cobertura parcial: el `{python} vig_sin_dep_pct` de los `{python} vig_total` registros no tiene departamento de la institución colombiana identificado, y se excluyeron afiliaciones extranjeras (@fig-mapa-vigilancia).
 
 ```{ojs}
 //| label: fig-mapa-vigilancia
-//| fig-cap: "Producción científica en GRD por departamento de la institución colombiana de afiliación, ranking descendente. Cobertura parcial: el 12,5% de los registros no tiene departamento de la institución colombiana identificado, y se excluyeron afiliaciones extranjeras."
+//| fig-cap: "Producción científica en GRD por departamento de la institución colombiana de afiliación, ranking descendente. Cobertura parcial: se excluyen los registros sin departamento de la institución colombiana identificado y las afiliaciones extranjeras."
 //| echo: false
 rankBarChart(vigilancia_map_data, {
   title: "Producción científica en GRD por departamento de la institución colombiana",
@@ -1423,20 +1586,20 @@ rankBarChart(vigilancia_map_data, {
 
 ### Producción científica por procesos de la gestión del riesgo de desastres
 
-En cuanto a la producción científica por procesos de la gestión del riesgo de desastres, para el periodo 2020–2026 (junio) se observa que el proceso de conocimiento del riesgo concentra el 76,2% de la producción (696 de 913 productos clasificados), seguido por reducción del riesgo con 17,3% (158) y manejo de desastres con 6,5% (59) @fig-vigilancia-resumen.
+En cuanto a la producción científica por procesos de la gestión del riesgo de desastres, para el periodo 2020–2026 se observa que el proceso de conocimiento del riesgo concentra el `{python} proc_con_pct` de la producción (`{python} proc_con` de `{python} proc_n` productos clasificados), seguido por reducción del riesgo con `{python} proc_red_pct` (`{python} proc_red`) y manejo de desastres con `{python} proc_man_pct` (`{python} proc_man`). Entre 2020 y 2025 la producción anual osciló entre un mínimo de `{python} proc_min` productos en `{python} proc_min_y` y un máximo de `{python} proc_max` en `{python} proc_max_y`; 2026 suma `{python} proc_last` productos con el año aún en curso (@fig-vigilancia-resumen).
 
 ```{ojs}
 //| label: fig-vigilancia-resumen
-//| fig-cap: "**Producción científica por procesos de gestión del riesgo.** Según la base de datos de vigilancia tecnológica, entre 2020 y 2026 (junio), la producción científica osciló entre un mínimo de 61 productos en 2020 y un máximo de 170 en 2025 (izquierda). Asimismo, al desagregar la producción científica por proceso de gestión del riesgo (conocimiento del riesgo, reducción del riesgo y manejo de desastres), se observa que el proceso de conocimiento del riesgo concentra la mayor proporción de nuevo conocimiento generado."
+//| fig-cap: "**Producción científica por procesos de gestión del riesgo.** Producción anual registrada en la base de datos de vigilancia tecnológica entre 2020 y 2026 (año en curso). Al desagregar la producción científica por proceso de gestión del riesgo (conocimiento del riesgo, reducción del riesgo y manejo de desastres), se observa que el proceso de conocimiento del riesgo concentra la mayor proporción de nuevo conocimiento generado."
 //| echo: false
-stackedBarV(pivotByYearProceso(vigilancia), Object.keys(PROCESO_COLORS), PROCESO_COLORS, {
+stackedBarV(pivotByYearProceso(vigilancia.filter(d => d["AÑO"] >= 2020 && d["AÑO"] <= 2026)), Object.keys(PROCESO_COLORS), PROCESO_COLORS, {
   title: "Evolución anual por proceso GRD", width: 400, height: 460
 })
 ```
 
 ### Producción científica para las principales amenazas
 
-Frecuencia de la producción científica en GRD por tipo de amenaza (n = 561 productos con amenaza identificada). El riesgo sísmico concentra el 31,9% de la producción (179 productos), seguido por movimientos en masa con 10,9% (61) e inundación con 8,9% (50); el resto de amenazas registran individualmente menos del 7% cada una @fig-amenazas-frecuencia.
+Frecuencia de la producción científica en GRD por tipo de amenaza (n = `{python} am_n` productos con amenaza identificada). El riesgo sísmico concentra el `{python} am_sis_pct` de la producción (`{python} am_sis` productos), seguido por movimientos en masa con `{python} am_mm_pct` (`{python} am_mm`) e inundación con `{python} am_inu_pct` (`{python} am_inu`); el resto de amenazas registran individualmente `{python} am_resto_max` o menos cada una (@fig-amenazas-frecuencia).
 
 ```{ojs}
 //| label: fig-amenazas-frecuencia
@@ -1511,7 +1674,7 @@ La clasificación anterior de productos de nuevo conocimiento enfatizó una clas
 
 ```{ojs}
 //| label: fig-tipo-frecuencia
-//| fig-cap: "Frecuencia de productos de nuevo conocimiento por tipo (artículo científico, artículo de congreso, capítulo de libro, etc.), hoja `Vigilancia_CTeI`."
+//| fig-cap: "Frecuencia de productos de nuevo conocimiento por tipo (artículo científico, artículo de congreso, capítulo de libro, etc.), hoja `Vigilancia-CTeI`."
 //| echo: false
 barChartV(countTop(vigilancia, "TIPO", Infinity, { fillna: "Sin especificar" }), {
   title: "Frecuencia de productos de vigilancia CTeI por tipo", width: 720, height: 520
@@ -1522,7 +1685,7 @@ barChartV(countTop(vigilancia, "TIPO", Infinity, { fillna: "Sin especificar" }),
 
 ```{ojs}
 //| label: fig-top-revistas
-//| fig-cap: "Principales revistas científicas de publicación (top 15, tipo `Articulo_cientifico`), hoja `Vigilancia_CTeI`."
+//| fig-cap: "Principales revistas científicas de publicación (top 15, tipo `Articulo_cientifico`), hoja `Vigilancia-CTeI`."
 //| echo: false
 barChartH(
   countTop(vigilancia.filter(d => d.TIPO === "Articulo_cientifico"), "FUENTE", 15, { truncate: 45 }),
@@ -1532,7 +1695,7 @@ barChartH(
 
 ## Ciencia y datos abiertos
 
-Las prácticas de ciencia abierta siguen siendo bajas en la producción de nuevo conocimiento en GRD. Sobre una muestra de 482 productos con dato declarado, solo el 10,4% (50) reporta haber puesto sus datos a disposición en acceso abierto, frente a un 89,6% (432) que no lo hace. De estos últimos, el 8,3% (36) declara algún acceso alternativo a los datos, por ejemplo bajo solicitud. La publicación de código abierto es igual de infrecuente; solo el 7,3% de los productos (35 de 480) la reporta.
+Las prácticas de ciencia abierta siguen siendo bajas en la producción de nuevo conocimiento en GRD. Sobre una muestra de `{python} oa_n` productos con dato declarado (hoja `Financiacion-CTeI`), solo el `{python} oa_si_pct` (`{python} oa_si`) reporta haber puesto sus datos a disposición en acceso abierto, frente a un `{python} oa_no_pct` (`{python} oa_no`) que no lo hace. De estos últimos, el `{python} oa_alt_pct` (`{python} oa_alt`) declara algún acceso alternativo a los datos, por ejemplo bajo solicitud. La publicación de código abierto es igual de infrecuente; solo el `{python} ca_si_pct` de los productos (`{python} ca_si` de `{python} ca_n`) la reporta (@fig-ciencia-abierta).
 
 ```{ojs}
 //| echo: false
@@ -1735,19 +1898,19 @@ print("\n".join(["| Clase IPC | Total | Colombianas | % Colombianas |", "|:---|-
 
 **Instituciones**: La producción científica en GRD está concentrada en un grupo reducido de universidades líderes, confirmando que la generación de conocimiento recae principalmente en el sector académico y no en la industria o el Estado.
 
-**Departamentos**: La producción se concentra geográficamente en Bogotá D.C., Antioquia, Atlántico, Valle del Cauca y Bolívar, dejando al resto del país con una contribución marginal; el 12,5% de los registros no tiene departamento de la institución colombiana identificado.
+**Departamentos**: La producción se concentra geográficamente en Bogotá D.C., Antioquia, Atlántico, Valle del Cauca y Caldas, dejando al resto del país con una contribución marginal; el `{python} vig_sin_dep_pct` de los registros no tiene departamento de la institución colombiana identificado.
 
-**Procesos de la GRD**: Entre 2020 y 2026 (junio), el conocimiento del riesgo concentra el 76,2% de la producción científica (696 de 913 productos), frente a 17,3% de reducción del riesgo y 6,5% de manejo de desastres, lo que evidencia un fuerte desbalance hacia la investigación diagnóstica sobre la aplicada u operativa.
+**Procesos de la GRD**: Entre 2020 y 2026, el conocimiento del riesgo concentra el `{python} proc_con_pct` de la producción científica (`{python} proc_con` de `{python} proc_n` productos), frente a `{python} proc_red_pct` de reducción del riesgo y `{python} proc_man_pct` de manejo de desastres, lo que evidencia un fuerte desbalance hacia la investigación diagnóstica sobre la aplicada u operativa.
 
-**Amenazas**: El riesgo sísmico concentra el 31,9% de la producción con amenaza identificada, seguido de movimientos en masa (10,9%) e inundación (8,9%); el resto de amenazas, incluidas varias de alta recurrencia en el país, reciben individualmente menos del 7% de la atención científica.
+**Amenazas**: El riesgo sísmico concentra el `{python} am_sis_pct` de la producción con amenaza identificada, seguido de movimientos en masa (`{python} am_mm_pct`) e inundación (`{python} am_inu_pct`); el resto de amenazas, incluidas varias de alta recurrencia en el país, reciben individualmente `{python} am_resto_max` o menos de la atención científica.
 
 **Subprocesos y otras temáticas**: Una parte relevante de la producción no se clasifica directamente por amenaza sino por temas transversales como hidrología, infraestructura, cambio climático o vulnerabilidad, lo que sugiere oportunidades para precisar su relación explícita con amenazas específicas.
 
 **Tipos de producto**: El artículo científico es, por amplio margen, el tipo de producto de nuevo conocimiento predominante en GRD, por encima de capítulos de libro, ponencias y otras tipologías reconocidas por Minciencias.
 
-**Revistas científicas**: La revista más frecuente es la Revista de Estudios Latinoamericanos sobre Reducción del Riesgo de Desastres (30 de 800 artículos, 3,8%), seguida de cerca por International Journal of Disaster Risk Reduction (27, 3,4%); ninguna concentra una proporción alta y el resto de la producción se reparte en un conjunto amplio de revistas disciplinares internacionales (Natural Hazards, Earthquake Spectra, Hydrology, entre otras), lo que refleja la naturaleza multidisciplinar del campo.
+**Revistas científicas**: La revista más frecuente es la `{python} rev1` (`{python} rev1_n` de `{python} rev_n` artículos, `{python} rev1_pct`), seguida de cerca por `{python} rev2` (`{python} rev2_n`, `{python} rev2_pct`); ninguna concentra una proporción alta y el resto de la producción se reparte en un conjunto amplio de revistas disciplinares internacionales (Natural Hazards, Earthquake Spectra, Hydrology, entre otras), lo que refleja la naturaleza multidisciplinar del campo.
 
-**Ciencia y datos abiertos**: Las prácticas de ciencia abierta siguen siendo bajas: solo el 10,4% de los productos con dato declarado reporta datos abiertos y el 7,3% reporta código abierto, lo que limita la reproducibilidad y el aprovechamiento de los resultados de investigación en GRD.
+**Ciencia y datos abiertos**: Las prácticas de ciencia abierta siguen siendo bajas: solo el `{python} oa_si_pct` de los productos con dato declarado reporta datos abiertos y el `{python} ca_si_pct` reporta código abierto, lo que limita la reproducibilidad y el aprovechamiento de los resultados de investigación en GRD.
 
 **Género**: Existe una brecha de género significativa en el talento humano registrado para GRD: de 252 investigadores identificados, el 69% son hombres y el 29% mujeres, lo que puede traducirse en una menor incidencia de las perspectivas de las investigadoras en la agenda científica del sector.
 
@@ -1775,11 +1938,13 @@ En cuanto a los municipios, 71 municipios de 1103 respuestas indicaron que parti
 
 **Convocatorias nacionales**: La ciencia de los desastres se ha posicionado en las  convocatorias Minciencias dentro de su agenda de financiamiento. Minciencias lanzó 92 convocatorias de CTeI, de las cuales 41 permitieron postular proyectos o capital humano, con líneas temáticas explícitas en GRD.
 
+**Financiación de productos de conocimiento**: El `{python} fin_si_pct` de los productos revisados declara financiación. Minciencias es el principal financiador nacional (`{python} fin_min_pct` de los productos financiados), mientras que la financiación internacional está dispersa entre muchas entidades; el `{python} fin_ambas_pct` de los productos con financiador identificado combina fuentes nacionales e internacionales.
+
 **Demandas territoriales**: Los departamentos sí postulan demandas territoriales en GRD. En el bienio 2023–2024, 27 departamentos declararon 71 demandas territoriales vinculadas a la GRD. Para el bienio 2025–2026, 15 departamentos presentaron 20 demandas territoriales. Existe una articulación territorial de la CTeI con las prioridades de gestión del riesgo que debe mantenerse y promoverse en cada bienio.
 
 **Grupos e institutos de investigación**: Colombia tiene grupos consolidados en GRD. Existen 58 grupos de investigación con alta relación a GRD, concentrados en ingeniería y ciencias naturales. Los grupos se localizan en Bogotá, Medellín, Cali y Barranquilla..
 
-**Generación de conocimiento creciente**: Colombia tiene producción científica sólida y creciente en GRD liderada por universidades. Entre 2020 y 2025 Colombia produjo 2.974 productos científicos en GRD. La producción se concentra en la Universidad Nacional de Colombia, la Universidad de los Andes y la Universidad de Antioquia, evidenciando capacidades sólidas, pero concentrada en Universidades. 
+**Generación de conocimiento creciente**: Colombia tiene producción científica sólida y creciente en GRD liderada por universidades. Entre 2020 y 2025 Colombia produjo 2.974 productos científicos en GRD. La producción se concentra en la Universidad Nacional de Colombia, la Universidad de los Andes y la Universidad del Norte, evidenciando capacidades sólidas, pero concentrada en Universidades. 
 
 **Formación posgradual**: Existe una oferta activa de 10 especializaciones y 13 maestrías en GRD; sin embargo, no existe un programa de doctorado acreditado específico en GRD.
 
