@@ -16,7 +16,7 @@ abstract: |
 data_availability: |
   Todas las figuras consultan directamente, en el navegador o al renderizar el documento,
   las hojas `Demandas-Territoriales-2022-24`, `Demandas-Territoriales-2025-26` y
-  `Vigilancia-CTeI`, `Financiacion-CTeI` y `Vigilancia_Patentes` del libro "Estrategia CyT GRD" en Google Sheets, la hoja
+  `Vigilancia-CTeI`, `Financ-Datos-Codigo-CTeI` y `Vigilancia_Patentes` del libro "Estrategia CyT GRD" en Google Sheets, la hoja
   `Grupos_investigación` del libro "20260611_BD_Capacidades_GRD_CTeI_colombia" en Google Sheets,
   así como los límites departamentales del repositorio
   [colombia_mapa](https://github.com/caticoa3/colombia_mapa).
@@ -570,7 +570,7 @@ ojs_define(vigilancia_map_data=vigilancia_map_data)
 ```{python}
 #| echo: false
 # Cifras del texto calculadas en cada render desde las hojas `Vigilancia-CTeI` y
-# `Financiacion-CTeI` (misma lógica que las gráficas OJS). Así el texto no queda
+# `Financ-Datos-Codigo-CTeI` (misma lógica que las gráficas OJS). Así el texto no queda
 # desactualizado cuando cambian las hojas.
 def _s(x) -> str:
     return "" if pd.isna(x) else str(x).strip()
@@ -626,12 +626,12 @@ rev_n = _n(_fu.sum())
 rev1, rev1_n, rev1_pct = _fu.index[0], _n(_fu.iloc[0]), _pct(_fu.iloc[0], _fu.sum())
 rev2, rev2_n, rev2_pct = _fu.index[1], _n(_fu.iloc[1]), _pct(_fu.iloc[1], _fu.sum())
 
-# --- Financiacion-CTeI -----------------------------------------------------
+# --- Financ-Datos-Codigo-CTeI -----------------------------------------------------
 # Una fila por producto (mismo ID que Vigilancia-CTeI). Las columnas FINANCIADOR,
 # FINANCIADOR_NAL_O_INTERNAL, TIPO_DE_FINANCIADOR y PAIS_DE_FINANCIACION pueden
 # traer varios valores separados por ";" que se corresponden por posición
 # (el i-ésimo financiador con la i-ésima clasificación).
-_f = pd.read_csv(sheet_csv_url("Financiacion-CTeI")).dropna(subset=["ID"])
+_f = pd.read_csv(sheet_csv_url("Financ-Datos-Codigo-CTeI")).dropna(subset=["ID"])
 _f["dec"] = _f["DECLARA_FINANCIADOR"].map(_s).str.lower()
 
 
@@ -911,7 +911,7 @@ No obstante, para tener la capacidad de monitorear la inversión en ciencia y te
 
 ## Financiación nacional e internacional en productos de conocimiento
 
-Esta medición considera principalmente productos de conocimiento (ver definición de conocimiento en la **Caja 2** y tipologías de productos en Anexo 2). Se analizó una muestra de `{python} fin_n` productos de nuevo conocimiento de la hoja `Financiacion-CTeI` (el `{python} fin_core_pct` publicados entre `{python} fin_y0` y `{python} fin_y1`), a partir de la cual se extrajo información de financiador de las secciones Agradecimientos o Financiación (Anexo 4); los `{python} fin_pend` registros restantes de la hoja aún no han sido revisados. Cada fila corresponde a un producto y, cuando un producto tiene varios financiadores, estos se registran en la misma celda separados por punto y coma y se cuentan como entidades independientes. Este análisis establece la presencia o ausencia de financiación, mas no su monto.
+Esta medición considera principalmente productos de conocimiento (ver definición de conocimiento en la **Caja 2** y tipologías de productos en Anexo 2). Se analizó una muestra de `{python} fin_n` productos de nuevo conocimiento de la hoja `Financ-Datos-Codigo-CTeI` (el `{python} fin_core_pct` publicados entre `{python} fin_y0` y `{python} fin_y1`), a partir de la cual se extrajo información de financiador de las secciones Agradecimientos o Financiación (Anexo 4); los `{python} fin_pend` registros restantes de la hoja aún no han sido revisados. Cada fila corresponde a un producto y, cuando un producto tiene varios financiadores, estos se registran en la misma celda separados por punto y coma y se cuentan como entidades independientes. Este análisis establece la presencia o ausencia de financiación, mas no su monto.
 
 ::: {#box-tipologias .callout-important style="background-color: #e3f0fbff; padding:20px; border: none !important;" appearance="minimal" icon="false"}
 **Caja 2. Definiciones de tipologías de productos de de CTeI acorde con Minciencias empleadas en la medición del estado de la ciencia.** En el Anexo 2 encuentre el detalle de fuente, registro o mecanismo de verificación, indicador, criterio de calidad o clasificación para las tipologías de productos.
@@ -927,7 +927,7 @@ La mayoría de productos de nuevo conocimiento tuvo financiación (@fig-financia
 
 ```{ojs}
 //| label: fig-financiador-sino
-//| fig-cap: "Productos de nuevo conocimiento que declaran financiador (Sí/No), hoja `Financiacion-CTeI`."
+//| fig-cap: "Productos de nuevo conocimiento que declaran financiador (Sí/No), hoja `Financ-Datos-Codigo-CTeI`."
 //| echo: false
 barChartH(countSiNo(financiacionCTeI, "DECLARA_FINANCIADOR"), {
   title: "Declaración de financiador", marginLeft: 60, width: 400
@@ -936,7 +936,7 @@ barChartH(countSiNo(financiacionCTeI, "DECLARA_FINANCIADOR"), {
 
 ```{ojs}
 //| echo: false
-// Financiacion-CTeI tiene una fila por producto. FINANCIADOR, FINANCIADOR_NAL_O_INTERNAL,
+// Financ-Datos-Codigo-CTeI tiene una fila por producto. FINANCIADOR, FINANCIADOR_NAL_O_INTERNAL,
 // TIPO_DE_FINANCIADOR y PAIS_DE_FINANCIACION pueden traer varias entradas separadas por ";"
 // que se corresponden por posición. Aquí se "explota" cada producto en un registro por
 // financiador (ID, financiador, nal/int, tipo, país), sin repetir un financiador en el mismo producto.
@@ -980,7 +980,7 @@ De los `{python} fin_si` productos con financiación declarada, `{python} fin_co
 
 ```{ojs}
 //| label: fig-origen-financiacion
-//| fig-cap: "Productos de nuevo conocimiento con financiador identificado según el origen de su financiación (solo nacional, solo internacional o ambas), hoja `Financiacion-CTeI`."
+//| fig-cap: "Productos de nuevo conocimiento con financiador identificado según el origen de su financiación (solo nacional, solo internacional o ambas), hoja `Financ-Datos-Codigo-CTeI`."
 //| echo: false
 barChartH(origenFinanciacion, {
   title: "Origen de la financiación por producto", marginLeft: 180, width: 560
@@ -991,7 +991,7 @@ En cuanto a la financiación nacional, Minciencias constituye la principal fuent
 
 ```{ojs}
 //| label: fig-financiador-nacional-top10
-//| fig-cap: "Principales fuentes de financiación nacionales de productos de conocimiento (top 10, número de productos que financia cada entidad), hoja `Financiacion-CTeI`."
+//| fig-cap: "Principales fuentes de financiación nacionales de productos de conocimiento (top 10, número de productos que financia cada entidad), hoja `Financ-Datos-Codigo-CTeI`."
 //| echo: false
 barChartH(
   countTop(porOrigen("nacional"), "FINANCIADOR", 10, { truncate: 45 }),
@@ -1003,7 +1003,7 @@ A nivel internacional la financiación está más dispersa y ninguna entidad con
 
 ```{ojs}
 //| label: fig-financiador-internacional-top10
-//| fig-cap: "Principales fuentes de financiación internacional de productos de conocimiento (top 10, número de productos que financia cada entidad), hoja `Financiacion-CTeI`."
+//| fig-cap: "Principales fuentes de financiación internacional de productos de conocimiento (top 10, número de productos que financia cada entidad), hoja `Financ-Datos-Codigo-CTeI`."
 //| echo: false
 barChartH(
   countTop(porOrigen("internacional"), "FINANCIADOR", 10, { truncate: 45 }),
@@ -1695,11 +1695,11 @@ barChartH(
 
 ## Ciencia y datos abiertos
 
-Las prácticas de ciencia abierta siguen siendo bajas en la producción de nuevo conocimiento en GRD. Sobre una muestra de `{python} oa_n` productos con dato declarado (hoja `Financiacion-CTeI`), solo el `{python} oa_si_pct` (`{python} oa_si`) reporta haber puesto sus datos a disposición en acceso abierto, frente a un `{python} oa_no_pct` (`{python} oa_no`) que no lo hace. De estos últimos, el `{python} oa_alt_pct` (`{python} oa_alt`) declara algún acceso alternativo a los datos, por ejemplo bajo solicitud. La publicación de código abierto es igual de infrecuente; solo el `{python} ca_si_pct` de los productos (`{python} ca_si` de `{python} ca_n`) la reporta (@fig-ciencia-abierta).
+Las prácticas de ciencia abierta siguen siendo bajas en la producción de nuevo conocimiento en GRD. Sobre una muestra de `{python} oa_n` productos con dato declarado (hoja `Financ-Datos-Codigo-CTeI`), solo el `{python} oa_si_pct` (`{python} oa_si`) reporta haber puesto sus datos a disposición en acceso abierto, frente a un `{python} oa_no_pct` (`{python} oa_no`) que no lo hace. De estos últimos, el `{python} oa_alt_pct` (`{python} oa_alt`) declara algún acceso alternativo a los datos, por ejemplo bajo solicitud. La publicación de código abierto es igual de infrecuente; solo el `{python} ca_si_pct` de los productos (`{python} ca_si` de `{python} ca_n`) la reporta (@fig-ciencia-abierta).
 
 ```{ojs}
 //| echo: false
-financiacionCTeI = d3.csv(sheetCsvUrl("Financiacion-CTeI"), d3.autoType)
+financiacionCTeI = d3.csv(sheetCsvUrl("Financ-Datos-Codigo-CTeI"), d3.autoType)
 
 function countSiNo(rows, column) {
   const counts = new Map([["Sí", 0], ["No", 0]]);
@@ -1714,7 +1714,7 @@ function countSiNo(rows, column) {
 
 ```{ojs}
 //| label: fig-ciencia-abierta
-//| fig-cap: "Proporción de productos que declaran datos abiertos y código abierto, hoja `Financiacion-CTeI`."
+//| fig-cap: "Proporción de productos que declaran datos abiertos y código abierto, hoja `Financ-Datos-Codigo-CTeI`."
 //| echo: false
 {
   const opts = { marginLeft: 40, width: 230 };
